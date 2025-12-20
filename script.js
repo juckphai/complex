@@ -1,27 +1,24 @@
-// ==========================================
-// PART 0: SHARED UTILITIES & TAB LOGIC
-// ==========================================
-
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tab-button");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
+// === APP SWITCHING FUNCTION ===
+function switchApp(appName) {
+    // Update navigation buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`.nav-btn[onclick="switchApp('${appName}')"]`).classList.add('active');
+    
+    // Update app containers
+    document.querySelectorAll('.app-container').forEach(container => {
+        container.classList.remove('active');
+    });
+    document.getElementById(`${appName}-app`).classList.add('active');
 }
 
+// === SHARED UTILITY FUNCTIONS ===
 document.addEventListener('contextmenu', e => e.preventDefault());
 
-// ==========================================
-// PART 1: LOGIC FOR TRANSLATE NUMBER (Web 1)
-// ==========================================
+// === APP 1: ฟอร์มแปลตัวเลข 2, 3 และ 4 ตัว ===
 
+// === MERGED LUNAR DATA ===
 const lunarData = {
   "01/01/2568": "วันพุธ ขึ้น ๓ ค่ำ เดือนยี่ (๒) ปีมะโรง",
   "02/01/2568": "วันพฤหัสบดี ขึ้น ๔ ค่ำ เดือนยี่ (๒) ปีมะโรง",
@@ -1531,6 +1528,7 @@ function getThaiDate(date = new Date()) {
         "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
         "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
     ];
+
     return `วันที่ ${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} พ.ศ. ${date.getFullYear() + 543}`;
 }
 
@@ -1565,7 +1563,7 @@ function getFormattedDate(date) {
     return `${day}/${month}/${year}`;
 }
 
-// Logic Generators (2, 3, 4 digits)
+// === LOGIC FOR 4-DIGIT NUMBERS (UPDATED) ===
 function generate4DigitHTML(num, commonData) {
     const twoDigitPairs = ((n) => {
         const p = new Set();
@@ -1599,20 +1597,45 @@ function generate4DigitHTML(num, commonData) {
     </div>
   </div>
   ${commonData.topicTimeHtml}
-  <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale)); ${commonData.textShadow}">${getThaiDate(commonData.date)}</p>
+
+  <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale)); ${commonData.textShadow}">
+    ${getThaiDate(commonData.date)}
+  </p>
+
   ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
+
   <h2 style="font-size: calc(clamp(1.5rem, 5.5vw, 2rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">
     4 ตัว <span style="color: red;">${num}</span> By : <span style="color: green;">${commonData.selectedPerson}</span>
   </h2>
-  <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">จัดชุด 2 ตัว</h3>
-  <p style="font-weight: bold; white-space: nowrap; font-size: calc(clamp(1.25rem, 6vw, 1.625rem) * var(--font-scale)); ${commonData.textShadow}">${twoDigitPairs.join(' - ')}</p>
-  <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">จัดชุด 3 ตัว</h3>
-  <p style="font-weight: bold; white-space: nowrap; font-size: calc(clamp(1.25rem, 6vw, 1.625rem) * var(--font-scale)); ${commonData.textShadow}">${threeDigitCombinations.join(' - ')}</p>
-  <h2 style="font-size: calc(clamp(1.25rem, 5vw, 1.75rem) * var(--font-scale)); font-weight: bold; color: red; ${commonData.textShadow}">แนวทางเท่านั้น</h2>
-  <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale)); ${commonData.textShadow}">Disclose : ${getFormattedDate(new Date())} ${getThaiTime()}</p>
-  <p style="font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale)); ${commonData.textShadow}">${commonData.noteHtml}</p>
+
+  <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">
+    จัดชุด 2 ตัว
+  </h3>
+  <p style="font-weight: bold; white-space: nowrap; font-size: calc(clamp(1.25rem, 6vw, 1.625rem) * var(--font-scale)); ${commonData.textShadow}">
+    ${twoDigitPairs.join(' - ')}
+  </p>
+
+  <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">
+    จัดชุด 3 ตัว
+  </h3>
+  <p style="font-weight: bold; white-space: nowrap; font-size: calc(clamp(1.25rem, 6vw, 1.625rem) * var(--font-scale)); ${commonData.textShadow}">
+    ${threeDigitCombinations.join(' - ')}
+  </p>
+
+  <h2 style="font-size: calc(clamp(1.25rem, 5vw, 1.75rem) * var(--font-scale)); font-weight: bold; color: red; ${commonData.textShadow}">
+    แนวทางเท่านั้น
+  </h2>
+
+  <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale)); ${commonData.textShadow}">
+    Disclose : ${getFormattedDate(new Date())} ${getThaiTime()}
+  </p>
+
+  <p style="font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale)); ${commonData.textShadow}">
+    ${commonData.noteHtml}
+  </p>
 </div>`;
 }
+
 
 // === LOGIC FOR 3-DIGIT NUMBERS (REVISED) ===
 function generate3DigitHTML(num, commonData) {
@@ -2064,34 +2087,49 @@ function generate2DigitHTML(num, commonData) {
 `;
 }
 
-
+// === MAIN DISPATCHER FUNCTION ===
 function generateResultHTML() {
     const num = document.getElementById("numberInput").value;
     if (isNaN(num) || (num.length < 2 || num.length > 4)) {
         alert("กรุณากรอกตัวเลข 2, 3 หรือ 4 หลักให้ถูกต้อง");
         return null;
     }
+
     const dateInputStr = document.getElementById("dateInput").value;
     const date = parseThaiDate(dateInputStr);
     if (!date) {
-        alert("รูปแบบวันที่ไม่ถูกต้อง");
+        alert("รูปแบบวันที่ไม่ถูกต้อง กรุณาใช้รูปแบบ: วว/ดด/ปปปป (เช่น 15/07/2568)");
         return null;
     }
+
     const lunarDate = getLunarDate(date);
     let noteValue = document.getElementById("noteInput").value.trim();
+    const engravedShadowStyle = "text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);";
+
+    // ปรับปรุงส่วน lunarHtml ให้ใช้คลาสใหม่และปรับขนาดฟอนต์
+    const lunarHtml = lunarDate ?
+        `<p class="lunar-date" style="color: ${lunarDate.includes('วันพระ') ? 'red' : 'green'};">( ${lunarDate} )</p>` : '';
+
     const commonData = {
         date: date,
         topicName: getTopicName(),
-        topicTimeHtml: (() => { const t = getTopicTime(); return t ? `<p class="topic-time">${t}</p>` : ''; })(),
+        topicTimeHtml: (() => {
+            const t = getTopicTime();
+            return t ? `<p class="topic-time">${t}</p>` : '';
+        })(),
         selectedPerson: getSelectedPerson(),
-        lunarHtml: lunarDate ? `<p class="lunar-date" style="color: ${lunarDate.includes('วันพระ') ? 'red' : 'green'};">( ${lunarDate} )</p>` : '',
+        lunarHtml: lunarHtml, // ใช้ lunarHtml ที่ปรับปรุงแล้ว
         noteHtml: `หมายเหตุ : ${noteValue ? `<span style="color: red;">${noteValue}</span>` : '<span style="color: red;">No remarks</span>'}`,
-        textShadow: "text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);"
+        textShadow: engravedShadowStyle
     };
 
-    if (num.length === 2) return generate2DigitHTML(num, commonData);
-    else if (num.length === 3) return generate3DigitHTML(num, commonData);
-    else if (num.length === 4) return generate4DigitHTML(num, commonData);
+    if (num.length === 2) {
+        return generate2DigitHTML(num, commonData);
+    } else if (num.length === 3) {
+        return generate3DigitHTML(num, commonData);
+    } else if (num.length === 4) {
+        return generate4DigitHTML(num, commonData);
+    }
     return null;
 }
 
@@ -2100,19 +2138,65 @@ function displayResultInPopup() {
     if (resultHtml) {
         const wrapper = document.getElementById("resultContentWrapper");
         wrapper.innerHTML = resultHtml;
+
+        // Reset the slider and the CSS variable
         document.getElementById("popupFontSizeSlider").value = 1.0;
         const resultDiv = wrapper.querySelector('div');
-        if (resultDiv) resultDiv.style.setProperty('--font-scale', '1');
+        if (resultDiv) {
+            resultDiv.style.setProperty('--font-scale', '1');
+        }
+
+        initializePopupControls();
         showResultPopup();
     }
 }
 
-// Global scope functions for slider controls (Tab 1)
+// Called when the popup is generated to set initial states
+function initializePopupControls() {
+    const lhSlider = document.getElementById("popupLineHeightSlider");
+    const fsSlider = document.getElementById("popupFontSizeSlider");
+    const fsValueSpan = document.getElementById("popupFontSizeValue");
+    const numLength = document.getElementById("numberInput").value.length;
+    const resultDiv = document.querySelector("#resultContentWrapper > div");
+
+    // ตั้งค่าเริ่มต้นของ font scale ตามจำนวนตัวเลข
+    let defaultFontScale;
+    if (numLength === 2) {
+        defaultFontScale = 1.5; // 150% สำหรับ 2 ตัว
+        lhSlider.min = "0.8";
+        lhSlider.max = "2.5";
+        lhSlider.value = "1.3";
+    } else if (numLength === 3) {
+        defaultFontScale = 1.0; // 100% สำหรับ 3 ตัว
+        lhSlider.min = "0.5";
+        lhSlider.max = "2.5";
+        lhSlider.value = "0.7";
+    } else { // 4 digits
+        defaultFontScale = 1.4; // 140% สำหรับ 4 ตัว
+        lhSlider.min = "0.5";
+        lhSlider.max = "2.5";
+        lhSlider.value = "1.0";
+    }
+
+    // ตั้งค่า slider และค่าเริ่มต้น
+    fsSlider.value = defaultFontScale;
+    if (resultDiv) {
+        resultDiv.style.setProperty('--font-scale', defaultFontScale);
+    }
+    fsValueSpan.textContent = `ขนาด: ${Math.round(defaultFontScale * 100)}%`;
+
+    // ตั้งค่า line height
+    updateLineHeight();
+}
+
+// Global scope functions for slider controls
 function updateFontSize() {
     const fsSlider = document.getElementById("popupFontSizeSlider");
     const fsValueSpan = document.getElementById("popupFontSizeValue");
     const resultDiv = document.querySelector("#resultContentWrapper > div");
+
     if (!fsSlider || !resultDiv) return;
+
     const scale = fsSlider.value;
     resultDiv.style.setProperty('--font-scale', scale);
     fsValueSpan.textContent = `ขนาด: ${Math.round(scale * 100)}%`;
@@ -2123,15 +2207,14 @@ function updateLineHeight() {
     const lhValueSpan = document.getElementById("popupLineHeightValue");
     const resultContentWrapper = document.getElementById("resultContentWrapper");
     if (!lhSlider || !resultContentWrapper) return;
-    resultContentWrapper.style.lineHeight = lhSlider.value;
-    lhValueSpan.textContent = `ความสูงบรรทัด: ${lhSlider.value}`;
+
+    const lineHeight = lhSlider.value;
+    resultContentWrapper.style.lineHeight = lineHeight;
+    lhValueSpan.textContent = `ความสูงบรรทัด: ${lineHeight}`;
 }
+// === APP 2: ผลรางวัลกลุ่มลาวและรัฐบาล ===
 
-
-// ==========================================
-// PART 2: LOGIC FOR RESULT GENERATOR (Web 2)
-// ==========================================
-
+// --- Data Configuration ---
 const lotteryTypes = {
     'laostar-0545': { name: 'ลาวประตูชัย', time: '05.45 น', digits: 5, type: 'star' },
     'laostar-0645': { name: 'ลาวสันติภาพ', time: '06.45 น', digits: 5, type: 'star' },
@@ -2143,61 +2226,102 @@ const lotteryTypes = {
     'laopattana':   { name: 'ลาวพัฒนา', time: '20.30 น', digits: 6, type: 'pattana' },
     'laosamakkee':  { name: 'ลาวสามัคคี', time: '20.30 น', digits: 5, type: 'samakkhee' },
     'laostar-2100': { name: 'ลาวอาเซียน', time: '21.00 น', digits: 5, type: 'star' },
-    'laovip-2130':  { name: 'ลาว VIP', time: '21.30 น', digits: 5, type: 'samakkhee' },
+    'laovip-2130':  { name: 'ลาว VIP', time: '21.30 น', digits: 5, type: 'samakkhee' }, // Re-using samakkhee logic
     'laosamakkeevip': { name: 'ลาวสามัคคี VIP', time: '21.30 น', digits: 5, type: 'samakkhee' },
     'laostar-2200': { name: 'ลาวสตาร์ VIP', time: '22.00 น', digits: 5, type: 'star' },
     'laostar-2330': { name: 'ลาวกาชาด', time: '23.30 น', digits: 5, type: 'star' },
     'thai-government': { name: 'รัฐบาลไทย', type: 'thai' }
 };
 
+// --- Core Functions ---
 function createPingPongBall(number, type = 'red', size = 42, fontSize = 22) {
-    // ... Ping Pong SVG Creation Logic (Same as original) ...
     const gradientId = `grad-${type}-${Math.random().toString(36).substring(2, 9)}`;
     const highlightId = `highlight-${type}-${Math.random().toString(36).substring(2, 9)}`;
     let highlightColor, midColor, shadowColor;
 
-    if (type === 'blue') { highlightColor = '#B3E5FF'; midColor = '#007FFF'; shadowColor = '#004080'; } 
-    else if (type === 'red') { highlightColor = '#FFC0CB'; midColor = '#E800E8'; shadowColor = '#800080'; } 
-    else if (type === 'orange') { highlightColor = '#FFE3A0'; midColor = '#FF8C00'; shadowColor = '#B35A00'; } 
-    else if (type === 'thai-red') { highlightColor = '#FFC0CB'; midColor = '#E800E8'; shadowColor = '#800080'; } 
-    else if (type === 'thai-blue') { highlightColor = '#B3E5FF'; midColor = '#007FFF'; shadowColor = '#004080'; } 
-    else if (type === 'thai-green') { highlightColor = '#B2FFB2'; midColor = '#008000'; shadowColor = '#004d00'; } 
-    else if (type === 'thai-orange') { highlightColor = '#FFE3A0'; midColor = '#FF8C00'; shadowColor = '#B35A00'; } 
-    else { highlightColor = '#F0F0F0'; midColor = '#A0A0A0'; shadowColor = '#707070'; }
+    if (type === 'blue') { 
+        highlightColor = '#B3E5FF'; midColor = '#007FFF'; shadowColor = '#004080';
+    } else if (type === 'red') { 
+        highlightColor = '#FFC0CB'; midColor = '#E800E8'; shadowColor = '#800080';
+    } else if (type === 'orange') { 
+        highlightColor = '#FFE3A0'; midColor = '#FF8C00'; shadowColor = '#B35A00';
+    } else if (type === 'thai-red') { 
+        highlightColor = '#FFC0CB'; midColor = '#E800E8'; shadowColor = '#800080';
+    } else if (type === 'thai-blue') { 
+        highlightColor = '#B3E5FF'; midColor = '#007FFF'; shadowColor = '#004080';
+    } else if (type === 'thai-green') { 
+        highlightColor = '#B2FFB2'; midColor = '#008000'; shadowColor = '#004d00';
+    } else if (type === 'thai-orange') { 
+        highlightColor = '#FFE3A0'; midColor = '#FF8C00'; shadowColor = '#B35A00';
+    } else { 
+        highlightColor = '#F0F0F0'; midColor = '#A0A0A0'; shadowColor = '#707070';
+    }
 
     const r = (size / 2) - 1;
+    const cx = size / 2;
+    const cy = size / 2;
+
+    const svgContent = `
+        <defs>
+            <radialGradient id="${gradientId}" cx="35%" cy="35%" r="70%">
+                <stop offset="0%" stop-color="${highlightColor}" />
+                <stop offset="50%" stop-color="${midColor}" />
+                <stop offset="100%" stop-color="${shadowColor}" />
+            </radialGradient>
+            <radialGradient id="${highlightId}" cx="30%" cy="30%" r="30%">
+                <stop offset="0%" stop-color="white" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${gradientId})" stroke="rgba(0,0,0,0.4)" stroke-width="1"/>
+        <circle cx="${cx - r * 0.3}" cy="${cy - r * 0.3}" r="${r * 0.35}" fill="url(#${highlightId})"/>
+    `;
+
     return `
         <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="margin: 0 0.5px;">
-            <defs>
-                <radialGradient id="${gradientId}" cx="35%" cy="35%" r="70%">
-                    <stop offset="0%" stop-color="${highlightColor}" />
-                    <stop offset="50%" stop-color="${midColor}" />
-                    <stop offset="100%" stop-color="${shadowColor}" />
-                </radialGradient>
-                <radialGradient id="${highlightId}" cx="30%" cy="30%" r="30%">
-                    <stop offset="0%" stop-color="white" stop-opacity="0.9"/>
-                    <stop offset="100%" stop-color="white" stop-opacity="0"/>
-                </radialGradient>
-            </defs>
-            <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="url(#${gradientId})" stroke="rgba(0,0,0,0.4)" stroke-width="1"/>
-            <circle cx="${(size/2) - r * 0.3}" cy="${(size/2) - r * 0.3}" r="${r * 0.35}" fill="url(#${highlightId})"/>
-            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold" fill="white" stroke="black" stroke-width="0.8" paint-order="stroke">${number}</text>
-        </svg>`;
+            ${svgContent}
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                  font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold"
+                  fill="white" stroke="black" stroke-width="0.8" paint-order="stroke">
+                ${number}
+            </text>
+        </svg>
+    `;
 }
 
 function createPingPongNumbers(numbers, type = 'red', size = 42, fontSize = 22) {
     return numbers.split('').map(digit => createPingPongBall(digit, type, size, fontSize)).join('');
 }
 
+function setDefaultDate() {
+    const dateInput = document.getElementById("dateInput2");
+    if (dateInput) {
+        const localDate = new Date(new Date().getTime() + (7 * 60 * 60 * 1000));
+        dateInput.value = localDate.toISOString().split('T')[0];
+    }
+    const thaiDrawDateInput = document.getElementById('draw-date');
+    if (thaiDrawDateInput) {
+        const today = new Date();
+        thaiDrawDateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
+    }
+}
+
+function getThaiDateForApp2(date = new Date()) {
+    const days = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
+    const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    return `วัน${days[date.getDay()]}ที่ ${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} พ.ศ. ${date.getFullYear() + 543}`;
+}
+
+// Popup functions
 function showPopup() { document.getElementById("popupOverlay").style.display = "flex"; }
 function closePopup() { document.getElementById("popupOverlay").style.display = "none"; }
 function showThaiPopup() { document.getElementById("thaiLotteryPopupOverlay").style.display = "flex"; }
 function closeThaiPopup() { document.getElementById("thaiLotteryPopupOverlay").style.display = "none"; }
 
-function updateFormVisibilityResult(selectedType) {
+function updateFormVisibility(selectedType) {
     const laoFormContent = document.getElementById('laoLotteryFormContent');
     const thaiFormContent = document.getElementById('thaiLotteryFormContent');
-    const numberInput = document.getElementById("numberInputResult");
+    const numberInput = document.getElementById("numberInput2");
     
     if (selectedType === 'thai-government') {
         laoFormContent.style.display = 'none';
@@ -2210,12 +2334,16 @@ function updateFormVisibilityResult(selectedType) {
             numberInput.maxLength = config.digits;
             numberInput.placeholder = `กรุณากรอกตัวเลข ${config.digits} หลัก`;
             numberInput.value = "";
+        } else {
+             numberInput.maxLength = "";
+             numberInput.placeholder = "กรุณาเลือกชนิดผลรางวัลก่อน";
+             numberInput.value = "";
         }
     }
 }
 
-function populateTopicSelectResult() {
-    const select = document.getElementById("topicSelectResult");
+function populateTopicSelect() {
+    const select = document.getElementById("topicSelect2");
     select.innerHTML = ''; 
     const laoKeys = Object.keys(lotteryTypes).filter(key => lotteryTypes[key].type !== 'thai');
     const sortedLaoKeys = laoKeys.sort((a, b) => {
@@ -2223,44 +2351,64 @@ function populateTopicSelectResult() {
         const timeB = lotteryTypes[b].time.replace('.', '');
         return parseInt(timeA) - parseInt(timeB);
     });
+
     sortedLaoKeys.forEach(key => {
         const option = document.createElement('option');
         option.value = key;
         option.textContent = `${lotteryTypes[key].name} เวลา ${lotteryTypes[key].time}`;
         select.appendChild(option);
     });
+
     const thaiOption = document.createElement('option');
     thaiOption.value = 'thai-government';
     thaiOption.textContent = 'ผลฉลากกินแบ่งรัฐบาล';
     select.appendChild(thaiOption);
 }
 
-function convertNumberResult() {
-    const selectedKey = document.getElementById("topicSelectResult").value;
+// --- Lao Lottery Logic ---
+function convertNumber() {
+    const selectedKey = document.getElementById("topicSelect2").value;
     const config = lotteryTypes[selectedKey];
-    const num = document.getElementById("numberInputResult").value;
+    const num = document.getElementById("numberInput2").value;
 
     if (num.length !== config.digits || isNaN(num)) {
         alert(`กรุณากรอกตัวเลข ${config.digits} หลัก`);
         return;
     }
 
-    const date = document.getElementById("dateInputResult").value ? new Date(document.getElementById("dateInputResult").value) : new Date();
+    const date = document.getElementById("dateInput2").value ? new Date(document.getElementById("dateInput2").value) : new Date();
     
     const popupNameDisplay = document.getElementById("popupNameDisplay");
     popupNameDisplay.className = 'topic-box';
-    popupNameDisplay.innerHTML = `<img src="logo.png" class="header-logo"><span>ผล${config.name}</span><img src="logo.png" class="header-logo">`;
+    popupNameDisplay.innerHTML = `
+        <img src="logo.png" alt="Logo" class="header-logo">
+        <span>ผล${config.name}</span>
+        <img src="logo.png" alt="Logo" class="header-logo">
+    `;
 
-    document.getElementById("popupTimeDisplay").className = 'topic-time';
-    document.getElementById("popupTimeDisplay").textContent = `เวลา ${config.time}`;
-    document.getElementById("popupDateDisplay").textContent = getThaiDate(date); // Reused getThaiDate from Part 1
+    const popupTimeDisplay = document.getElementById("popupTimeDisplay");
+    popupTimeDisplay.className = 'topic-time';
+    popupTimeDisplay.textContent = `เวลา ${config.time}`;
+
+    document.getElementById("popupDateDisplay").textContent = getThaiDateForApp2(date);
     document.getElementById("popupPrizeTitle").textContent = `รางวัลเลข ${config.digits} ตัว`;
 
     let twoDigits, threeDigits;
+    
     switch (config.type) {
-        case 'pattana': threeDigits = num.slice(3); twoDigits = num.slice(2, 4); break;
-        case 'samakkhee': threeDigits = num.slice(2); twoDigits = num.slice(1, 3); break;
-        case 'star': default: threeDigits = num.slice(2); twoDigits = num.slice(0, 2); break;
+        case 'pattana':
+            threeDigits = num.slice(3);
+            twoDigits = num.slice(2, 4);
+            break;
+        case 'samakkhee':
+            threeDigits = num.slice(2);
+            twoDigits = num.slice(1, 3);
+            break;
+        case 'star':
+        default:
+            threeDigits = num.slice(2);
+            twoDigits = num.slice(0, 2);
+            break;
     }
 
     document.getElementById("popupMainDigitsDisplay").innerHTML = createPingPongNumbers(num, 'red', 42, 22);
@@ -2268,55 +2416,126 @@ function convertNumberResult() {
     document.getElementById("popupTwoDigitsDisplay").innerHTML = createPingPongNumbers(twoDigits, 'orange', 42, 22);
 
     ["popupCircleButton", "popupSquareButton", "popupCircleTopButton"].forEach(id => document.getElementById(id).classList.remove("active"));
+    
     showPopup();
     setupSaveLaoImageButton();
 }
 
-// Result Popup Toggles (Circle/Square)
+// --- Popup Button Functions ---
 function getNumbersForToggle() {
-    const selectedKey = document.getElementById("topicSelectResult").value;
+    const selectedKey = document.getElementById("topicSelect2").value;
     const config = lotteryTypes[selectedKey];
-    const num = document.getElementById('numberInputResult').value;
-    let twoDigits, threeDigits;
+    const num = document.getElementById('numberInput2').value;
+    let twoDigits, threeDigits, threeDigits_first, threeDigits_lastTwo;
+
     switch (config.type) {
-        case 'pattana': threeDigits = num.slice(3); twoDigits = num.slice(2, 4); break;
-        case 'samakkhee': threeDigits = num.slice(2); twoDigits = num.slice(1, 3); break;
-        default: threeDigits = num.slice(2); twoDigits = num.slice(0, 2); break;
+        case 'pattana':
+            threeDigits = num.slice(3);
+            twoDigits = num.slice(2, 4);
+            break;
+        case 'samakkhee':
+            threeDigits = num.slice(2);
+            twoDigits = num.slice(1, 3);
+            break;
+        case 'star':
+        default:
+            threeDigits = num.slice(2);
+            twoDigits = num.slice(0, 2);
+            break;
     }
-    return { twoDigits, threeDigits, threeDigits_first: threeDigits[0], threeDigits_lastTwo: threeDigits.slice(1) };
+    threeDigits_first = threeDigits[0];
+    threeDigits_lastTwo = threeDigits.slice(1);
+    return { twoDigits, threeDigits, threeDigits_first, threeDigits_lastTwo };
 }
 
 function toggleCirclePopup() {
     const display = document.getElementById("popupTwoDigitsDisplay");
     const button = document.getElementById("popupCircleButton");
     const { twoDigits } = getNumbersForToggle();
-    if (button.classList.toggle("active")) display.innerHTML = `<div class="circle-container">${createPingPongNumbers(twoDigits, 'orange', 42, 22)}<div class="checkmark">✓</div></div>`;
-    else display.innerHTML = createPingPongNumbers(twoDigits, 'orange', 42, 22);
+    if (button.classList.toggle("active")) {
+        display.innerHTML = `<div class="circle-container">${createPingPongNumbers(twoDigits, 'orange', 42, 22)}<div class="checkmark">✓</div></div>`;
+    } else {
+        display.innerHTML = createPingPongNumbers(twoDigits, 'orange', 42, 22);
+    }
 }
 
 function toggleSquarePopup() {
     const display = document.getElementById("popupThreeDigitsDisplay");
     const button = document.getElementById("popupSquareButton");
     const { threeDigits } = getNumbersForToggle();
-    if (button.classList.toggle("active")) display.innerHTML = `<div class="square-container">${createPingPongNumbers(threeDigits, 'blue', 42, 22)}<div class="checkmark">✓</div></div>`;
-    else display.innerHTML = createPingPongNumbers(threeDigits, 'blue', 42, 22);
+    if (button.classList.toggle("active")) {
+        display.innerHTML = `<div class="square-container">${createPingPongNumbers(threeDigits, 'blue', 42, 22)}<div class="checkmark">✓</div></div>`;
+    } else {
+        display.innerHTML = createPingPongNumbers(threeDigits, 'blue', 42, 22);
+    }
 }
 
 function toggleSquareTopPopup() {
     const display = document.getElementById("popupThreeDigitsDisplay");
     const button = document.getElementById("popupCircleTopButton");
     const { threeDigits, threeDigits_first, threeDigits_lastTwo } = getNumbersForToggle();
-    if (button.classList.toggle("active")) display.innerHTML = `${createPingPongBall(threeDigits_first, 'blue', 42, 22)}<div class="square-two-container">${createPingPongNumbers(threeDigits_lastTwo, 'blue', 42, 22)}<div class="checkmark">✓</div></div>`;
-    else display.innerHTML = createPingPongNumbers(threeDigits, 'blue', 42, 22);
+    if (button.classList.toggle("active")) {
+        display.innerHTML = `${createPingPongBall(threeDigits_first, 'blue', 42, 22)}<div class="square-two-container">${createPingPongNumbers(threeDigits_lastTwo, 'blue', 42, 22)}<div class="checkmark">✓</div></div>`;
+    } else {
+        display.innerHTML = createPingPongNumbers(threeDigits, 'blue', 42, 22);
+    }
 }
 
-function formatThaiDateFull(dateString) {
+function setupSaveLaoImageButton() {
+    const saveBtn = document.getElementById("saveLaoAsImageButton");
+    const newSaveBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+
+    newSaveBtn.addEventListener("click", function() {
+        const captureElement = document.querySelector("#popupOverlay .popup-content");
+        const controlsElement = captureElement.querySelector('.popup-buttons-container');
+        if (controlsElement) controlsElement.style.display = 'none';
+
+        setTimeout(() => {
+            html2canvas(captureElement, {
+                useCORS: true,
+                scale: 4,
+                backgroundColor: '#fffde7',
+                allowTaint: true,
+                onclone: function(clonedDoc) {
+                    const balls = clonedDoc.querySelectorAll('.ball-shadow, .ball-text-shadow');
+                    balls.forEach(ball => { ball.style.filter = getComputedStyle(ball).filter; });
+                }
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const num = document.getElementById("numberInput2").value || "result";
+                const selectedKey = document.getElementById("topicSelect2").value;
+                const topicName = lotteryTypes[selectedKey].name.replace(/\s+/g, '');
+                link.download = `Result-${topicName}-${num}-${Date.now()}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }).catch(err => {
+                console.error("Error:", err);
+                alert("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้");
+            }).finally(() => {
+                if (controlsElement) controlsElement.style.display = 'flex';
+            });
+        }, 100);
+    });
+}
+
+// --- Thai Government Lottery Logic ---
+function formatThaiDate(dateString) {
     const parts = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
     if (!parts) return `งวดวันที่ ${dateString}`;
-    const date = new Date(parseInt(parts[3]) - 543, parseInt(parts[2]) - 1, parseInt(parts[1]));
+    const day = parseInt(parts[1], 10);
+    const month = parseInt(parts[2], 10);
+    const thaiYear = parseInt(parts[3], 10);
+    const gregorianYear = thaiYear - 543;
+    const date = new Date(gregorianYear, month - 1, day);
+    if (isNaN(date.getTime()) || date.getDate() !== day || date.getMonth() !== month - 1) {
+        return `งวดวันที่ ${dateString}`;
+    }
     const days = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
     const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
-    return `งวดวัน${days[date.getDay()]}ที่ ${date.getDate()} ${months[date.getMonth()]} พ.ศ. ${parts[3]}`;
+    const dayOfWeek = days[date.getDay()];
+    const monthName = months[date.getMonth()];
+    return `งวดวัน${dayOfWeek}ที่ ${day} ${monthName} พ.ศ. ${thaiYear}`;
 }
 
 function displayNumberGroup(elementId, numberString, type, size, fontSize) {
@@ -2333,44 +2552,20 @@ function displayNumberGroup(elementId, numberString, type, size, fontSize) {
 function displayThaiResults() {
     const rawDate = document.getElementById("draw-date").value;
     if (!rawDate || !rawDate.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)) {
-        alert("กรุณากรอกวันที่ให้ถูกต้อง");
+        alert("กรุณากรอกวันที่ให้ถูกต้องตามรูปแบบ วว/ดด/ปปปป");
         return;
     }
-    document.getElementById("display-draw-date").innerText = formatThaiDateFull(rawDate);
+    
+    document.getElementById("display-draw-date").innerText = formatThaiDate(rawDate);
     displayNumberGroup("first-prize-display", document.getElementById("first-prize").value, "thai-red", 42, 22);
     displayNumberGroup("display-front-three-1", document.getElementById("front-three-1").value, "thai-blue", 42, 22);
     displayNumberGroup("display-front-three-2", document.getElementById("front-three-2").value, "thai-blue", 42, 22);
     displayNumberGroup("display-back-three-1", document.getElementById("back-three-1").value, "thai-green", 42, 22);
     displayNumberGroup("display-back-three-2", document.getElementById("back-three-2").value, "thai-green", 42, 22);
     displayNumberGroup("display-back-two", document.getElementById("back-two").value, "thai-orange", 52, 32);
+    
     showThaiPopup();
     setupSaveThaiImageButton();
-}
-
-
-// ==========================================
-// PART 3: SAVE IMAGE LOGIC (Shared/Adapted)
-// ==========================================
-
-function setupSaveLaoImageButton() {
-    const saveBtn = document.getElementById("saveLaoAsImageButton");
-    const newSaveBtn = saveBtn.cloneNode(true);
-    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
-
-    newSaveBtn.addEventListener("click", function() {
-        const captureElement = document.querySelector("#popupOverlay .popup-content");
-        const controlsElement = captureElement.querySelector('.popup-buttons-container');
-        if (controlsElement) controlsElement.style.display = 'none';
-
-        setTimeout(() => {
-            html2canvas(captureElement, { useCORS: true, scale: 4, backgroundColor: '#fffde7' }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Result-Lao-${Date.now()}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            }).finally(() => { if (controlsElement) controlsElement.style.display = 'flex'; });
-        }, 100);
-    });
 }
 
 function setupSaveThaiImageButton() {
@@ -2381,93 +2576,316 @@ function setupSaveThaiImageButton() {
     newSaveBtn.addEventListener("click", function() {
         const captureElement = document.querySelector("#thaiLotteryPopupContent");
         const controlsElement = captureElement.querySelector('.popup-controls');
-        if (controlsElement) controlsElement.style.display = 'none';
+        const dateText = document.getElementById("display-draw-date").innerText.replace(/[^a-zA-Z0-9-]/g, '_');
+        const firstPrize = document.getElementById("first-prize").value || "XXXXXX";
+
+        if (controlsElement) { controlsElement.style.display = 'none'; }
 
         setTimeout(() => {
-            html2canvas(captureElement, { useCORS: true, scale: 4, backgroundColor: '#FFFFD1' }).then(canvas => {
+            html2canvas(captureElement, {
+                useCORS: true,
+                scale: 4,
+                backgroundColor: '#FFFFD1',
+                logging: false,
+                allowTaint: true,
+                onclone: (clonedDoc) => {
+                    const clonedElement = clonedDoc.querySelector("#thaiLotteryPopupContent");
+                    if (clonedElement) clonedElement.style.boxShadow = 'none';
+                    const balls = clonedDoc.querySelectorAll('.ball-shadow, .ball-text-shadow');
+                    balls.forEach(ball => { ball.style.filter = getComputedStyle(ball).filter; });
+                }
+            }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `Result-Thai-${Date.now()}.png`;
-                link.href = canvas.toDataURL("image/png");
+                link.download = `ผลสลากรัฐบาล-${firstPrize}-${dateText}.png`;
+                link.href = canvas.toDataURL("image/png", 1.0);
                 link.click();
-            }).finally(() => { if (controlsElement) controlsElement.style.display = 'flex'; });
+            }).catch(err => {
+                console.error("Error:", err);
+                alert("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้");
+            }).finally(() => {
+                if (controlsElement) { controlsElement.style.display = 'flex'; }
+            });
         }, 100);
     });
 }
 
-
-// ==========================================
-// INITIALIZATION
-// ==========================================
-
+// === PAGE INITIALIZATION ===
 document.addEventListener("DOMContentLoaded", function() {
-    // --- 1. Initialize Translate Tab (Web 1) ---
-    const dateInput = document.getElementById('dateInput');
-    const today = new Date();
-    dateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
-    
-    document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
+    // Initialize App 1
     document.getElementById("popupFontSizeSlider").addEventListener("input", updateFontSize);
     document.getElementById("popupLineHeightSlider").addEventListener("input", updateLineHeight);
-    
-    document.getElementById('calendarButton').addEventListener('click', () => {
-        const hidden = document.getElementById('hiddenDateInput');
-        try { hidden.showPicker(); } catch { hidden.click(); }
-    });
-    document.getElementById('hiddenDateInput').addEventListener('change', (e) => {
-        if(e.target.value) {
-            const parts = e.target.value.split('-');
-            dateInput.value = `${parts[2]}/${parts[1]}/${parseInt(parts[0])+543}`;
-        }
-    });
+    document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
 
-    // Save Image Logic for Translate Tab
     document.getElementById("saveResultAsImageBtn").addEventListener("click", function() {
         const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
         const controlsElement = captureElement.querySelector('.controls');
+
         controlsElement.style.display = 'none';
-        html2canvas(captureElement, { useCORS: true, scale: 4, backgroundColor: '#FFFFD1' }).then(canvas => {
+        const originalPadding = captureElement.style.padding;
+        captureElement.style.padding = '4px 4px 4px 4px';
+
+        html2canvas(captureElement, {
+            useCORS: true,
+            scale: 4,
+            backgroundColor: '#FFFFD1'
+        }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `Result-Translate-${Date.now()}.png`;
+            const num = document.getElementById("numberInput").value || "XXXX";
+            link.download = `Result-Gen-${num}-${Date.now()}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-        }).finally(() => { controlsElement.style.display = ''; });
+        }).catch(err => {
+            console.error("เกิดข้อผิดพลาดในการสร้างรูปภาพ:", err);
+            alert("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้");
+        }).finally(() => {
+            controlsElement.style.display = '';
+            captureElement.style.padding = originalPadding;
+        });
     });
 
-    // Management Buttons Logic (Simplified for merged version)
-    // In a real merge, you'd paste the full logic for add/edit/delete topics here.
-    // For now, attaching the toggle visibility handlers:
+    // Management Logic for App 1
+    const TOPIC_STORAGE_KEY = 'customTopics_unified';
+    const PERSON_STORAGE_KEY = 'customPersons_unified';
+    const HIDDEN_TOPICS_KEY = 'hiddenDefaultTopics_unified';
+    const HIDDEN_PERSONS_KEY = 'hiddenDefaultPersons_unified';
+
+    const getStored = (key) => JSON.parse(localStorage.getItem(key)) || [];
+    const setStored = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+
+    function applyHiddenDefaults(selectId, storageKey) {
+        const hiddenValues = getStored(storageKey);
+        if (hiddenValues.length > 0) {
+            document.querySelectorAll(`#${selectId} option[data-default="true"]`).forEach(opt => {
+                if (hiddenValues.includes(opt.value)) {
+                    opt.hidden = true;
+                }
+            });
+        }
+    }
+
+    function loadOptions(selectId, storageKey) {
+        const select = document.getElementById(selectId);
+        select.querySelectorAll('option:not([data-default])').forEach(opt => opt.value !== 'custom' && opt.remove());
+        const otherOption = select.querySelector('option[value="custom"]');
+        const stored = getStored(storageKey);
+        stored.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.value;
+            opt.textContent = item.text;
+            select.insertBefore(opt, otherOption);
+        });
+    }
+
+    applyHiddenDefaults('topicSelect', HIDDEN_TOPICS_KEY);
+    applyHiddenDefaults('personSelect', HIDDEN_PERSONS_KEY);
+    loadOptions('topicSelect', TOPIC_STORAGE_KEY);
+    loadOptions('personSelect', PERSON_STORAGE_KEY);
+
     document.getElementById('toggleTopicControls').addEventListener('click', () => {
-        const el = document.getElementById('topicActions');
-        el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+        document.getElementById('topicActions').style.display = document.getElementById('topicActions').style.display === 'flex' ? 'none' : 'flex';
     });
     document.getElementById('togglePersonControls').addEventListener('click', () => {
-        const el = document.getElementById('personActions');
-        el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+        document.getElementById('personActions').style.display = document.getElementById('personActions').style.display === 'flex' ? 'none' : 'flex';
     });
 
+    const setupManagement = (type) => {
+        const SELECT_ID = `${type}Select`;
+        const STORAGE_KEY = `custom${type.charAt(0).toUpperCase() + type.slice(1)}s_unified`;
+        const HIDDEN_STORAGE_KEY = `hiddenDefault${type.charAt(0).toUpperCase() + type.slice(1)}s_unified`;
+        const MODAL_ID = `${type}Modal`;
 
-    // --- 2. Initialize Result Tab (Web 2) ---
-    populateTopicSelectResult();
-    const dateInputResult = document.getElementById("dateInputResult");
-    const localDate = new Date(new Date().getTime() + (7 * 60 * 60 * 1000));
-    dateInputResult.value = localDate.toISOString().split('T')[0];
-    
-    // Thai Date Init
-    const thaiDrawDateInput = document.getElementById('draw-date');
-    thaiDrawDateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
-    document.getElementById('calendarButtonResult').addEventListener('click', () => {
-        const hidden = document.getElementById('hiddenDateInputResult');
-        try { hidden.showPicker(); } catch { hidden.click(); }
+        document.getElementById(`add${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
+            document.getElementById(`${type}ModalTitle`).textContent = `เพิ่ม${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}ใหม่`;
+            if (type === 'topic') {
+                document.getElementById('modalTopicName').value = '';
+                document.getElementById('modalTopicTime').value = '';
+                document.getElementById('topicEditIndex').value = '';
+            } else {
+                document.getElementById('modalPersonName').value = '';
+                document.getElementById('personEditValue').value = '';
+            }
+            document.getElementById(MODAL_ID).style.display = 'flex';
+        });
+
+        document.getElementById(`edit${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
+            const select = document.getElementById(SELECT_ID);
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value === 'custom' || selectedOption.hidden) return alert('ไม่สามารถแก้ไขรายการนี้ได้');
+
+            document.getElementById(`${type}ModalTitle`).textContent = `แก้ไข${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}`;
+            if (type === 'topic') {
+                const [name, timePart] = selectedOption.value.split(' เวลา ');
+                document.getElementById('modalTopicName').value = name;
+                document.getElementById('modalTopicTime').value = timePart ? timePart.replace(' น.', '') : '';
+                document.getElementById('topicEditIndex').value = selectedOption.value;
+            } else {
+                document.getElementById('modalPersonName').value = selectedOption.value;
+                document.getElementById('personEditValue').value = selectedOption.value;
+            }
+            document.getElementById(MODAL_ID).style.display = 'flex';
+        });
+
+        document.getElementById(`delete${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
+            const select = document.getElementById(SELECT_ID);
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value === 'custom' || selectedOption.hidden) return alert('ไม่สามารถลบรายการนี้ได้');
+            if (confirm(`คุณต้องการลบ "${selectedOption.textContent}" ใช่หรือไม่?`)) {
+                if (selectedOption.hasAttribute('data-default')) {
+                    let hidden = getStored(HIDDEN_STORAGE_KEY);
+                    if (!hidden.includes(selectedOption.value)) {
+                        hidden.push(selectedOption.value);
+                        setStored(HIDDEN_STORAGE_KEY, hidden);
+                    }
+                    selectedOption.hidden = true;
+                    select.selectedIndex = [...select.options].findIndex(o => !o.hidden);
+                } else {
+                    let options = getStored(STORAGE_KEY);
+                    options = options.filter(opt => opt.value !== selectedOption.value);
+                    setStored(STORAGE_KEY, options);
+                    loadOptions(SELECT_ID, STORAGE_KEY);
+                }
+            }
+        });
+
+        document.getElementById(`save${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
+            let name, time, oldValue, newValue;
+            if (type === 'topic') {
+                name = document.getElementById('modalTopicName').value.trim();
+                time = document.getElementById('modalTopicTime').value.trim();
+                oldValue = document.getElementById('topicEditIndex').value;
+                if (!name) return alert('กรุณากรอกชื่อหัวข้อ');
+                newValue = time ? `${name} เวลา ${time} น.` : name;
+            } else {
+                name = document.getElementById('modalPersonName').value.trim();
+                oldValue = document.getElementById('personEditValue').value;
+                if (!name) return alert('กรุณากรอกชื่อผู้บอก');
+                newValue = name;
+            }
+
+            let options = getStored(STORAGE_KEY);
+            const select = document.getElementById(SELECT_ID);
+
+            if (oldValue) { // Edit Mode
+                const oldOptionEl = select.querySelector(`option[value="${oldValue}"]`);
+                if (oldOptionEl && oldOptionEl.hasAttribute('data-default')) {
+                    let hidden = getStored(HIDDEN_STORAGE_KEY);
+                    if (!hidden.includes(oldValue)) {
+                        hidden.push(oldValue);
+                        setStored(HIDDEN_STORAGE_KEY, hidden);
+                    }
+                    oldOptionEl.hidden = true;
+                    if (!options.some(opt => opt.value === newValue)) {
+                        options.push({
+                            value: newValue,
+                            text: newValue
+                        });
+                    }
+                } else {
+                    const index = options.findIndex(opt => opt.value === oldValue);
+                    if (index > -1) options[index] = {
+                        value: newValue,
+                        text: newValue
+                    };
+                    else options.push({
+                        value: newValue,
+                        text: newValue
+                    });
+                }
+            } else { // Add Mode
+                if (options.some(opt => opt.value === newValue) || [...select.options].some(o => o.value === newValue && !o.hidden)) {
+                    return alert('มีรายการนี้อยู่แล้ว');
+                }
+                options.push({
+                    value: newValue,
+                    text: newValue
+                });
+            }
+            setStored(STORAGE_KEY, options);
+            loadOptions(SELECT_ID, STORAGE_KEY);
+            select.value = newValue;
+            document.getElementById(MODAL_ID).style.display = 'none';
+        });
+
+        document.getElementById(`reset${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
+            if (confirm(`คุณต้องการคืนค่ารายการ${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}ทั้งหมดใช่หรือไม่?\n(รายการที่สร้างเองและซ่อนไว้จะถูกลบทั้งหมด)`)) {
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(HIDDEN_STORAGE_KEY);
+                location.reload();
+            }
+        });
+
+        document.getElementById(`cancel${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
+            document.getElementById(MODAL_ID).style.display = 'none';
+        });
+    };
+
+    setupManagement('topic');
+    setupManagement('person');
+
+    // Date initialization for App 1
+    const dateInput = document.getElementById('dateInput');
+    const calendarButton = document.getElementById('calendarButton');
+    const hiddenDateInput = document.getElementById('hiddenDateInput');
+    const today = new Date();
+    dateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
+    calendarButton.addEventListener('click', () => {
+        try {
+            hiddenDateInput.showPicker();
+        } catch (error) {
+            hiddenDateInput.click();
+        }
     });
-    document.getElementById('hiddenDateInputResult').addEventListener('change', (e) => {
-        if(e.target.value) {
-            const parts = e.target.value.split('-');
-            thaiDrawDateInput.value = `${parts[2]}/${parts[1]}/${parseInt(parts[0])+543}`;
+    hiddenDateInput.addEventListener('change', (e) => {
+        const selectedDate = e.target.value;
+        if (selectedDate) {
+            const parts = selectedDate.split('-');
+            dateInput.value = `${parts[2]}/${parts[1]}/${parseInt(parts[0], 10) + 543}`;
+        } else {
+            // เมื่อผู้ใช้ล้างค่า ให้ตั้งเป็นวันปัจจุบัน
+            const today = new Date();
+            dateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
         }
     });
 
-    updateFormVisibilityResult(document.getElementById("topicSelectResult").value);
-    document.getElementById("topicSelectResult").addEventListener("change", (event) => updateFormVisibilityResult(event.target.value));
-    document.getElementById("convertButtonResult").addEventListener("click", convertNumberResult);
+    // Initialize App 2
+    populateTopicSelect();
+    setDefaultDate();
+    updateFormVisibility(document.getElementById("topicSelect2").value);
+    
+    document.getElementById("topicSelect2").addEventListener("change", (event) => {
+        updateFormVisibility(event.target.value);
+    });
+
+    document.getElementById("convertButton2").addEventListener("click", convertNumber);
     document.getElementById("displayThaiResultsButton").addEventListener("click", displayThaiResults);
+
+    const thaiCalendarButton = document.getElementById('calendarButton2');
+    const thaiHiddenDateInput = document.getElementById('hiddenDateInput2');
+    const thaiDrawDateInput = document.getElementById('draw-date');
+
+    if (thaiCalendarButton && thaiHiddenDateInput && thaiDrawDateInput) {
+        thaiCalendarButton.addEventListener('click', () => {
+            try { thaiHiddenDateInput.showPicker(); } catch (error) { thaiHiddenDateInput.click(); }
+        });
+
+        thaiHiddenDateInput.addEventListener('change', (e) => {
+            const selectedDate = e.target.value;
+            if (selectedDate) {
+                const parts = selectedDate.split('-');
+                thaiDrawDateInput.value = `${parts[2]}/${parts[1]}/${parseInt(parts[0], 10) + 543}`;
+            } else {
+                const today = new Date();
+                thaiDrawDateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
+            }
+        });
+    }
 });
+
+// --- PWA Service Worker Registration ---
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered.', reg))
+            .catch(err => console.error('Service Worker registration failed:', err));
+    });
+}

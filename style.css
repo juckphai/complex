@@ -8,7 +8,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    line-height: 0.6; /* From style1 */
 }
 
 footer {
@@ -16,7 +15,6 @@ footer {
     margin: 15px 0;
     color: #666;
     padding: 10px 0;
-    font-size: 14px;
 }
 
 h1 {
@@ -25,58 +23,50 @@ h1 {
     margin: 10px 0 15px;
     font-size: 24px;
 }
-.section-title {
-    text-align: center;
-    color: #e65100;
-    margin: 5px 0 15px;
-    font-size: 20px;
-}
 
 .blue { color: blue; }
 .red { color: red; }
 
-/* ========== TABS NAVIGATION ========== */
-.tab-container {
+/* ========== NAVIGATION ========== */
+.nav-container {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin: 15px 0;
+    padding: 0 10px;
 }
 
-.tab-button {
-    background-color: #ffcc80;
-    border: none;
-    outline: none;
-    cursor: pointer;
+.nav-btn {
     padding: 10px 20px;
-    transition: 0.3s;
-    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    background-color: #f0f0f0;
+    color: #666;
     font-weight: bold;
-    color: #333;
-    border-radius: 20px;
-    width: auto; /* Override default width */
-    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex: 1;
+    max-width: 200px;
 }
 
-.tab-button:hover {
-    background-color: #ffb74d;
-}
-
-.tab-button.active {
-    background-color: #e65100;
+.nav-btn.active {
+    background-color: #FF9800;
     color: white;
 }
 
-.tab-content {
+.nav-btn:hover {
+    background-color: #F57C00;
+    color: white;
+}
+
+/* ========== APP CONTAINERS ========== */
+.app-container {
     display: none;
-    animation: fadeEffect 0.5s;
 }
 
-@keyframes fadeEffect {
-    from {opacity: 0;}
-    to {opacity: 1;}
+.app-container.active {
+    display: block;
 }
-
 
 /* ========== BUTTONS ========== */
 .convert-button,
@@ -91,7 +81,8 @@ h1 {
     transition: background-color 0.3s;
 }
 
-.back-button { 
+.back-button, 
+.homeButton { 
     display: block; 
     width: 90%; 
     max-width: 600px; 
@@ -101,7 +92,7 @@ h1 {
     font-size: 16px; 
     border-radius: 50px;
 }
-.back-button:hover { background-color: darkorange; }
+.back-button:hover, .homeButton:hover { background-color: darkorange; }
 
 .convert-button {
     background-color: #FF9800;
@@ -112,7 +103,7 @@ h1 {
 }
 .convert-button:hover { background-color: #F57C00; }
 
-.popup-button { padding: 8px 15px; background-color: #FF9800; margin-top: 5px; width: auto;}
+.popup-button { padding: 8px 15px; background-color: #FF9800; }
 .popup-button:hover { background-color: #F57C00; }
 .popup-button.active { background-color: #4CAF50; }
 
@@ -126,19 +117,17 @@ h1 {
 
 /* ========== FORM STYLES ========== */
 
+/* ปรับปรุง .form-container เดิม */
 .form-container {
-    border: 1.5px solid orange;
-    background-color: #FEFEF0;
-    margin: 10px auto;
-    padding: 15px 5px;
-    border-radius: 10px;
-    width: 98%;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
-    box-sizing: border-box;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 5px 0 5px;
+    max-width: 100%;
 }
 
-/* --- Class ใหม่: กล่องรวมสีส้ม (จาก Web 2) --- */
+/* --- Class ใหม่: กล่องรวมสีส้ม --- */
 .main-orange-box {
     background-color: #f9f9f9;
     border-radius: 15px;
@@ -148,7 +137,7 @@ h1 {
     margin-bottom: 15px;
 }
 
-/* ปรับ Class เดิมให้ใส */
+/* ปรับ Class เดิมให้ใส (เพราะย้ายไปอยู่ใน main-orange-box แล้ว) */
 .lao-form-style {
     background-color: transparent;
     border: none;
@@ -162,36 +151,29 @@ h1 {
     text-align: center;
 }
 
-.form-group label, label {
+.form-group label {
     display: block;
     margin-bottom: 6px;
     font-size: 18px;
     color: #333;
     font-weight: bold;
-    text-align: center;
 }
 
 /* Input Styles ทั่วไป */
-input, select, button {
+input, select {
     font-size: 16px;
-    padding: 10px;
-    margin: 5px auto;
+    padding: 8px;
+    margin: 5px 0;
     border: 1.5px solid #ddd;
     border-radius: 5px;
-    width: 80%;
-    max-width: 300px;
-    display: block;
-    text-align: center;
-    box-sizing: border-box;
+    width: 100%;
+    max-width: 250px;
 }
 
-button#convertButton { background-color: #4CAF50; color: white; cursor: pointer; transition: background-color 0.3s ease; }
-button#convertButton:hover { background-color: #45a049; }
-
 /* ปรับ Dropdown ให้เต็มความกว้างในกรอบ */
-#topicSelect, #topicSelectResult {
+#topicSelect2 {
     width: 100%;
-    max-width: 100%;
+    max-width: 100%; /* ปรับให้เต็มกรอบ */
     padding: 10px;
     font-size: 16px;
     box-sizing: border-box;
@@ -203,7 +185,7 @@ button#convertButton:hover { background-color: #45a049; }
     margin-top: 15px;
 }
 
-#numberInput, #numberInputResult {
+#numberInput2 {
     background-color: #e3f2fd;
     color: #1a237e;
     font-weight: bold;
@@ -216,27 +198,6 @@ button#convertButton:hover { background-color: #45a049; }
     max-width: none;
     box-sizing: border-box;
 }
-
-/* CSS สำหรับช่องวันที่ */
-.date-input-wrapper { display: flex; align-items: center; width: 80%; margin: 10px auto; gap: 8px; }
-#dateInput { flex-grow: 1; margin: 0; width: auto; }
-#calendarButton { flex-shrink: 0; width: auto; margin: 0; padding: 8px 12px; font-size: 20px; background-color: #f0f0f0; border: 1.5px solid #ccc; cursor: pointer; }
-
-/* Inline Management Buttons */
-.select-wrapper { display: flex; align-items: center; justify-content: center; gap: 8px; width: 80%; margin: 10px auto; }
-.select-wrapper select { flex-grow: 1; width: auto; margin: 0; }
-.manage-btn-inline { flex-shrink: 0; width: 44px; height: 44px; padding: 0; font-size: 24px; border-radius: 8px; background-color: #6c757d; color: white; border: none; cursor: pointer; transition: all 0.2s ease; line-height: 44px; }
-.manage-btn-inline:hover { background-color: #5a6268; transform: rotate(45deg); }
-.management-actions { display: none; justify-content: center; gap: 10px; margin: 5px auto 15px; animation: fadeIn 0.3s; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-.management-actions button { width: auto; padding: 6px 12px; font-size: 14px; margin: 0; border: none; color: white; transition: background-color 0.2s ease; }
-.add-btn { background-color: #28a745; }
-.edit-btn { background-color: #ffc107; color: #212529 !important; }
-.delete-btn { background-color: #dc3545; }
-.reset-btn { background-color: #17a2b8; }
-
 
 /* ========== THAI LOTTERY FORM STYLES ========== */
 .thai-lottery-form {
@@ -308,7 +269,6 @@ button#convertButton:hover { background-color: #45a049; }
     border: 1px solid #ccc;
     border-radius: 8px;
     cursor: pointer;
-    margin: 0;
 }
 
 .thai-lottery-form .button-container {
@@ -331,6 +291,10 @@ button#convertButton:hover { background-color: #45a049; }
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.thai-lottery-form .button-container button:hover {
+    background-color: #43A047;
+}
+
 /* ========== POPUP STYLES ========== */
 .popup-overlay {
     display: none;
@@ -343,7 +307,7 @@ button#convertButton:hover { background-color: #45a049; }
     z-index: 1000;
     justify-content: center;
     align-items: flex-start;
-    padding: 40px 0 20px 0;
+    padding: 40px 0 20px 0; /* MODIFIED: Removed left/right padding */
     box-sizing: border-box;
     overflow-y: auto;
 }
@@ -351,32 +315,16 @@ button#convertButton:hover { background-color: #45a049; }
 .popup-content {
     background-color: #FFFFD1;
     border-radius: 1px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
     width: 98%;
     max-width: 600px;
-    padding: 25px 5px;
+    padding: 25px 5px;             /* ตรงกับด้านบน */
     position: relative;
     box-sizing: border-box;
-    margin-left: auto;
+    margin-left: auto;             /* จัดกึ่งกลาง */
     margin-right: auto;
 }
 
-.result-container-popup {
-    box-sizing: border-box;
-    min-height: 300px;
-    max-width: calc(100% - 2px);
-    margin: 5px auto;
-    padding: 10px 2px;
-    border: 1.5px solid #FF33CC;
-    border-radius: 10px;
-    position: relative;
-    text-align: center;
-    overflow: hidden;
-    background-color: #FAFAD2;
-    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
-}
-
-/* Popup Inner Elements */
 .popup-main-content {
     position: relative;
     background-color: #FFFFD1;
@@ -404,46 +352,11 @@ button#convertButton:hover { background-color: #45a049; }
 }
 
 /* ========== RESULT DISPLAY STYLES ========== */
-.result-header { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-.header-logo { width: 40px; height: auto; }
-
-.topic-box {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    background-color: #FF75FF;
-    border: 1.0px solid #0070C0;
-    color: white;
-    border-radius: 50px;
-    padding: 1px 1px;
-    font-size: 24px;
-    font-weight: bold;
-    text-shadow: -1px -1px 1px rgba(0,0,0,0.5), 1px 1px 1px rgba(255,255,255,0.5);
-}
-
-.topic-time {
-    font-size: 18px;
-    color: blue;
-    font-weight: bold;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-/* Text in Results */
-#resultContentWrapper p, #resultContentWrapper h2, #resultContentWrapper h3 {
-    margin: 0 0 10px 0;
-    line-height: inherit;
-    font-size: calc(var(--base-font-size, 1em) * var(--font-scale, 1));
-}
-
 #popupDateDisplay {
     margin: 3px 0;
     color: blue;
     font-size: clamp(16px, 3.4vw, 20px);
     text-shadow: 1px 1px 1px rgba(255,255,255,0.8), -1px -1px 1px rgba(0,0,0,0.2);
-    text-align: center;
 }
 
 .prize-title {
@@ -459,6 +372,37 @@ button#convertButton:hover { background-color: #45a049; }
     border: 2px solid #4EA72E;
     background: linear-gradient(to bottom, #EE8D5C, #E800E8);
 }
+
+/* Result Header & Logo */
+.result-header { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.header-logo { width: 40px; height: auto; }
+.topic-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background-color: #FF75FF;
+  border: 1.0px solid #0070C0;
+  color: white;
+  border-radius: 50px;
+  padding: 1px 1px;        /* padding น้อยมาก */
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: -1px -1px 1px rgba(0,0,0,0.5),
+               1px 1px 1px rgba(255,255,255,0.5);
+}
+.topic-time {
+    font-size: 18px;
+    color: blue;
+    font-weight: bold;
+    /* Engraved effect for dark text */
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+
+#thaiLotteryPopupOverlay .result-header { margin-top: 10px; }
 
 .numbers-display {
     display: flex;
@@ -477,7 +421,7 @@ button#convertButton:hover { background-color: #45a049; }
     min-width: 150px;
 }
 
-.prize-label-blue, .prize-label-orange, .prize-label-green {
+.prize-label-blue, .prize-label-orange {
     display: inline-block;
     font-weight: bold;
     font-size: 22px;
@@ -490,12 +434,16 @@ button#convertButton:hover { background-color: #45a049; }
     border-radius: 50px;
 }
 
-.prize-label-blue { background: linear-gradient(to bottom, #47D359, #0066cc); border: 2px solid #004C99; }
-.prize-label-orange { background: linear-gradient(to bottom, #FFB74D, #FF8C00); border: 2px solid #C66900; }
-.prize-label-green { background: linear-gradient(to bottom, #90EE90, #008000); border: 2px solid #006400; }
+.prize-label-blue {
+    background: linear-gradient(to bottom, #47D359, #0066cc);
+    border: 2px solid #004C99;
+}
 
+.prize-label-orange {
+    background: linear-gradient(to bottom, #FFB74D, #FF8C00);
+    border: 2px solid #C66900;
+}
 
-/* Ping Pong Balls */
 .ball-group {
     display: inline-flex;
     justify-content: center;
@@ -525,6 +473,10 @@ button#convertButton:hover { background-color: #45a049; }
 .square-container { min-width: 85px; border: 3px solid red; }
 .square-two-container { min-width: 85px; border: 3px solid blue; }
 
+.circle-container svg,
+.square-container svg,
+.square-two-container svg { flex-shrink: 0; margin: 0 0.5px; }
+
 .checkmark {
     position: absolute;
     top: 30%;
@@ -536,7 +488,34 @@ button#convertButton:hover { background-color: #45a049; }
     z-index: 1;
 }
 
-/* ========== THAI LOTTERY POPUP ========== */
+/* ========== THAI LOTTERY POPUP STYLES ========== */
+#thaiLotteryPopupOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px 0 5px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+#thaiLotteryPopupContent {
+    background-color: #FFFFD1;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 600px;
+    padding: 5px;
+    position: relative;
+    box-sizing: border-box;
+}
+
 #thaiLotteryPopupContent .result-display {
     background-color: #FFFFD1;
     padding: 10px 5px;
@@ -551,6 +530,8 @@ button#convertButton:hover { background-color: #45a049; }
     box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
 }
 
+#thaiLotteryPopupOverlay .topic-box { padding: 1px 1px; font-size: 18px; }
+
 #thaiLotteryPopupContent .draw-date {
     display: inline-block;
     color: #fff;
@@ -564,6 +545,58 @@ button#convertButton:hover { background-color: #45a049; }
     margin-bottom: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+#thaiLotteryPopupContent .prize-title {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    border: 2px solid #D32F2F;
+    border-radius: 50px;
+    padding: 10px 15px;
+    margin: 2px 0 4px;
+    background: linear-gradient(to bottom, #EF9A9A, #E53935);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+#thaiLotteryPopupContent .prize-label-blue,
+#thaiLotteryPopupContent .prize-label-green,
+#thaiLotteryPopupContent .prize-label-orange {
+    display: inline-block;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 3px;
+    padding: 10px 15px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.6), 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+#thaiLotteryPopupContent .prize-label-blue {
+    font-size: 20px;
+    background: linear-gradient(to bottom, #89CFF0, #007FFF);
+    border: 2px solid #0059B3;
+    padding: 10px 15px;
+    border-radius: 20px;
+}
+
+#thaiLotteryPopupContent .prize-label-green {
+    font-size: 20px;
+    background: linear-gradient(to bottom, #90EE90, #008000);
+    border: 2px solid #006400;
+    padding: 10px 15px;
+    border-radius: 20px;
+}
+
+#thaiLotteryPopupContent .prize-label-orange {
+    font-size: 20px;
+    background: linear-gradient(to bottom, #FFE3A0, #FF8C00);
+    border: 2px solid #D97200;
+    margin-top: 3px;
+    padding: 10px 15px;
+    border-radius: 50px;
 }
 
 #thaiLotteryPopupContent .horizontal-prize-groups {
@@ -605,6 +638,31 @@ button#convertButton:hover { background-color: #45a049; }
     min-height: 42px;
 }
 
+#thaiLotteryPopupContent .flex-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5px 20px;
+}
+
+@media (max-width: 480px) {
+    #thaiLotteryPopupContent .horizontal-numbers { gap: 5px; }
+    #thaiLotteryPopupContent .three-digit-prize-group { width: 100%; }
+}
+
+.ball-shadow { filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.4)); }
+.ball-text-shadow { filter: drop-shadow(-0.8px -0.8px 0.8px rgba(0,0,0,0.7)) drop-shadow(0.8px 0.8px 0.8px rgba(255,255,255,0.5)); }
+
+.popup-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin: 20px auto;
+  text-align: center;
+}
+
 .vertical-dash-separator {
     width: 5px;
     height: 38px;
@@ -627,30 +685,258 @@ button#convertButton:hover { background-color: #45a049; }
     border-radius: 1px;
 }
 
-.ball-shadow { filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.4)); }
-.ball-text-shadow { filter: drop-shadow(-0.8px -0.8px 0.8px rgba(0,0,0,0.7)) drop-shadow(0.8px 0.8px 0.8px rgba(255,255,255,0.5)); }
-
-.popup-controls, .controls {
-  display: flex;
-  flex-direction: column; /* Changed for better mobile stack */
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  margin: 20px auto;
-  text-align: center;
-}
-.control-group { display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 15px; }
-.control-group label, .control-group span { font-size: 16px; color: blue; margin-bottom: 5px; }
-.control-group input[type="range"] { width: 80%; max-width: 300px; margin: 0; }
-.close-popup-btn { padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; width: 90%; max-width: 200px; text-align: center; }
-.close-popup-btn:hover { background-color: #d32f2f; }
-.modal-button-group { display: flex; justify-content: space-around; margin-top: 20px; width: 100%;}
-.modal-button-group button { width: 45%; margin: 0; }
-
-/* Responsive Adjustments */
 @media (max-width: 480px) {
-    .form-container { width: calc(100% - 20px); }
-    input, select, button, .select-wrapper, .date-input-wrapper { width: 100%; font-size: 16px; }
     #thaiLotteryPopupContent .horizontal-numbers { gap: 1.5px; }
     .vertical-dash-separator { height: 32px; margin: 0 4px; width: 3px; }
+    #thaiLotteryPopupContent .horizontal-prize-groups { gap: 3px; }
+}
+
+/* ========== APP 1 SPECIFIC STYLES ========== */
+#numberInput {
+    font-size: 18px;
+    padding: 10px;
+    width: 80%;
+    margin: 10px auto;
+    border-radius: 6px;
+    border: 1.5px solid #ddd;
+    display: block;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+button#convertButton {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 80%;
+    margin: 10px auto;
+    display: block;
+}
+
+button#convertButton:hover { background-color: #45a049; }
+
+#number-translator-app .form-container {
+    border: 1.5px solid orange;
+    background-color: #FEFEF0;
+    margin: 10px auto;
+    padding: 15px 5px;
+    border-radius: 10px;
+    width: 98%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+    box-sizing: border-box;
+}
+
+/* CSS สำหรับช่องวันที่ */
+.date-input-wrapper { 
+    display: flex; 
+    align-items: center; 
+    width: 80%; 
+    margin: 10px auto; 
+    gap: 8px; 
+}
+#dateInput { 
+    flex-grow: 1; 
+    margin: 0; 
+    width: auto; 
+}
+#calendarButton { 
+    flex-shrink: 0; 
+    width: auto; 
+    margin: 0; 
+    padding: 8px 12px; 
+    font-size: 20px; 
+    background-color: #f0f0f0; 
+    border: 1.5px solid #ccc; 
+    cursor: pointer; 
+}
+#calendarButton:hover { background-color: #e0e0e0; }
+
+/* Inline Management Buttons */
+.select-wrapper { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    width: 80%; 
+    margin: 10px auto; 
+}
+.select-wrapper select { 
+    flex-grow: 1; 
+    width: auto; 
+    margin: 0; 
+}
+.manage-btn-inline { 
+    flex-shrink: 0; 
+    width: 44px; 
+    height: 44px; 
+    padding: 0; 
+    font-size: 24px; 
+    border-radius: 8px; 
+    background-color: #6c757d; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    transition: all 0.2s ease; 
+    line-height: 44px; 
+}
+.manage-btn-inline:hover { background-color: #5a6268; transform: rotate(45deg); }
+.management-actions { 
+    display: none; 
+    justify-content: center; 
+    gap: 10px; 
+    margin: 5px auto 15px; 
+    animation: fadeIn 0.3s; 
+}
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(-10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+.management-actions button { 
+    width: auto; 
+    padding: 6px 12px; 
+    font-size: 14px; 
+    margin: 0; 
+    border: none; 
+    color: white; 
+    transition: background-color 0.2s ease; 
+}
+.add-btn { background-color: #28a745; }
+.add-btn:hover { background-color: #218838; }
+.edit-btn { background-color: #ffc107; color: #212529 !important; }
+.edit-btn:hover { background-color: #e0a800; }
+.delete-btn { background-color: #dc3545; }
+.delete-btn:hover { background-color: #c82333; }
+.reset-btn { background-color: #17a2b8; }
+.reset-btn:hover { background-color: #138496; }
+
+#resultContentWrapper .lunar-date {
+  font-size: clamp(0.65rem, 2.5vw, 0.8rem);
+  font-weight: bold;
+  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+  line-height: 1.2;
+  margin: 2px 0;
+  padding: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+#resultContentWrapper .lunar-text,
+#resultContentWrapper .lunar-date {
+    transform: translateY(-4px);  /* เลื่อนขึ้นเล็กน้อย */
+}
+
+/* สำหรับหน้าจอขนาดเล็กมาก */
+@media only screen and (max-width: 360px) {
+  #resultContentWrapper .lunar-date {
+    font-size: clamp(0.6rem, 2.2vw, 0.75rem);
+    padding: 0 3px;
+  }
+}
+
+/* Result Container Popup */
+.result-container-popup {
+    box-sizing: border-box;
+    min-height: 300px;
+    max-width: calc(100% - 2px);   /* ตรงกับด้านบน */
+    margin: 5px auto;              /* กึ่งกลาง พร้อมค่าบน-ล่าง 5px */
+    padding: 10px 2px;             /* ตรงกับด้านบน */
+    border: 1.5px solid #FF33CC;   /* ตรงกับด้านบน */
+    border-radius: 10px;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    background-color: #FAFAD2;
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+}
+
+/* Control Groups */
+.controls { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 100%; 
+    margin-top: 20px; 
+}
+.control-group { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 100%; 
+    margin-bottom: 15px; 
+}
+.control-group label, .control-group span { 
+    font-size: 16px; 
+    color: blue; 
+    margin-bottom: 5px; 
+}
+.control-group input[type="range"] { 
+    width: 80%; 
+    max-width: 300px; 
+    margin: 0; 
+}
+.close-popup-btn { 
+    padding: 10px 20px; 
+    background-color: #f44336; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-top: 10px; 
+    width: 98%; 
+    max-width: 200px; 
+    text-align: center; 
+}
+.close-popup-btn:hover { background-color: #d32f2f; }
+.modal-button-group { 
+    display: flex; 
+    justify-content: space-around; 
+    margin-top: 20px; 
+}
+.modal-button-group button { width: 45%; margin: 0; }
+
+/* ✅ Responsive Styles */
+@media only screen and (max-width: 600px) {
+  .form-container {
+    margin: 10px;
+    width: calc(100% - 20px);
+  }
+
+  input,
+  select,
+  button,
+  .select-wrapper,
+  .date-input-wrapper {
+    width: 98%;
+  }
+}
+
+/* ✅ Extra small screens (<= 480px) */
+@media only screen and (max-width: 480px) {
+  .form-container {
+    margin: 10px;
+    width: calc(100% - 20px);
+  }
+
+  input,
+  select,
+  button,
+  .select-wrapper,
+  .date-input-wrapper {
+    width: 100%;
+    font-size: 16px; /* ปรับขนาดฟอนต์ให้อ่านง่าย */
+  }
+  
+  .nav-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+  }
 }

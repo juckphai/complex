@@ -2,29 +2,29 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>รวมเครื่องมือหวย (แปลเลข & ตรวจผล)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รวมเว็บไซต์: แปลเลขครบวงจรและผลรางวัล</title>
     
-    <link rel="manifest" href="manifest-unified.json">
-    <meta name="theme-color" content="#f97316"/>
-    <link rel="apple-touch-icon" href="192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF9800"/>
+    <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="รวมเว็บไซต์">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <h1 style="color: #e65100;">ศูนย์รวมข้อมูลและคำนวณตัวเลข</h1>
-
-    <div class="tab-container">
-        <button class="tab-button active" onclick="openTab(event, 'TranslateTab')">📝 ฟอร์มแปลตัวเลข</button>
-        <button class="tab-button" onclick="openTab(event, 'ResultTab')">🏆 สร้างผลรางวัล</button>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <button class="nav-btn active" onclick="switchApp('number-translator')">แปลเลขครบวงจร</button>
+        <button class="nav-btn" onclick="switchApp('lottery-results')">ผลรางวัลกลุ่ม</button>
     </div>
-
-    <div id="TranslateTab" class="tab-content" style="display: block;">
+    
+    <!-- App 1: ฟอร์มแปลตัวเลข 2, 3 และ 4 ตัว -->
+    <div id="number-translator-app" class="app-container active">
+        <h1>ฟอร์มแปลตัวเลข 2, 3 และ 4 ตัว</h1>
         <div class="form-container">
-            <h2 class="section-title">ฟอร์มแปลตัวเลข 2, 3 และ 4 ตัว</h2>
             <input type="text" id="numberInput" placeholder="กรอกตัวเลข 2, 3 หรือ 4 หลัก" pattern="\d*" maxlength="4" inputmode="numeric" />
 
             <div class="select-wrapper">
@@ -59,7 +59,7 @@
                 <button id="resetTopicBtn" class="reset-btn">คืนค่า</button>
             </div>
             <div id="customTopicInputs" style="display: none;">
-                <div class="custom-topic-row" style="display: flex; justify-content: center; gap: 10px; width: 80%; margin: 0 auto;">
+                 <div class="custom-topic-row" style="display: flex; justify-content: center; gap: 10px; width: 80%; margin: 0 auto;">
                     <input type="text" id="customTopicName" placeholder="กรุณากรอกหัวข้อเอง" style="width: 60%; margin: 0;" />
                     <input type="text" id="customTopicTime" placeholder="เวลา (เช่น 08.30)" style="width: 40%; margin: 0;" />
                 </div>
@@ -67,8 +67,8 @@
 
             <div class="select-wrapper">
                 <select id="personSelect" onchange="checkCustomOption(this)">
-                <option value="@" data-default="true">@</option> 
-                <option value="Team" data-default="true">Team</option>        
+                   <option value="@" data-default="true">@</option> 
+                  <option value="Team" data-default="true">Team</option>        
                     <option value="Udon Don" data-default="true">Udon Don</option>
                     <option value="custom">อื่นๆ (พิมพ์เอง)</option>
                 </select>
@@ -91,32 +91,84 @@
             <input type="text" id="noteInput" placeholder="หมายเหตุ (ถ้ามี)" />
             <button id="convertButton">แปลตัวเลข</button>
         </div>
+
+        <button id="homeButton" class="homeButton" onclick="window.location.href='https://juckphai.github.io/4/index.html'">กลับสู่หน้าหลัก</button>
+
+        <!-- Popup สำหรับ App 1 -->
+        <div id="resultPopupOverlay" class="popup-overlay">
+            <div class="popup-content">
+                <div id="resultContainerDiv" class="result-container-popup">
+                    <div id="resultContentWrapper"></div>
+                </div>
+                <div class="controls">
+                    <button id="saveResultAsImageBtn" class="close-popup-btn" style="background-color: #007bff; margin-bottom: 15px;">บันทึกเป็นรูปภาพ</button>
+                    <div class="control-group">
+                        <label for="popupFontSizeSlider">ปรับขนาดตัวอักษร:</label>
+                        <input type="range" id="popupFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
+                        <span id="popupFontSizeValue">ขนาด: 100%</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="popupLineHeightSlider">ปรับขนาดของบรรทัด:</label>
+                        <input type="range" id="popupLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
+                        <span id="popupLineHeightValue">ความสูงบรรทัด: 1.3</span>
+                    </div>
+                    <button class="close-popup-btn" onclick="closeResultPopup()">ปิดหน้าต่างนี้</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals สำหรับ App 1 -->
+        <div id="topicModal" class="popup-overlay">
+            <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
+                <h2 id="topicModalTitle" style="color: #0056b3; text-align: center;"></h2>
+                <input type="hidden" id="topicEditIndex">
+                <input type="text" id="modalTopicName" placeholder="ชื่อหัวข้อ (เช่น ลาวมิตรภาพ)">
+                <input type="text" id="modalTopicTime" placeholder="เวลา (เช่น 20.30)">
+                <div class="modal-button-group">
+                    <button id="saveTopicBtn" style="background-color: #28a745;">บันทึก</button>
+                    <button id="cancelTopicBtn" class="close-popup-btn">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="personModal" class="popup-overlay">
+            <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
+                <h2 id="personModalTitle" style="color: #0056b3; text-align: center;"></h2>
+                <input type="hidden" id="personEditValue">
+                <input type="text" id="modalPersonName" placeholder="ชื่อผู้บอก">
+                <div class="modal-button-group">
+                    <button id="savePersonBtn" style="background-color: #28a745;">บันทึก</button>
+                    <button id="cancelPersonBtn" class="close-popup-btn">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="ResultTab" class="tab-content" style="display: none;">
+    <!-- App 2: ผลรางวัลกลุ่มลาวและรัฐบาล -->
+    <div id="lottery-results-app" class="app-container">
+        <h1>ผลรางวัลกลุ่มลาวและรัฐบาล</h1>
+
         <div class="form-container">
-            <h2 class="section-title">ผลรางวัลกลุ่มลาวและรัฐบาล</h2>
             <div class="main-orange-box">
                 
                 <div class="form-group">
-                    <label for="topicSelectResult">1. เลือกชนิดผลรางวัล</label>
-                    <select id="topicSelectResult">
-                        </select>
+                    <label for="topicSelect2">1. เลือกชนิดผลรางวัล</label>
+                    <select id="topicSelect2"></select>
                 </div>
 
                 <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
 
                 <div id="laoLotteryFormContent" class="lao-form-style">
                     <div class="form-group">
-                        <label for="dateInputResult">2. เลือกวันที่</label>
-                        <input type="date" id="dateInputResult">
+                        <label for="dateInput2">2. เลือกวันที่</label>
+                        <input type="date" id="dateInput2">
                     </div>
                     <div class="form-group">
-                        <label for="numberInputResult">3. กรอกตัวเลข</label>
-                        <input type="text" id="numberInputResult" placeholder="กรุณาเลือกชนิดผลรางวัลก่อน" pattern="\d*" inputmode="numeric" />
+                        <label for="numberInput2">3. กรอกตัวเลข</label>
+                        <input type="text" id="numberInput2" placeholder="กรุณาเลือกชนิดผลรางวัลก่อน" pattern="\d*" inputmode="numeric" />
                     </div>
                     <div class="form-footer">
-                        <button id="convertButtonResult" class="convert-button">แจงรายละเอียด</button>
+                        <button id="convertButton2" class="convert-button">แจงรายละเอียด</button>
                     </div>
                 </div>
 
@@ -126,9 +178,9 @@
                             <label for="draw-date">งวดวันที่ (วว/ดด/ปปปป)</label>
                             <div class="thai-date-wrapper">
                                 <input type="text" id="draw-date" placeholder="วว/ดด/ปปปป (พ.ศ.)" />
-                                <button type="button" id="calendarButtonResult">📅</button>
+                                <button type="button" id="calendarButton2">📅</button>
                             </div>
-                            <input type="date" id="hiddenDateInputResult" style="display: none; visibility: hidden;">
+                            <input type="date" id="hiddenDateInput2" style="display: none; visibility: hidden;">
                         </div>
         
                         <div>
@@ -164,152 +216,103 @@
                     </div>
                 </div>
                 
-            </div> 
-        </div>
-    </div>
-
-
-    <div id="resultPopupOverlay" class="popup-overlay">
-        <div class="popup-content">
-            <div id="resultContainerDiv" class="result-container-popup">
-                <div id="resultContentWrapper"></div>
-            </div>
-            <div class="controls">
-                <button id="saveResultAsImageBtn" class="close-popup-btn" style="background-color: #007bff; margin-bottom: 15px;">บันทึกเป็นรูปภาพ</button>
-                <div class="control-group">
-                    <label for="popupFontSizeSlider">ปรับขนาดตัวอักษร:</label>
-                    <input type="range" id="popupFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
-                    <span id="popupFontSizeValue">ขนาด: 100%</span>
-                </div>
-                <div class="control-group">
-                    <label for="popupLineHeightSlider">ปรับขนาดของบรรทัด:</label>
-                    <input type="range" id="popupLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
-                    <span id="popupLineHeightValue">ความสูงบรรทัด: 1.3</span>
-                </div>
-                <button class="close-popup-btn" onclick="closeResultPopup()">ปิดหน้าต่างนี้</button>
             </div>
         </div>
-    </div>
 
-    <div id="topicModal" class="popup-overlay">
-        <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
-            <h2 id="topicModalTitle" style="color: #0056b3; text-align: center;"></h2>
-            <input type="hidden" id="topicEditIndex">
-            <input type="text" id="modalTopicName" placeholder="ชื่อหัวข้อ (เช่น ลาวมิตรภาพ)">
-            <input type="text" id="modalTopicTime" placeholder="เวลา (เช่น 20.30)">
-            <div class="modal-button-group">
-                <button id="saveTopicBtn" style="background-color: #28a745;">บันทึก</button>
-                <button id="cancelTopicBtn" class="close-popup-btn">ยกเลิก</button>
-            </div>
-        </div>
-    </div>
+        <button class="back-button" onclick="window.location.href='https://juckphai.github.io/4/index.html'">กลับสู่หน้าหลัก</button>
 
-    <div id="personModal" class="popup-overlay">
-        <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
-            <h2 id="personModalTitle" style="color: #0056b3; text-align: center;"></h2>
-            <input type="hidden" id="personEditValue">
-            <input type="text" id="modalPersonName" placeholder="ชื่อผู้บอก">
-            <div class="modal-button-group">
-                <button id="savePersonBtn" style="background-color: #28a745;">บันทึก</button>
-                <button id="cancelPersonBtn" class="close-popup-btn">ยกเลิก</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="popupOverlay" class="popup-overlay">
-        <div class="popup-content">
-            <div id="captureArea" class="popup-main-content">
-                <div style="position: relative; z-index: 1;">
-                    <div class="result-header">
-                        <div id="popupNameDisplay"></div>
-                    </div>
-                    <p id="popupTimeDisplay"></p>
-                    <p id="popupDateDisplay"></p>
-                    
-                    <div style="margin-top: 15px;">
-                        <div id="popupPrizeTitle" class="prize-title"></div>
-                    </div>
-
-                    <div id="popupMainDigitsDisplay" class="ball-group"></div>
-                    <div class="numbers-display">
-                        <div class="number-group">
-                            <p class="prize-label-blue">3 ตัวบน</p>
-                            <div id="popupThreeDigitsDisplay" class="ball-group"></div>
+        <!-- Popup สำหรับ App 2 - Lao Lottery -->
+        <div id="popupOverlay" class="popup-overlay">
+            <div class="popup-content">
+                <div id="captureArea" class="popup-main-content">
+                    <div style="position: relative; z-index: 1;">
+                        <div class="result-header">
+                            <div id="popupNameDisplay"></div>
                         </div>
-                        <div class="number-group">
-                            <p class="prize-label-orange">2 ตัวล่าง</p>
-                            <div id="popupTwoDigitsDisplay" class="ball-group"></div>
+                        <p id="popupTimeDisplay"></p>
+                        <p id="popupDateDisplay"></p>
+                        
+                        <div style="margin-top: 15px;">
+                            <div id="popupPrizeTitle" class="prize-title"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="popup-buttons-container">
-                <div class="popup-buttons">
-                    <button id="popupCircleButton" class="popup-button" onclick="toggleCirclePopup()">สี่เหลี่ยมล่าง</button>
-                    <button id="popupSquareButton" class="popup-button" onclick="toggleSquarePopup()">สี่เหลี่ยมสามตัวบน</button>
-                    <button id="popupCircleTopButton" class="popup-button" onclick="toggleSquareTopPopup()">สี่เหลี่ยมสองตัวบน</button>
-                </div>
-                <button id="saveLaoAsImageButton" class="popup-button" style="background-color: #007bff; max-width: 200px; width: 100%;">บันทึกเป็นรูปภาพ</button>
-                <button class="close-popup" onclick="closePopup()">ปิดหน้าต่างนี้</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="thaiLotteryPopupOverlay" class="popup-overlay">
-        <div id="thaiLotteryPopupContent" class="popup-content">
-            <div class="result-display">
-                <div style="position: relative; text-align: center; font-size: 18px; line-height: 0.5;">
-                    <div class="result-header">
-                        <div class="topic-box">
-                            <img src="logo.png" alt="Logo" class="header-logo">
-                            <span>ผลฉลากกินแบ่งรัฐบาล</span>
-                            <img src="logo.png" alt="Logo" class="header-logo">
-                        </div>
-                    </div>
-
-                    <div class="draw-date"><span id="display-draw-date"></span></div>
-                    
-                    <div class="result-section" style="margin-top: 10px;">
-                        <div class="prize-title">รางวัลที่ 1</div>
-                    </div>
-
-                    <div id="first-prize-display" class="number-group" style="margin-top: 5px;"></div>
-                    
-                    <div class="result-section horizontal-prize-groups">
-                        <div class="three-digit-prize-group">
-                            <p class="prize-label-blue">เลขหน้า 3 ตัว</p>
-                            <div class="horizontal-numbers">
-                                <div id="display-front-three-1" class="number-group"></div>
-                                <div class="vertical-dash-separator"></div>
-                                <div id="display-front-three-2" class="number-group"></div>
+                        <div id="popupMainDigitsDisplay" class="ball-group"></div>
+                        <div class="numbers-display">
+                            <div class="number-group">
+                                <p class="prize-label-blue">3 ตัวบน</p>
+                                <div id="popupThreeDigitsDisplay" class="ball-group"></div>
                             </div>
-                        </div>
-                        <div class="three-digit-prize-group">
-                            <p class="prize-label-green">เลขท้าย 3 ตัว</p>
-                            <div class="horizontal-numbers">
-                                <div id="display-back-three-1" class="number-group"></div>
-                                <div class="vertical-dash-separator"></div>
-                                <div id="display-back-three-2" class="number-group"></div>
+                            <div class="number-group">
+                                <p class="prize-label-orange">2 ตัวล่าง</p>
+                                <div id="popupTwoDigitsDisplay" class="ball-group"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="result-section prize-group-vertical"><div id="display-back-two" class="number-group"></div><p class="prize-label-orange">เลขท้าย 2 ตัว</p></div>
+                </div>
+                <div class="popup-buttons-container">
+                    <div class="popup-buttons">
+                        <button id="popupCircleButton" class="popup-button" onclick="toggleCirclePopup()">สี่เหลี่ยมล่าง</button>
+                        <button id="popupSquareButton" class="popup-button" onclick="toggleSquarePopup()">สี่เหลี่ยมสามตัวบน</button>
+                        <button id="popupCircleTopButton" class="popup-button" onclick="toggleSquareTopPopup()">สี่เหลี่ยมสองตัวบน</button>
+                    </div>
+                    <button id="saveLaoAsImageButton" class="popup-button" style="background-color: #007bff; max-width: 200px; width: 100%;">บันทึกเป็นรูปภาพ</button>
+                    <button class="close-popup" onclick="closePopup()">ปิดหน้าต่างนี้</button>
                 </div>
             </div>
-            <div class="popup-controls">
-                <button id="saveThaiAsImageButton" class="popup-button">บันทึกเป็นรูปภาพ</button>
-                <button class="close-popup" onclick="closeThaiPopup()">ปิดหน้าต่างนี้</button>
+        </div>
+
+        <!-- Popup สำหรับ App 2 - Thai Government Lottery -->
+        <div id="thaiLotteryPopupOverlay" class="popup-overlay">
+            <div id="thaiLotteryPopupContent" class="popup-content">
+                <div class="result-display">
+                    <div style="position: relative; text-align: center; font-size: 18px; line-height: 0.5;">
+                        <div class="result-header">
+                            <div class="topic-box">
+                                <img src="logo.png" alt="Logo" class="header-logo">
+                                <span>ผลฉลากกินแบ่งรัฐบาล</span>
+                                <img src="logo.png" alt="Logo" class="header-logo">
+                            </div>
+                        </div>
+
+                        <div class="draw-date"><span id="display-draw-date"></span></div>
+                        
+                        <div class="result-section" style="margin-top: 10px;">
+                            <div class="prize-title">รางวัลที่ 1</div>
+                        </div>
+
+                        <div id="first-prize-display" class="number-group" style="margin-top: 5px;"></div>
+                        
+                        <div class="result-section horizontal-prize-groups">
+                            <div class="three-digit-prize-group">
+                                <p class="prize-label-blue">เลขหน้า 3 ตัว</p>
+                                <div class="horizontal-numbers">
+                                    <div id="display-front-three-1" class="number-group"></div>
+                                    <div class="vertical-dash-separator"></div>
+                                    <div id="display-front-three-2" class="number-group"></div>
+                                </div>
+                            </div>
+                            <div class="three-digit-prize-group">
+                                <p class="prize-label-green">เลขท้าย 3 ตัว</p>
+                                <div class="horizontal-numbers">
+                                    <div id="display-back-three-1" class="number-group"></div>
+                                    <div class="vertical-dash-separator"></div>
+                                    <div id="display-back-three-2" class="number-group"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-section prize-group-vertical"><div id="display-back-two" class="number-group"></div><p class="prize-label-orange">เลขท้าย 2 ตัว</p></div>
+                    </div>
+                </div>
+                <div class="popup-controls">
+                    <button id="saveThaiAsImageButton" class="popup-button">บันทึกเป็นรูปภาพ</button>
+                    <button class="close-popup" onclick="closeThaiPopup()">ปิดหน้าต่างนี้</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div style="text-align: center; margin-bottom: 20px;">
-            &copy; 2025 Juckphai. All Rights Reserved.
-        </div>
-    </footer>
-
+    <footer>&copy; 2025 Juckphai. All Rights Reserved.</footer>
+    
     <script src="script.js"></script>
-
 </body>
 </html>
