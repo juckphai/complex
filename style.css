@@ -692,6 +692,388 @@ input, select {
 }
 
 /* ========== APP 1 SPECIFIC STYLES ========== */
+/* Base Styles สำหรับ App 1 */
+#number-translator-app body { 
+    font-family: Arial, sans-serif; 
+    background-color: #fffde7; 
+    margin: 0; 
+    padding: 0; 
+    line-height: 0.6; 
+}
+
+#number-translator-app h1 { 
+    text-align: center; 
+    font-size: 22px; 
+    color: blue; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+}
+
+#number-translator-app label { 
+    font-size: 18px; 
+    color: #2c3e50; 
+    display: block; 
+    text-align: center; 
+    margin-bottom: -5px; 
+}
+
+#number-translator-app input, 
+#number-translator-app select, 
+#number-translator-app button { 
+    font-size: 18px; 
+    padding: 10px; 
+    width: 80%; 
+    margin: 10px auto; 
+    border-radius: 6px; 
+    border: 1.5px solid #ddd; 
+    display: block; 
+    text-align: center; 
+    box-sizing: border-box; 
+}
+
+#number-translator-app button#convertButton { 
+    background-color: #4CAF50; 
+    color: white; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+}
+
+#number-translator-app button#convertButton:hover { 
+    background-color: #45a049; 
+}
+
+#number-translator-app .homeButton { 
+    display: block; 
+    width: 90%; 
+    max-width: 600px; 
+    margin: 20px auto 10px; 
+    padding: 10px 20px; 
+    background-color: orange; 
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-size: 16px; 
+    cursor: pointer; 
+}
+
+#number-translator-app .homeButton:hover { 
+    background-color: darkorange; 
+}
+
+#number-translator-app .form-container {
+    border: 1.5px solid orange;
+    background-color: #FEFEF0;
+    margin: 30px auto;
+    padding: 15px 5px;
+    border-radius: 10px;
+    width: 98%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+    box-sizing: border-box;
+}
+
+/* CSS สำหรับช่องวันที่ */
+#number-translator-app .date-input-wrapper { 
+    display: flex; 
+    align-items: center; 
+    width: 80%; 
+    margin: 10px auto; 
+    gap: 8px; 
+}
+
+#number-translator-app #dateInput { 
+    flex-grow: 1; 
+    margin: 0; 
+    width: auto; 
+}
+
+#number-translator-app #calendarButton { 
+    flex-shrink: 0; 
+    width: auto; 
+    margin: 0; 
+    padding: 8px 12px; 
+    font-size: 20px; 
+    background-color: #f0f0f0; 
+    border: 1.5px solid #ccc; 
+    cursor: pointer; 
+}
+
+#number-translator-app #calendarButton:hover { 
+    background-color: #e0e0e0; 
+}
+
+/* Inline Management Buttons */
+#number-translator-app .select-wrapper { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    width: 80%; 
+    margin: 10px auto; 
+}
+
+#number-translator-app .select-wrapper select { 
+    flex-grow: 1; 
+    width: auto; 
+    margin: 0; 
+}
+
+#number-translator-app .manage-btn-inline { 
+    flex-shrink: 0; 
+    width: 44px; 
+    height: 44px; 
+    padding: 0; 
+    font-size: 24px; 
+    border-radius: 8px; 
+    background-color: #6c757d; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    transition: all 0.2s ease; 
+    line-height: 44px; 
+}
+
+#number-translator-app .manage-btn-inline:hover { 
+    background-color: #5a6268; 
+    transform: rotate(45deg); 
+}
+
+#number-translator-app .management-actions { 
+    display: none; 
+    justify-content: center; 
+    gap: 10px; 
+    margin: 5px auto 15px; 
+    animation: fadeIn 0.3s; 
+}
+
+@keyframes fadeIn { 
+    from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    } 
+}
+
+#number-translator-app .management-actions button { 
+    width: auto; 
+    padding: 6px 12px; 
+    font-size: 14px; 
+    margin: 0; 
+    border: none; 
+    color: white; 
+    transition: background-color 0.2s ease; 
+}
+
+#number-translator-app .add-btn { 
+    background-color: #28a745; 
+}
+
+#number-translator-app .add-btn:hover { 
+    background-color: #218838; 
+}
+
+#number-translator-app .edit-btn { 
+    background-color: #ffc107; 
+    color: #212529 !important; 
+}
+
+#number-translator-app .edit-btn:hover { 
+    background-color: #e0a800; 
+}
+
+#number-translator-app .delete-btn { 
+    background-color: #dc3545; 
+}
+
+#number-translator-app .delete-btn:hover { 
+    background-color: #c82333; 
+}
+
+#number-translator-app .reset-btn { 
+    background-color: #17a2b8; 
+}
+
+#number-translator-app .reset-btn:hover { 
+    background-color: #138496; 
+}
+
+/* Result Header & Logo */
+#number-translator-app .result-header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-bottom: 10px; 
+}
+
+#number-translator-app .header-logo { 
+    width: 40px; 
+    height: auto; 
+}
+
+#number-translator-app .topic-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background-color: #FF75FF;
+    border: 1.0px solid #0070C0;
+    color: white;
+    border-radius: 50px;
+    padding: 1px 1px;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: -1px -1px 1px rgba(0,0,0,0.5),
+                 1px 1px 1px rgba(255,255,255,0.5);
+}
+
+#number-translator-app .topic-time {
+    font-size: 18px;
+    color: blue;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Result Content & Controls */
+#number-translator-app #resultContentWrapper {
+    position: relative;
+    z-index: 1;
+    color: blue;
+    text-align: center;
+}
+
+#number-translator-app #resultContentWrapper p, 
+#number-translator-app #resultContentWrapper h2, 
+#number-translator-app #resultContentWrapper h3 {
+    margin: 0 0 10px 0;
+    line-height: inherit;
+    font-size: calc(var(--base-font-size, 1em) * var(--font-scale, 1));
+}
+
+#number-translator-app .controls { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 100%; 
+    margin-top: 20px; 
+}
+
+#number-translator-app .control-group { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 100%; 
+    margin-bottom: 15px; 
+}
+
+#number-translator-app .control-group label, 
+#number-translator-app .control-group span { 
+    font-size: 16px; 
+    color: blue; 
+    margin-bottom: 5px; 
+}
+
+#number-translator-app .control-group input[type="range"] { 
+    width: 80%; 
+    max-width: 300px; 
+    margin: 0; 
+}
+
+#number-translator-app .close-popup-btn { 
+    padding: 10px 20px; 
+    background-color: #f44336; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    margin-top: 10px; 
+    width: 90%; 
+    max-width: 200px; 
+    text-align: center; 
+}
+
+#number-translator-app .close-popup-btn:hover { 
+    background-color: #d32f2f; 
+}
+
+#number-translator-app .modal-button-group { 
+    display: flex; 
+    justify-content: space-around; 
+    margin-top: 20px; 
+}
+
+#number-translator-app .modal-button-group button { 
+    width: 45%; 
+    margin: 0; 
+}
+
+/* Lunar Date Styles */
+#number-translator-app #resultContentWrapper .lunar-date {
+    font-size: clamp(0.65rem, 2.5vw, 0.8rem);
+    font-weight: bold;
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    line-height: 1.2;
+    margin: 2px 0;
+    padding: 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+#number-translator-app #resultContentWrapper .lunar-text,
+#number-translator-app #resultContentWrapper .lunar-date {
+    transform: translateY(-4px);
+}
+
+/* ✅ Responsive Styles สำหรับ App 1 */
+@media only screen and (max-width: 600px) {
+    #number-translator-app .form-container {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+
+    #number-translator-app input,
+    #number-translator-app select,
+    #number-translator-app button,
+    #number-translator-app .select-wrapper,
+    #number-translator-app .date-input-wrapper {
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    #number-translator-app .form-container {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+
+    #number-translator-app input,
+    #number-translator-app select,
+    #number-translator-app button,
+    #number-translator-app .select-wrapper,
+    #number-translator-app .date-input-wrapper {
+        width: 100%;
+        font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    #number-translator-app #resultContentWrapper .lunar-date {
+        font-size: clamp(0.6rem, 2.2vw, 0.75rem);
+        padding: 0 3px;
+    }
+}
+
+/* ========== OTHER ELEMENTS ========== */
+/* สำหรับ App 2 */
 #numberInput {
     font-size: 18px;
     padding: 10px;
@@ -728,127 +1110,14 @@ button#convertButton:hover { background-color: #45a049; }
     box-sizing: border-box;
 }
 
-/* CSS สำหรับช่องวันที่ */
-.date-input-wrapper { 
-    display: flex; 
-    align-items: center; 
-    width: 80%; 
-    margin: 10px auto; 
-    gap: 8px; 
-}
-#dateInput { 
-    flex-grow: 1; 
-    margin: 0; 
-    width: auto; 
-}
-#calendarButton { 
-    flex-shrink: 0; 
-    width: auto; 
-    margin: 0; 
-    padding: 8px 12px; 
-    font-size: 20px; 
-    background-color: #f0f0f0; 
-    border: 1.5px solid #ccc; 
-    cursor: pointer; 
-}
-#calendarButton:hover { background-color: #e0e0e0; }
-
-/* Inline Management Buttons */
-.select-wrapper { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 8px; 
-    width: 80%; 
-    margin: 10px auto; 
-}
-.select-wrapper select { 
-    flex-grow: 1; 
-    width: auto; 
-    margin: 0; 
-}
-.manage-btn-inline { 
-    flex-shrink: 0; 
-    width: 44px; 
-    height: 44px; 
-    padding: 0; 
-    font-size: 24px; 
-    border-radius: 8px; 
-    background-color: #6c757d; 
-    color: white; 
-    border: none; 
-    cursor: pointer; 
-    transition: all 0.2s ease; 
-    line-height: 44px; 
-}
-.manage-btn-inline:hover { background-color: #5a6268; transform: rotate(45deg); }
-.management-actions { 
-    display: none; 
-    justify-content: center; 
-    gap: 10px; 
-    margin: 5px auto 15px; 
-    animation: fadeIn 0.3s; 
-}
-
-@keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(-10px); } 
-    to { opacity: 1; transform: translateY(0); } 
-}
-
-.management-actions button { 
-    width: auto; 
-    padding: 6px 12px; 
-    font-size: 14px; 
-    margin: 0; 
-    border: none; 
-    color: white; 
-    transition: background-color 0.2s ease; 
-}
-.add-btn { background-color: #28a745; }
-.add-btn:hover { background-color: #218838; }
-.edit-btn { background-color: #ffc107; color: #212529 !important; }
-.edit-btn:hover { background-color: #e0a800; }
-.delete-btn { background-color: #dc3545; }
-.delete-btn:hover { background-color: #c82333; }
-.reset-btn { background-color: #17a2b8; }
-.reset-btn:hover { background-color: #138496; }
-
-#resultContentWrapper .lunar-date {
-  font-size: clamp(0.65rem, 2.5vw, 0.8rem);
-  font-weight: bold;
-  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
-  line-height: 1.2;
-  margin: 2px 0;
-  padding: 0 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  display: block;
-  box-sizing: border-box;
-}
-
-#resultContentWrapper .lunar-text,
-#resultContentWrapper .lunar-date {
-    transform: translateY(-4px);  /* เลื่อนขึ้นเล็กน้อย */
-}
-
-/* สำหรับหน้าจอขนาดเล็กมาก */
-@media only screen and (max-width: 360px) {
-  #resultContentWrapper .lunar-date {
-    font-size: clamp(0.6rem, 2.2vw, 0.75rem);
-    padding: 0 3px;
-  }
-}
-
 /* Result Container Popup */
 .result-container-popup {
     box-sizing: border-box;
     min-height: 300px;
-    max-width: calc(100% - 2px);   /* ตรงกับด้านบน */
-    margin: 5px auto;              /* กึ่งกลาง พร้อมค่าบน-ล่าง 5px */
-    padding: 10px 2px;             /* ตรงกับด้านบน */
-    border: 1.5px solid #FF33CC;   /* ตรงกับด้านบน */
+    max-width: calc(100% - 2px);
+    margin: 5px auto;
+    padding: 10px 2px;
+    border: 1.5px solid #FF33CC;
     border-radius: 10px;
     position: relative;
     text-align: center;
@@ -865,6 +1134,7 @@ button#convertButton:hover { background-color: #45a049; }
     width: 100%; 
     margin-top: 20px; 
 }
+
 .control-group { 
     display: flex; 
     flex-direction: column; 
@@ -872,16 +1142,19 @@ button#convertButton:hover { background-color: #45a049; }
     width: 100%; 
     margin-bottom: 15px; 
 }
+
 .control-group label, .control-group span { 
     font-size: 16px; 
     color: blue; 
     margin-bottom: 5px; 
 }
+
 .control-group input[type="range"] { 
     width: 80%; 
     max-width: 300px; 
     margin: 0; 
 }
+
 .close-popup-btn { 
     padding: 10px 20px; 
     background-color: #f44336; 
@@ -895,48 +1168,51 @@ button#convertButton:hover { background-color: #45a049; }
     max-width: 200px; 
     text-align: center; 
 }
+
 .close-popup-btn:hover { background-color: #d32f2f; }
+
 .modal-button-group { 
     display: flex; 
     justify-content: space-around; 
     margin-top: 20px; 
 }
+
 .modal-button-group button { width: 45%; margin: 0; }
 
 /* ✅ Responsive Styles */
 @media only screen and (max-width: 600px) {
-  .form-container {
-    margin: 10px;
-    width: calc(100% - 20px);
-  }
+    .form-container {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
 
-  input,
-  select,
-  button,
-  .select-wrapper,
-  .date-input-wrapper {
-    width: 98%;
-  }
+    input,
+    select,
+    button,
+    .select-wrapper,
+    .date-input-wrapper {
+        width: 98%;
+    }
 }
 
 /* ✅ Extra small screens (<= 480px) */
 @media only screen and (max-width: 480px) {
-  .form-container {
-    margin: 10px;
-    width: calc(100% - 20px);
-  }
+    .form-container {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
 
-  input,
-  select,
-  button,
-  .select-wrapper,
-  .date-input-wrapper {
-    width: 100%;
-    font-size: 16px; /* ปรับขนาดฟอนต์ให้อ่านง่าย */
-  }
-  
-  .nav-btn {
-      padding: 8px 12px;
-      font-size: 14px;
-  }
+    input,
+    select,
+    button,
+    .select-wrapper,
+    .date-input-wrapper {
+        width: 100%;
+        font-size: 16px;
+    }
+    
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
 }
