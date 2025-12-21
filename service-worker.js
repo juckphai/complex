@@ -1,6 +1,6 @@
 // กำหนดชื่อ Cache สองชุด: หนึ่งสำหรับไฟล์หลักของแอป, อีกหนึ่งสำหรับไฟล์ที่โหลดทีหลัง
-const staticCacheName = 'site-static-v973'; // เปลี่ยน v2 เป็น v3 เพื่อบังคับอัปเดต
-const dynamicCacheName = 'site-dynamic-v972'; // Cache สำหรับไฟล์ที่เปลี่ยนแปลงบ่อย หรือมาจากข้างนอก
+const staticCacheName = 'site-static-v983'; // เปลี่ยน v2 เป็น v3 เพื่อบังคับอัปเดต
+const dynamicCacheName = 'site-dynamic-v982'; // Cache สำหรับไฟล์ที่เปลี่ยนแปลงบ่อย หรือมาจากข้างนอก
 
 // --- จุดที่แก้ไข 1 ---
 // นำ URL ของ Google Fonts ออกจากรายการนี้ เหลือไว้แค่ไฟล์ในโปรเจกต์ของเรา
