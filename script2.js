@@ -2207,7 +2207,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         controlsElement.style.display = 'none';
         const originalPadding = captureElement.style.padding;
-        captureElement.style.padding = '4px 4px 4px 4px';
+        captureElement.style.padding = '2px 2px 2px 2px';
 
         html2canvas(captureElement, {
             useCORS: true,
