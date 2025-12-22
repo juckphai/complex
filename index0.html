@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าหลักรวมแอปพลิเคชัน</title>
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="theme-color" content="#FF9800"/>
+    
+    <link rel="apple-touch-icon" href="192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="บริการข้อมูลหวย">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ตั้งค่าพื้นฐาน */
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #fff3e0 0%, #fffde7 100%); /* พื้นหลังแบบไล่เฉดสี */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* กรอบหลัก (Main Frame) */
+        .container {
+            background-color: #fffde7;
+            width: 100%;
+            max-width: 450px; /* จำกัดความกว้างไม่ให้ใหญ่เกินไปในคอม */
+            text-align: center;
+            padding: 40px 30px;
+            border-radius: 25px; /* มุมโค้งมน */
+            border: 3px solid #ffcc80; /* เส้นขอบสีส้มอ่อน */
+            box-shadow: 0 10px 30px rgba(230, 81, 0, 0.15); /* เงานุ่มๆ */
+            position: relative;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ส่วนโลโก้ */
+        .logo-area {
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-area img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 50%; /* ถ้าโลโก้เป็นสี่เหลี่ยม จะทำให้มน */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background-color: white;
+            padding: 5px;
+        }
+
+        /* หัวข้อ */
+        h1 {
+            color: #ef6c00;
+            font-size: 26px;
+            font-weight: 600;
+            margin: 10px 0 30px 0;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+        }
+
+        /* ตารางเมนู */
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* การ์ดเมนู (ปุ่ม) */
+        .menu-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            border: 0; /* ลบขอบเดิมออกใช้ Shadow แทน */
+        }
+
+        /* เอฟเฟกต์เมื่อเอาเมาส์ชี้ */
+        .menu-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        /* ปุ่มแอปที่ 1 (สีส้ม) */
+        .card-1 {
+            background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        /* ปุ่มแอปที่ 2 (สีฟ้า) */
+        .card-2 {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        /* เนื้อหาในการ์ด */
+        .card-content {
+            text-align: left;
+            z-index: 1;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        /* ไอคอนในการ์ด */
+        .card-icon {
+            font-size: 32px;
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 15px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        /* เส้นแบ่งตกแต่ง */
+        .divider {
+            height: 2px;
+            background: #ffecb3;
+            margin: 30px 50px;
+            border-radius: 2px;
+        }
+
+        /* Footer */
+        footer {
+            color: #9e9e9e;
+            font-size: 12px;
+            font-weight: 300;
+        }
+
+        /* Responsive สำหรับมือถือ */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px; /* ลดระยะขอบในมือถือ */
+            }
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .menu-card {
+                padding: 15px 20px;
+            }
+            .card-title {
+                font-size: 20px;
+            }
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-area">
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        </div>
+
+        <h1>ระบบบริการข้อมูล</h1>
+
+        <div class="menu-grid">
+            <a href="2.html" class="menu-card card-2">
+                <div class="card-content">
+                    <span class="card-title">แปลตัวเลข</span>
+                    <span class="card-desc">วิเคราะห์และจับคู่เลขเด็ด</span>
+                </div>
+                <div class="card-icon">🔢</div>
+            </a>
+
+            <a href="1.html" class="menu-card card-1">
+                <div class="card-content">
+                    <span class="card-title">กรอกผลรางวัล</span>
+                    <span class="card-desc">กรอกผลลาวและรัฐบาลไทย</span>
+                </div>
+                <div class="card-icon">🏆</div>
+            </a>
+        </div>
+
+        <div class="divider"></div>
+
+        <footer>
+            &copy; 2025 Juckphai. All Rights Reserved.
+        </footer>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('Service Worker registered successfully:', reg))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+
+</body>
+</html>

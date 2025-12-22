@@ -1,0 +1,584 @@
+/* ---------- พื้นหลังและฟอนต์ของหน้า ---------- */
+body { font-family: Arial, sans-serif; background-color: #fffde7; margin: 0 auto; padding: 0 20px; max-width: 600px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+/* ---------- หัวเรื่อง ---------- */
+h1 { text-align: center; color: #e65100; margin: 10px 0 15px; font-size: 24px; }
+.blue { color: blue; }
+.red { color: red; }
+/* ---------- ปุ่มทั่วไป ---------- */
+.convert-button, .back-button, .popup-button, .close-popup { border: none; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; transition: background-color 0.3s; }
+/* ปุ่มกลับ */
+.back-button { 
+  display: block; 
+  width: 90%; 
+  max-width: 600px; 
+  margin: 20px auto 15px; 
+  padding: 10px 20px; 
+  background-color: orange; 
+  font-size: 16px; 
+  border-radius: 50px;
+}
+
+.back-button:hover { 
+  background-color: darkorange; 
+}
+
+/* ปุ่มแปลง (สำหรับลาว) */
+.convert-button { background-color: #FF9800; padding: 12px 24px; font-size: 18px; border-radius: 8px; margin-top: 10px; }
+.convert-button:hover { background-color: #F57C00; }
+
+/* --------- ฟอร์มหลัก (แก้ไข: เอากรอบส้มออกจาก Container หลัก) ---------- */
+.form-container { 
+    /* ลบ border, padding, background เดิมออก เพื่อให้ส่วนไทยขยายเต็ม */
+    background-color: transparent; 
+    border: none; 
+    box-shadow: none; 
+    padding: 0;
+    margin: 2px 0 5px; 
+}
+
+.form-group { margin-bottom: 12px; text-align: center; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 18px; color: #333; font-weight: bold; }
+input, select { font-size: 16px; padding: 8px; margin: 5px 0; border: 1.5px solid #ddd; border-radius: 5px; width: 100%; max-width: 250px; }
+
+/* ---------- ส่วนเฉพาะของลาว (ใส่กรอบส้มที่นี่แทน) ---------- */
+#laoLotteryFormContent {
+    background-color: #f9f9f9; 
+    border-radius: 15px; 
+    padding: 15px; 
+    border: 1.5px solid orange; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* กล่องกรอกตัวเลขลาว */
+#numberInput { background-color: #e3f2fd; color: #1a237e; font-weight: bold; font-size: 20px; padding: 10px; border: 1.5px solid #1a237e; border-radius: 10px; text-align: center; width: 100%; max-width: none; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s; }
+#numberInput:focus { background-color: #bbdefb; border-color: #3f51b5; outline: none; }
+.form-footer { display: flex; justify-content: center; margin-top: 15px; }
+
+/* ---------- Popup Overlay ---------- */
+.popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px 0; box-sizing: border-box; overflow-y: auto; }
+
+.popup-content {
+    background-color: #fffde7;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 600px;
+    padding: 5px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.popup-main-content {
+    position: relative;
+    background-color: #FFFFD1;
+    margin: 0 2px;
+    padding: 3px 3px;
+    border-radius: 10px;
+    border: 1.5px solid green;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* เพิ่มโลโก้พื้นหลังให้กับ Popup ลาว */
+.popup-main-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('logo.png');
+    background-size: 250px auto;
+    background-repeat: no-repeat;
+    background-position: center 10%;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Popup Header and Date */
+#popupDateDisplay {
+    margin: 3px 0;
+    color: blue;
+    font-size: clamp(16px, 3.4vw, 20px);
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.8), -1px -1px 1px rgba(0,0,0,0.2);
+}
+
+.prize-title {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 1px 20px;
+    margin: 4px 0 7px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-shadow: -1px -1px 1px rgba(0,0,0,0.6), 1px 1px 1px rgba(255,255,255,0.6);
+    border: 2px solid #4EA72E;
+    background: linear-gradient(to bottom, #EE8D5C, #E800E8);
+}
+/* Result Header & Logo */
+.result-header { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.topic-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FF75FF;
+    border: 2px solid #0070C0;
+    color: white;
+    border-radius: 50px;
+    padding: 1px 40px;
+    font-size: 24px;
+    margin-top: 10;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-shadow: -1px -1px 1px rgba(0,0,0,0.5), 1px 1px 1px rgba(255,255,255,0.5);
+}
+.topic-time {
+    font-size: 18px;
+    color: blue;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* Popup Buttons */
+.popup-buttons-container { display: flex; flex-direction: column; align-items: center; gap: 5px; padding-top: 15px; }
+.popup-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; }
+.popup-button { padding: 8px 15px; background-color: #FF9800; }
+.popup-button:hover { background-color: #F57C00; }
+.popup-button.active { background-color: #4CAF50; }
+.close-popup { padding: 8px 15px; background-color: #f44336; width: 100%; max-width: 200px; }
+.close-popup:hover { background-color: #d32f2f; }
+/* --- CSS สำหรับ SVG และส่วนอื่นๆ --- */
+.ball-group {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    margin: 0.5px 0;
+    margin-top: 5px;
+    vertical-align: middle;
+}
+
+.ball-group svg {
+    margin: 0 0.5px;
+}
+
+.checkmark {
+  position: absolute;
+  top: 30%;
+  right: -35px; /* ขยับออกมาด้านนอก */
+  transform: translateY(-50%);
+  color: #FF0000; /* สีแดง */
+  font-size: 45px; /* ขนาดใหญ่ */
+  font-weight: normal; /* ไม่เป็นตัวหนา */
+  z-index: 1;
+}
+
+/* สไตล์ร่วมของป้าย (เอฟเฟกต์ร่องลึก ตัวอักษรสีขาว) */
+.prize-label-blue, .prize-label-orange {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 22px;
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 3px 20px;
+    color: white; /* ตัวอักษรสีขาว */
+    text-shadow: -1px -1px 1px rgba(0,0,0,0.6), 1px 1px 1px rgba(255,255,255,0.6);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 50px;
+}
+
+/* สไตล์สำหรับ "3 ตัวบน" */
+.prize-label-blue {
+    background: linear-gradient(to bottom, #47D359, #0066cc);
+    border: 2px solid #004C99;
+}
+/* สไตล์สำหรับ "2 ตัวล่าง" */
+.prize-label-orange {
+    background: linear-gradient(to bottom, #FFB74D, #FF8C00);
+    border: 2px solid #C66900;
+}
+
+/* แก้ไข CSS สำหรับ container ต่างๆ */
+.circle-container, .square-container, .square-two-container { 
+    position: relative; /* เพิ่มเพื่อให้สามารถวางเครื่องหมายถูกได้ */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0.5px;
+    padding: 0.5px;
+    background: transparent;
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.4);
+    min-height: 50px;
+    white-space: nowrap;
+}
+.circle-container { 
+    min-width: 85px; 
+    border: 3px solid #FF00FF; 
+    border-radius: 2%; 
+}
+.square-container { 
+    min-width: 85px; 
+    border: 3px solid red; 
+}
+.square-two-container { 
+    min-width: 85px; 
+    border: 3px solid blue; 
+}
+
+/* เพิ่มการจัดวางลูกปิงปองใน container */
+.circle-container svg,
+.square-container svg,
+.square-two-container svg {
+    flex-shrink: 0;
+    margin: 0 0.5px;
+}
+
+/* Number Containers */
+.numbers-display { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 0.5px; margin: 8px 0; }
+.number-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5px;
+    min-width: 150px;
+}
+/* Responsive */
+@media (max-width: 480px) { #numberInput { font-size: 18px; padding: 8px; } }
+footer { text-align: center; margin: 15px 0; color: #666; padding: 10px 0; }
+
+
+/* ========== NEW THAI LOTTERY FORM STYLES (FULL WIDTH / COMPACT) ========== */
+/* ฟอร์มรัฐบาลไทยแบบใหม่ */
+.thai-lottery-form {
+    display: none; /* ควบคุมด้วย JS */
+    background-color: transparent;
+    margin: 10px 0;
+    padding: 0;
+    border: none; /* ลบเส้นขอบออกทั้งหมด */
+    box-shadow: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Grid System สำหรับฟอร์มไทย */
+.thai-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 คอลัมน์เท่ากัน */
+    gap: 10px; /* ระยะห่างระหว่างช่อง */
+    width: 100%;
+}
+
+.thai-grid-full {
+    grid-column: span 2; /* กินพื้นที่เต็ม 2 คอลัมน์ */
+}
+
+/* ปรับ Input ในฟอร์มไทยให้เต็มพื้นที่และสวยงาม */
+.thai-lottery-form input[type="text"],
+.thai-lottery-form input[type="date"],
+.thai-lottery-form select {
+    width: 100%;
+    max-width: 100%; /* ยกเลิกการจำกัดความกว้าง */
+    box-sizing: border-box;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    margin: 0;
+    text-align: center;
+}
+
+.thai-lottery-form input[type="text"]:focus {
+    border-color: #FF9800;
+    outline: none;
+    background-color: #fff8e1;
+}
+
+.thai-lottery-form label {
+    font-size: 14px;
+    margin-bottom: 4px;
+    text-align: left; /* จัดชิดซ้ายให้อ่านง่าย */
+    padding-left: 5px;
+    color: #555;
+}
+
+/* Wrapper สำหรับวันที่ */
+.thai-date-wrapper {
+    display: flex;
+    gap: 5px;
+}
+
+.thai-date-wrapper input {
+    flex: 1;
+}
+
+.thai-date-wrapper button {
+    flex-shrink: 0;
+    width: auto;
+    padding: 0 15px;
+    font-size: 20px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* จัดให้ปุ่มอยู่กึ่งกลางของหน้า */
+.thai-lottery-form .button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    grid-column: span 2; /* [แก้ไข] เพิ่มเพื่อให้ Container ขยายเต็ม 2 คอลัมน์ ทำให้จัดกึ่งกลางได้จริง */
+}
+
+/* ปุ่มแสดงผล */
+.thai-lottery-form .button-container button {
+    width: 100%;
+    max-width: 320px; /* ปรับให้ปุ่มไม่กว้างเกินไปบนคอม */
+    padding: 12px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.thai-lottery-form .button-container button:hover {
+    background-color: #43A047;
+}
+
+
+#popupOverlay .result-header {
+    margin-top: 5px;
+}
+
+/* --- [แก้ไข] ปรับลดระยะห่าง header รัฐบาล --- */
+#thaiLotteryPopupOverlay .result-header {
+    margin-top: 0px; /* แก้ไขจาก 10px เป็น 0px */
+}
+
+#thaiLotteryPopupOverlay .draw-date {
+    margin-top: 2px;
+}
+
+/* Popup สำหรับรัฐบาลไทย */
+#thaiLotteryPopupOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px 0 5px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+#thaiLotteryPopupContent {
+    background-color: #FFFFD1;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 600px;
+    padding: 5px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* --- [แก้ไข] ปรับลด Padding ในกล่องแสดงผล --- */
+#thaiLotteryPopupContent .result-display {
+    background-color: #FFFFD1;
+    padding: 5px 10px; /* แก้ไขจาก 20px 10px เป็น 5px 10px */
+    border-radius: 50px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin: 0 2px;
+    border-radius: 10px;
+    border: 1.5px solid #4CAF50;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+}
+
+/* เพิ่มโลโก้พื้นหลังให้กับ Popup ไทย */
+#thaiLotteryPopupContent .result-display::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('logo.png');
+    background-size: 350px auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ปรับลดพื้นที่ว่างด้านบนสุด */
+#thaiLotteryPopupOverlay .topic-box {
+    padding: 8px 25px; 
+    font-size: 22px; 
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+/* ปรับลดพื้นที่ว่างรอบวันที่ */
+#thaiLotteryPopupContent .draw-date {
+    display: inline-block;
+    color: #fff;
+    padding: 8px 15px; 
+    font-size: 15px;
+    font-weight: bold;
+    border: 2px solid #E65100;
+    background: linear-gradient(to bottom, #FFB74D, #FB8C00);
+    border-radius: 50px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* ปรับลดพื้นที่ว่างรอบรางวัลที่ 1 */
+#thaiLotteryPopupContent .prize-title {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: bold;
+    border: 2px solid #D32F2F;
+    border-radius: 50px;
+    padding: 8px 25px; 
+    margin: 4px 0 4px;
+    background: linear-gradient(to bottom, #EF9A9A, #E53935);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+#thaiLotteryPopupContent .prize-label-blue,
+#thaiLotteryPopupContent .prize-label-green,
+#thaiLotteryPopupContent .prize-label-orange {
+    display: inline-block;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 3px; 
+    padding: 5px 15px; 
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.6),
+                 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+#thaiLotteryPopupContent .prize-label-blue {
+    font-size: 20px;
+    background: linear-gradient(to bottom, #89CFF0, #007FFF);
+    border: 2px solid #0059B3;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+#thaiLotteryPopupContent .prize-label-green {
+    font-size: 20px;
+    background: linear-gradient(to bottom, #90EE90, #008000);
+    border: 2px solid #006400;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+#thaiLotteryPopupContent .prize-label-orange {
+    font-size: 22px;
+    background: linear-gradient(to bottom, #FFE3A0, #FF8C00);
+    border: 2px solid #D97200;
+    margin-top: 5px; 
+    padding: 10px 15px;
+    border-radius: 50px;
+}
+
+/* ปรับปรุงโครงสร้างผลรางวัลให้แสดงตามรูป 2 */
+#thaiLotteryPopupContent .prize-group-vertical {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 0.5px;
+    margin-top: 5px; 
+}
+
+/* ตัวแบ่ง ( | ) */
+#thaiLotteryPopupContent .prize-divider {
+    font-size: 40px; 
+    font-weight: bold; 
+    color: #FF1493; 
+    margin: 0 5px;
+    padding: 0;
+    line-height: 1; /* ปรับ line-height ให้ชิดขึ้น */
+}
+
+/* จัดกลุ่มสำหรับ เลขหน้า 3 ตัว และ เลขท้าย 3 ตัว */
+#thaiLotteryPopupContent .three-digit-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3px; 
+    margin-bottom: 5px; 
+}
+
+/* ลูกบอลใน popup ไทย */
+#thaiLotteryPopupContent .number-group {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: center;
+    margin-top: 3px; 
+    gap: 0.5px; 
+    margin: 0;
+    min-height: 42px;
+}
+
+/* แก้ไขให้ เลขท้าย 2 ตัว อยู่ด้านบนลูกบอล */
+#thaiLotteryPopupContent .back-two-container {
+    display: flex;
+    flex-direction: column-reverse; /* สลับให้ป้ายอยู่ด้านล่าง */
+    align-items: center;
+    gap: 0.5px;
+    margin-top: 5px; 
+    margin-bottom: 0px;
+}
+
+
+#thaiLotteryPopupContent .flex-row { display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap; gap: 0.5px 20px; }
+
+/* --- [แก้ไข] ปรับลดระยะห่างของปุ่มควบคุมด้านล่าง --- */
+#thaiLotteryPopupContent .popup-controls { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 5px; 
+    margin-top: 5px; /* แก้ไขจาก 15px เป็น 5px */
+}
+
+#thaiLotteryPopupContent .popup-button { border: none; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; transition: background-color: 0.3s; padding: 10px 20px; background-color: #007bff; width: 90%; max-width: 200px; font-size: 16px; }
+#thaiLotteryPopupContent .popup-button:hover { background-color: #0056b3; }
+#thaiLotteryPopupContent .close-popup { display: block; margin: 0 auto; border: none; border-radius: 5px; font-weight: bold; color: white; cursor: pointer; transition: background-color: 0.3s; padding: 10px 20px; background-color: #f44336; width: 90%; max-width: 200px; font-size: 16px; }
+#thaiLotteryPopupContent .close-popup:hover { background-color: #d32f2f; }
+#thaiLotteryPopupContent #first-prize-display { margin-top: 5px; } /* ลด margin-top */
+
+/* เอฟเฟกต์เงาสำหรับลูกบอล (แทนที่ SVG filter) */
+.ball-shadow {
+    filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.4));
+}
+.ball-text-shadow {
+    filter: drop-shadow(-0.8px -0.8px 0.8px rgba(0,0,0,0.7)) 
+            drop-shadow(0.8px 0.8px 0.8px rgba(255,255,255,0.5));
+}

@@ -1,0 +1,94 @@
+   /* Base Styles */
+    body { font-family: Arial, sans-serif; background-color: #fffde7; margin: 0; padding: 0; line-height: 1; }
+    h1 { text-align: center; font-size: 22px; color: blue; margin-top: 10px; margin-bottom: 10px; line-height: 1; }
+    label { font-size: 18px; color: #2c3e50; display: block; text-align: center; margin-left: auto; margin-right: auto; margin-top: 15px; }
+    footer { text-align: center; padding: 20px; font-size: 14px; color: #95a5a6; }
+    /* Form Elements */
+    input, select, button { font-size: 18px; padding: 10px; width: 80%; margin: 10px auto; border-radius: 6px; border: 1.5px solid #ddd; display: block; text-align: center; box-sizing: border-box; }
+    button#convertButton { background-color: #4CAF50; color: white; cursor: pointer; transition: background-color 0.3s ease; margin-top: 20px; }
+    button#convertButton:hover { background-color: #45a049; }
+    /* Home Button */
+    .homeButton { display: block; width: 90%; max-width: 600px; margin: 20px auto 10px; padding: 10px 20px; background-color: orange; color: white; border: none; border-radius: 50px; font-size: 16px; cursor: pointer; }
+    .homeButton:hover { background-color: darkorange; }
+    /* Container Styles */
+    .form-container { border: 1.5px solid orange; background-color: #FEFEF0; margin: 30px auto; padding: 15px; border-radius: 10px; width: 90%; max-width: 600px; box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2); box-sizing: border-box; }
+    /* Dynamic Inputs */
+    #numberSetsContainer { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 90%; margin: 15px auto; }
+    .number-set-input { width: 80px !important; margin: 0 !important; }
+    /* Custom Topic Input */
+    .custom-topic-row { display: flex; justify-content: space-between; width: 80%; margin: 10px auto; gap: 10px; }
+    .custom-topic-row input { width: 100%; margin: 0; }
+
+    /* ========== START: CSS สำหรับช่องวันที่ ========== */
+    .date-input-wrapper { display: flex; align-items: center; width: 80%; margin: 10px auto; gap: 8px; }
+    #dateInput { flex-grow: 1; margin: 0; width: auto; }
+    #calendarButton { flex-shrink: 0; width: auto; margin: 0; padding: 8px 12px; font-size: 20px; background-color: #f0f0f0; border: 1.5px solid #ccc; cursor: pointer; }
+    #calendarButton:hover { background-color: #e0e0e0; }
+    /* ========== END: CSS ที่เพิ่มเข้ามาสำหรับช่องวันที่ ========== */
+    
+    /* ===== NEW STYLES for Inline Management Buttons ===== */
+    .select-wrapper { display: flex; align-items: center; justify-content: center; gap: 8px; width: 80%; margin: 10px auto; }
+    .select-wrapper select { flex-grow: 1; width: auto; margin: 0; }
+    .manage-btn-inline { flex-shrink: 0; width: 44px; height: 44px; padding: 0; font-size: 24px; border-radius: 8px; background-color: #6c757d; color: white; border: none; cursor: pointer; transition: all 0.2s ease; line-height: 44px; }
+    .manage-btn-inline:hover { background-color: #5a6268; transform: rotate(45deg); }
+    .management-actions { display: none; justify-content: center; gap: 10px; margin: 5px auto 15px; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .management-actions button { width: auto; padding: 6px 12px; font-size: 14px; margin: 0; border: none; color: white; transition: background-color 0.2s ease; }
+    .add-btn { background-color: #28a745; } .add-btn:hover { background-color: #218838; }
+    .edit-btn { background-color: #ffc107; color: #212529 !important; } .edit-btn:hover { background-color: #e0a800; }
+    .delete-btn { background-color: #dc3545; } .delete-btn:hover { background-color: #c82333; }
+    .reset-btn { background-color: #17a2b8; } .reset-btn:hover { background-color: #138496; }
+
+    /* ===== Popup Styles ===== */
+    .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: flex-start; padding: 40px 15px; overflow-y: auto; box-sizing: border-box; }
+    .popup-content { background-color: #FFFFD1; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3); width: 100%; max-width: 600px; padding: 25px 15px; position: relative; box-sizing: border-box; }
+    .result-container-popup { border: 1.5px solid #4CAF50; background-color:  #FFFFD1; margin: 0; padding: 15px 5px; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2); position: relative; min-height: 300px; box-sizing: border-box; overflow: hidden; }
+    
+    /* ===== START: UPDATED Header and Logo Styles (from file 01) ===== */
+    .result-header { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .header-logo { width: 40px; height: auto; }
+    .topic-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background-color: #FF75FF;
+        border: 2px solid #0070C0;
+        color: white;
+        border-radius: 50px;
+        padding: 2px 2px;
+        font-size: 24px;
+        font-weight: bold;
+        /* Engraved effect for white text */
+        text-shadow: -1px -1px 1px rgba(0,0,0,0.5), 1px 1px 1px rgba(255,255,255,0.5);
+    }
+    .topic-time {
+        font-size: 18px;
+        color: blue;
+        font-weight: bold;
+        /* Engraved effect for dark text */
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    /* ===== END: UPDATED Header and Logo Styles ===== */
+    
+    #resultContentWrapper { position: relative; z-index: 1; color: blue; }
+    #resultContentWrapper h2, #resultContentWrapper h3, #resultContentWrapper p { margin: 6px 0; }
+    .number-line { font-size: 26px; font-weight: bold; text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white; margin: 5px 0; padding: 0; }
+    
+    .controls { display: flex; flex-direction: column; align-items: center; width: 100%; margin-top: 20px; }
+    .control-group { display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 15px; }
+    .control-group label, .control-group span { font-size: 16px; color: blue; margin-bottom: 5px; }
+    .control-group input[type="range"] { width: 80%; max-width: 300px; margin: 0; }
+    .close-popup-btn { padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; width: 90%; max-width: 200px; text-align: center; }
+    .close-popup-btn:hover { background-color: #d32f2f; }
+    .modal-button-group { display: flex; justify-content: space-around; margin-top: 20px; }
+    .modal-button-group button { width: 45%; margin: 0; }
+
+    /* Responsive Styles */
+    @media only screen and (max-width: 600px) {
+        .form-container, .select-wrapper { margin: 20px auto !important; width: 95%; }
+        input, select, button, .custom-topic-row, .date-input-wrapper { width: 90%; }
+        .popup-overlay { padding: 20px 10px; }
+    }

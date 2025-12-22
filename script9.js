@@ -1,4 +1,36 @@
-// === MERGED LUNAR DATA ===
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // ===== Popup Functions =====
+    function showResultPopup() {
+        document.getElementById("resultPopupOverlay").style.display = "flex";
+    }
+
+    function closeResultPopup() {
+        document.getElementById("resultPopupOverlay").style.display = "none";
+    }
+
+    // ===== Utility Functions =====
+    const sortPair = pair => (pair[0] > pair[1] ? pair[1] + pair[0] : pair);
+    
+function getThaiDate(date = new Date()) {
+  const months = [
+    "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+    "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
+  ];
+
+  return `วันที่ ${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} พ.ศ. ${date.getFullYear() + 543}`;
+}
+
+    
+    const getThaiTime = () => `เวลา ${String(new Date().getHours()).padStart(2, '0')}.${String(new Date().getMinutes()).padStart(2, '0')} น.`;
+const getFormattedDateTime = (date = new Date()) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear() + 543;
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} เวลา ${hours}.${minutes} น.`;
+};
 const lunarData = {
   "01/01/2568": "วันพุธ ขึ้น ๓ ค่ำ เดือนยี่ (๒) ปีมะโรง",
   "02/01/2568": "วันพฤหัสบดี ขึ้น ๔ ค่ำ เดือนยี่ (๒) ปีมะโรง",
@@ -1462,923 +1494,214 @@ const lunarData = {
   "30/12/2571": "วันเสาร์ (วันพระ) ขึ้น ๑๕ ค่ำ เดือนยี่ (๒) ปีวอก",
   "31/12/2571": "วันอาทิตย์ แรม ๑ ค่ำ เดือนยี่ (๒) ปีวอก",
 };
-// === SHARED UTILITY FUNCTIONS ===
-document.addEventListener('contextmenu', e => e.preventDefault());
-function showResultPopup() { document.getElementById("resultPopupOverlay").style.display = "flex"; }
-function closeResultPopup() { document.getElementById("resultPopupOverlay").style.display = "none"; }
-function checkCustomOption(select) { document.getElementById('customPersonInput').style.display = select.value === 'custom' ? 'block' : 'none'; }
-function checkCustomTopicOption(select) { document.getElementById('customTopicInputs').style.display = select.value === 'custom' ? 'block' : 'none'; }
-function getSelectedPerson() { const select = document.getElementById('personSelect'); return select.value === 'custom' ? (document.getElementById('customPersonInput').value.trim() || '@') : select.value; }
-function getTopicName() { const select = document.getElementById('topicSelect'); if (select.value === 'custom') { return document.getElementById('customTopicName').value.trim() || 'ไม่ระบุหัวข้อ'; } return select.options[select.selectedIndex].text.split(' เวลา ')[0]; }
-function getTopicTime() {
-  const select = document.getElementById('topicSelect');
-  if (select.value === 'custom') {
-    const time = document.getElementById('customTopicTime').value.trim();
-    return time ? time : ''; // Return only time string
-  }
-  const parts = select.options[select.selectedIndex].text.split(' เวลา ');
-  return parts.length > 1 ? parts[1].replace(' น.', '') : ''; // Return only time string
-}
-function getThaiDate(date = new Date()) {
-  const months = [
-    "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
-    "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
-  ];
+    const getLunarDate = (date = new Date()) => {
+        const key = `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth()+1).padStart(2,'0')}/${date.getFullYear()+543}`;
+        return lunarData[key] || "";
+    };
 
-  return `วันที่ ${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} พ.ศ. ${date.getFullYear() + 543}`;
-}
-function getLunarDate(date = new Date()) { const key = `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth()+1).padStart(2,'0')}/${date.getFullYear()+543}`; return lunarData[key] || ""; }
-function getThaiTime() { const now = new Date(); return `เวลา ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')} น.`; }
-function parseThaiDate(dateStr) { if (!dateStr || dateStr.trim() === '') return new Date(); const parts = dateStr.match(/(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})/); if (parts) { const day = parseInt(parts[1], 10); const month = parseInt(parts[2], 10); let year = parseInt(parts[3], 10); if (year > 2500) year -= 543; const d = new Date(year, month - 1, day); if (d && d.getMonth() === month - 1) return d; } return null; }
-function getFormattedDate(date) {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear() + 543;
-  return `${day}/${month}/${year}`;
-}
-
-// === LOGIC FOR 4-DIGIT NUMBERS ===
-function generate4DigitHTML(num, commonData) {
-const twoDigitPairs = ((n) => { const p = new Set(); for (let i = 0; i < n.length; i++) { for (let j = i + 1; j < n.length; j++) { p.add([n[i], n[j]].sort().join('')); } } return Array.from(p).sort(); })(num);
-const threeDigitCombinations = ((n) => { const c = new Set(); if (n.length < 3) return []; for (let i = 0; i < n.length; i++) { for (let j = i + 1; j < n.length; j++) { for (let k = j + 1; k < n.length; k++) { c.add([n[i], n[j], n[k]].sort().join('')); } } } return Array.from(c).sort(); })(num);
-
-return `
-<div style="
-  position: relative; 
-  text-align: center; 
-  color: blue; 
-  --font-scale: 1;
-  text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white,  
-    -1px  1px 0 white,  
-     1px  1px 0 white,
-     ${commonData.textShadow};
-">
-  <div class="result-header">
-    <div class="topic-box" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <img src="logo.png" class="header-logo" alt="logo" style="height: 2rem;">
-      <span style="font-size: calc(clamp(1.5rem, 6vw, 2.25rem) * var(--font-scale)); font-weight: normal;">
-        ${commonData.topicName}
-      </span>
-      <img src="logo.png" class="header-logo" alt="logo" style="height: 2rem;">
-    </div>
-  </div>
-  
-  <!-- 2 แถวบนสุด -->
-  <div style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal;">
-    ${commonData.topicNameHtml}
-  </div>
-  <div style="font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale));">
-    ${commonData.topicTimeHtml}
-  </div>
-  
-  <!-- วันที่ -->
-  <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale));">
-    ${getThaiDate(commonData.date)}
-  </p>
-  
-  ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
-  
-  <!-- หัวข้อหลัก 4 ตัว -->
-  <h2 style="font-size: calc(clamp(1.5rem, 5.5vw, 2rem) * var(--font-scale)); font-weight: normal;">
-    4 ตัว <span style="color: red;">${num}</span> By : <span style="color: green;">${commonData.selectedPerson}</span>
-  </h2>
-  
-  <!-- หัวข้อย่อย 2 ตัว -->
-  <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal;">
-    จัดชุด 2 ตัว
-  </h3> 
-  <p style="font-weight: bold;white-space: nowrap; font-size: calc(clamp(1.25rem, 6vw, 1.625rem) * var(--font-scale));">
-    ${twoDigitPairs.join(' - ')}
-  </p>
-  
-  <!-- หัวข้อย่อย 3 ตัว -->
-  <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal;">
-    จัดชุด 3 ตัว
-  </h3> 
-  <p style="font-weight: bold;white-space: nowrap; font-size: calc(clamp(1.25rem, 6vw, 1.625rem) * var(--font-scale));">
-    ${threeDigitCombinations.join(' - ')}
-  </p>
-  
-  <!-- ข้อความเตือน -->
-  <h2 style="font-size: calc(clamp(1.25rem, 5vw, 1.75rem) * var(--font-scale)); font-weight: bold;color: red;">
-    แนวทางเท่านั้น
-  </h2>
-  
-  <!-- เวลา -->
-  <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale));">
-    Disclose : ${getFormattedDate(new Date())} ${getThaiTime()}
-  </p>
-  
-  <!-- Note -->
-  <p style="font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale));">
-    ${commonData.noteHtml}
-  </p>
-</div>`;
-}
-
-// === LOGIC FOR 3-DIGIT NUMBERS (REVISED) ===
-function generate3DigitHTML(num, commonData) {
-const transformRules = {'0':'1','1':'7','2':'5','3':'8','4':'9','5':'2','6':'9','7':'1','8':'3','9':'6'};
-const transformed = num.split('').map(d => transformRules[d]).join('');
-const sortPair = pair => (pair[0] > pair[1] ? pair[1] + pair[0] : pair);
-
-const generateAdditional = (inputSet, type) => {
-const patterns = { '2digit': {'00':'02','11':'12','33':'23','44':'24','55':'25','66':'26','77':'27','88':'28','99':'29'}, '3digit': {'000': '002', '011': '012', '022': '022', '033': '023', '044': '024', '055': '025', '066': '026', '077': '027', '088': '028', '099': '029', '111': '112', '122': '122', '133': '123', '144': '124', '155': '125', '166': '126', '177': '127', '188': '128', '199': '129', '222': '222', '233': '223', '244': '224', '255': '225', '266': '226', '277': '227', '288': '228', '299': '229', '333': '233', '344': '234', '355': '235', '366': '236', '377': '237', '388': '238', '399': '239', '444': '244', '455': '245', '466': '246', '477': '247', '488': '248', '499': '249', '555': '255', '566': '256', '577': '257', '588': '258', '599': '259', '666': '266', '677': '267', '688': '268', '699': '269', '777': '277', '788': '278', '799': '279', '888': '288', '899': '289', '999': '299', '001': '012', '002': '022', '003': '023', '004': '024', '005': '025', '006': '026', '007': '027', '008': '028', '009': '029', '112': '122', '113': '123', '114': '124', '115': '125', '116': '126', '117': '127', '118': '128', '119': '129', '223': '223', '224': '224', '225': '225', '226': '226', '227': '227', '228': '228', '229': '229', '334': '234', '335': '235', '336': '236', '337': '237', '338': '238', '339': '239', '445': '245', '446': '246', '447': '247', '448': '248', '449': '249', '556': '256', '557': '257', '558': '258', '559': '259', '667': '267', '668': '268', '669': '269', '778': '278', '779': '279', '889': '289'} };
-const additional = Array.from(inputSet).map(item => (patterns[type] || {})[item]).filter(Boolean);
-return [...new Set(additional)];
-};
-
-const firstSet = [...new Set([sortPair(`${num[0]}${num[1]}`), sortPair(`${num[0]}${num[2]}`), sortPair(`${num[1]}${num[2]}`)])].sort();
-const secondSetSource = [sortPair(`${num[0]}${transformed[1]}`),sortPair(`${num[0]}${transformed[2]}`),sortPair(`${num[1]}${transformed[0]}`),sortPair(`${num[1]}${transformed[2]}`),sortPair(`${num[2]}${transformed[0]}`),sortPair(`${num[2]}${transformed[1]}`)];
-const additional2d = generateAdditional(new Set([...firstSet, ...secondSetSource]), '2digit');
-const secondSet = [...new Set([...secondSetSource, ...additional2d])].filter(p => !firstSet.includes(p)).sort();
-const transformedPairs = [...new Set([sortPair(`${transformed[0]}${transformed[1]}`), sortPair(`${transformed[0]}${transformed[2]}`), sortPair(`${transformed[1]}${transformed[2]}`)])].filter(p => !firstSet.includes(p) && !secondSet.includes(p)).sort();
-
-const thirdSetSource = [`${num[0]}${num[1]}${num[2]}`,`${num[0]}${num[1]}${transformed[2]}`,`${num[0]}${transformed[1]}${num[2]}`,`${num[0]}${transformed[1]}${transformed[2]}`,`${transformed[0]}${num[1]}${num[2]}`,`${transformed[0]}${num[1]}${transformed[2]}`,`${transformed[0]}${transformed[1]}${num[2]}`,`${transformed[0]}${transformed[1]}${transformed[2]}`];
-const thirdSet = [...new Set(thirdSetSource.map(t => t.split('').sort().join('')))].sort();
-const additional3d = generateAdditional(new Set(thirdSet), '3digit').filter(t => !thirdSet.includes(t)).sort();
-
-const redSpan = (text) => `<span style="color: red;">${text}</span>`;
-const greenSpan = (text) => `<span style="color: green;">${text}</span>`;
-const noDataSpan = '<span style="color: green; font-size: 18px;">ไม่มีชุดตัวเลขเพิ่ม</span>';
-
-return `
-<div style="position: relative; text-align: center; color: blue; --font-scale: 1.0;">
-  <!-- หัวข้อหลัก -->
-  <div class="result-header">
-    <div class="topic-box" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <img src="logo.png" class="header-logo" alt="logo" style="height: 2rem;">
-      <span style="
-        font-size: calc(clamp(1.5rem, 6vw, 2.25rem) * var(--font-scale));
-        font-weight: normal;
-        text-shadow: 
-          -1px -1px 0 white,
-           1px -1px 0 white,
-          -1px  1px 0 white,
-           1px  1px 0 white,
-           ${commonData.textShadow};
-        background: linear-gradient(90deg, #0d47a1, #42a5f5);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      ">
-        ${commonData.topicName}
-      </span>
-      <img src="logo.png" class="header-logo" alt="logo" style="height: 2rem;">
-    </div>
-  </div>
-
-  <!-- 2 แถวบนสุด -->
-  <div style="
-    font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
-    font-weight: normal;
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${commonData.topicNameHtml}
-  </div>
-  <div style="
-    font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${commonData.topicTimeHtml}
-  </div>
-
-  <!-- วันที่ -->
-  <p style="
-    font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${getThaiDate(commonData.date)}
-  </p>
-
-  ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
-
-  <!-- หัวข้อหลัก 3 ตัว -->
-  <h2 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.5rem, 5.5vw, 2rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    3 ตัว ${redSpan(num)} By : ${greenSpan(commonData.selectedPerson)}
-  </h2>
-
-  <!-- จัดชุดเด่น 2 ตัว -->
-  <h3 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    จัดชุดเด่น 2 ตัว
-  </h3>
-  <p style="
-    font-weight: bold;
-    white-space: nowrap; 
-    font-size: calc(clamp(1.1rem, 5vw, 1.5rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${firstSet.join(' - ')}
-  </p>
-
-  <!-- จัดชุดรอง 2 ตัว -->
-  <h3 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    จัดชุดรอง 2 ตัว
-  </h3>
-  <p style="
-    font-weight: bold;
-    white-space: nowrap; 
-    font-size: calc(clamp(1.1rem, 5vw, 1.5rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${secondSet.length > 0 ? secondSet.join(' - ') : noDataSpan}
-  </p>
-
-  <!-- จัดชุด 2 ตัว (แปลเพิ่ม) -->
-  <h3 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    จัดชุด 2 ตัว ${redSpan('(แปลเพิ่ม)')}
-  </h3>
-  <p style="
-    font-weight: bold;
-    white-space: nowrap; 
-    font-size: calc(clamp(1.1rem, 5vw, 1.5rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${transformedPairs.length > 0 ? transformedPairs.join(' - ') : noDataSpan}
-  </p>
-
-  <!-- จัดชุด 3 ตัว (ปกติ) -->
-  <h3 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.1rem, 4.5vw, 1.5rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    จัดชุด 3 ตัว (ปกติ)
-  </h3>
-  <p style="
-    font-weight: bold;
-    white-space: nowrap; 
-    font-size: calc(clamp(1rem, 4.8vw, 1.35rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${thirdSet.join(' - ')}
-  </p>
-
-  <!-- จัดชุด 3 ตัว (แปลเพิ่ม) -->
-  <h3 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.1rem, 4.5vw, 1.5rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    จัดชุด 3 ตัว ${redSpan('(แปลเพิ่ม)')}
-  </h3>
-  <p style="
-    font-weight: bold;
-    white-space: nowrap; 
-    font-size: calc(clamp(1rem, 4.8vw, 1.35rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${additional3d.length > 0 ? additional3d.join(' - ') : noDataSpan}
-  </p>
-
-  <!-- คำเตือน -->
-  <h2 style="
-    font-weight: bold;
-    color: red; 
-    font-size: calc(clamp(1.25rem, 5vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    แนวทางเท่านั้น
-  </h2>
-
-  <!-- Disclosure -->
-  <p style="
-    font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    Disclose : ${getFormattedDate(new Date())} ${getThaiTime()}
-  </p>
-
-  <!-- หมายเหตุ -->
-  <p style="
-    font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${commonData.noteHtml.replace('No remarks', '<span style="color: red;">No remarks</span>')}
-  </p>
-</div>`;
-}
-
-// === LOGIC FOR 2-DIGIT NUMBERS (UPDATED) ===
-function generate2DigitHTML(num, commonData) {
-       const transformRules = {
-            '0': '1', '1': '7', '2': '5', '3': '8',
-            '4': '9', '5': '2', '6': '9', '7': '1',
-            '8': '3', '9': '6'
+    // ===== Main Logic Functions =====
+    const generateAdditionalNumbers = (inputSet, type) => {
+        const patterns = {
+            '2digit': {'00':'02','11':'12','33':'23','44':'24','55':'25','66':'26','77':'27','88':'28','99':'29'},
+                        '3digit': {'000': '002', '011': '012', '022': '022', '033': '023', '044': '024', '055': '025', '066': '026', '077': '027', '088': '028', '099': '029', '111': '112', '122': '122', '133': '123', '144': '124', '155': '125', '166': '126', '177': '127', '188': '128', '199': '129', '222': '222', '233': '223', '244': '224', '255': '225', '266': '226', '277': '227', '288': '228', '299': '229', '333': '233', '344': '234', '355': '235', '366': '236', '377': '237', '388': '238', '399': '239', '444': '244', '455': '245', '466': '246', '477': '247', '488': '248', '499': '249', '555': '255', '566': '256', '577': '257', '588': '258', '599': '259', '666': '266', '677': '267', '688': '268', '699': '269', '777': '277', '788': '278', '799': '279', '888': '288', '899': '289', '999': '299', '001': '012', '002': '022', '003': '023', '004': '024', '005': '025', '006': '026', '007': '027', '008': '028', '009': '029', '112': '122', '113': '123', '114': '124', '115': '125', '116': '126', '117': '127', '118': '128', '119': '129', '223': '223', '224': '224', '225': '225', '226': '226', '227': '227', '228': '228', '229': '229', '334': '234', '335': '235', '336': '236', '337': '237', '338': '238', '339': '239', '445': '245', '446': '246', '447': '247', '448': '248', '449': '249', '556': '256', '557': '257', '558': '258', '559': '259', '667': '267', '668': '268', '669': '269', '778': '278', '779': '279', '889': '289'}
         };
-        const transformed = num.split('').map(digit => transformRules[digit]).join('');
-        const pairs = [
-            `${num[0]}${transformed[1]}`,
-            `${transformed[0]}${num[1]}`,
-            `${transformed[0]}${transformed[1]}`,
-            `${num[0]}${num[1]}`
-        ];
-        const formattedPairs = pairs.map(pair => {
-            const tens = parseInt(pair[0]);
-            const units = parseInt(pair[1]);
-            return tens <= units ? pair : `${units}${tens}`;
-        });
-        const uniquePairs = [...new Set(formattedPairs)];
-        const additionRules = {
-            '00': '02', '11': '12', '33': '23',
-            '44': '24', '55': '25', '66': '26', '77': '27',
-            '88': '28', '99': '29'
-        };
-        uniquePairs.forEach(pair => {
-            const addition = additionRules[pair];
-            if (addition) {
-                uniquePairs.push(addition);
+        const currentPatterns = patterns[type] || {};
+        const additional = Array.from(inputSet).map(item => currentPatterns[item]).filter(Boolean);
+        return [...new Set(additional)];
+    };
+
+    function generateResultHTML() {
+        const num = document.getElementById("numberInput").value;
+        if (num.length !== 3 || isNaN(num)) {
+            alert("กรุณาป้อนตัวเลข 3 หลัก");
+            return null;
+        }
+
+        // ===== START: แก้ไขการดึงข้อมูล Topic ให้แยกชื่อและเวลา =====
+        const topicSelect = document.getElementById("topicSelect");
+        let topicName = '';
+        let topicTime = '';
+
+        if (topicSelect.value === "custom") {
+            topicName = document.getElementById("topicNameInput").value.trim() || "(ไม่ระบุหัวข้อ)";
+            const timeInput = document.getElementById("topicTimeInput").value.trim();
+            topicTime = timeInput ? `เวลา ${timeInput}` : '';
+        } else {
+            const selectedText = topicSelect.options[topicSelect.selectedIndex].text;
+            const parts = selectedText.split(' เวลา ');
+            topicName = parts[0];
+            topicTime = parts.length > 1 ? `เวลา ${parts[1]}` : '';
+        }
+        // ===== END: แก้ไขการดึงข้อมูล Topic =====
+
+        const personSelect = document.getElementById("personSelect");
+        let selectedPerson = personSelect.value;
+        if (selectedPerson === "custom") {
+            selectedPerson = document.getElementById("personCustomInput").value.trim() || "@";
+        }
+        
+        let noteInput = document.getElementById("noteInput").value.trim() || '<span style="color: red;">No remarks</span>';
+        
+        const dateString = document.getElementById("dateInput").value;
+        const date = dateString ? new Date(dateString) : new Date();
+
+        const lunarDate = getLunarDate(date);
+        const lunarHtml = lunarDate ? `<p style="font-size: 14px; color: ${lunarDate.includes('วันพระ') ? 'red' : '#002060'}; font-weight: bold; text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">( ${lunarDate} )</p>` : '';
+        
+        // ===== START: เพิ่มตัวแปรสำหรับ HTML ของเวลา =====
+        const topicTimeHtml = topicTime ? `<p class="topic-time">${topicTime}</p>` : '';
+        // ===== END: เพิ่มตัวแปรสำหรับ HTML ของเวลา =====
+
+        const transformRules = {'0':'1','1':'7','2':'5','3':'8','4':'9','5':'2','6':'9','7':'1','8':'3','9':'6'};
+        const transformed = num.split('').map(d => transformRules[d]).join('');
+
+        const firstSet = [...new Set([sortPair(`${num[0]}${num[1]}`), sortPair(`${num[0]}${num[2]}`), sortPair(`${num[1]}${num[2]}`)])].sort();
+        const secondSetSource = [sortPair(`${num[0]}${transformed[1]}`),sortPair(`${num[0]}${transformed[2]}`),sortPair(`${num[1]}${transformed[0]}`),sortPair(`${num[1]}${transformed[2]}`),sortPair(`${num[2]}${transformed[0]}`),sortPair(`${num[2]}${transformed[1]}`)];
+        const additional2d = generateAdditionalNumbers(new Set([...firstSet, ...secondSetSource]), '2digit');
+        const secondSet = [...new Set([...secondSetSource, ...additional2d])].filter(p => !firstSet.includes(p)).sort();
+        const transformedPairs = [...new Set([sortPair(`${transformed[0]}${transformed[1]}`), sortPair(`${transformed[0]}${transformed[2]}`), sortPair(`${transformed[1]}${transformed[2]}`)])].filter(p => !firstSet.includes(p) && !secondSet.includes(p)).sort();
+        
+        const thirdSetSource = [`${num[0]}${num[1]}${num[2]}`,`${num[0]}${num[1]}${transformed[2]}`,`${num[0]}${transformed[1]}${num[2]}`,`${num[0]}${transformed[1]}${transformed[2]}`,`${transformed[0]}${num[1]}${num[2]}`,`${transformed[0]}${num[1]}${transformed[2]}`,`${transformed[0]}${transformed[1]}${num[2]}`,`${transformed[0]}${transformed[1]}${transformed[2]}`];
+        const thirdSet = [...new Set(thirdSetSource.map(t => t.split('').sort().join('')))].sort();
+        const additional3d = generateAdditionalNumbers(new Set(thirdSet), '3digit').filter(t => !thirdSet.includes(t)).sort();
+
+        const textShadow = "text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;";
+        const redSpan = (text) => `<span style="color: red;">${text}</span>`;
+        const greenSpan = (text) => `<span style="color: green;">${text}</span>`;
+        const noDataSpan = '<span style="color: green; font-size: 18px;">ไม่มีชุดตัวเลขเพิ่ม</span>';
+
+        // ===== START: แก้ไขโครงสร้าง HTML ที่ return ให้มี Header แบบใหม่ =====
+        return `<div style="position: relative; text-align: center; color: blue;">
+            <div class="result-header">
+                <div class="topic-box">
+                    <img src="logo.png" class="header-logo" alt="logo">
+                    <span>${topicName}</span>
+                    <img src="logo.png" class="header-logo" alt="logo">
+                </div>
+            </div>
+            ${topicTimeHtml}
+            <p style="font-size: 18px; ${textShadow}">${getThaiDate(date)}</p>
+            ${lunarHtml}
+            <h2 style="font-weight: bold; ${textShadow}">3 ตัว ${redSpan(num)} By : ${greenSpan(selectedPerson)}</h2>
+            <h3 style="font-weight: bold; ${textShadow}">จัดชุด 3 ตัว (ปกติ)</h3>
+            <p style="font-size: 19px; font-weight: bold; ${textShadow}">${thirdSet.join(' - ')}</p>
+            <h3 style="font-weight: bold; ${textShadow}">จัดชุด 3 ตัว ${redSpan('(แปลเพิ่ม)')}</h3>
+            <p style="font-size: 19px; font-weight: bold; ${textShadow}">${additional3d.length > 0 ? additional3d.join(' - ') : noDataSpan}</p>
+            <h2 style="font-weight: bold; color: red; ${textShadow}">แนวทางเท่านั้น</h2>
+            <p style="font-size: 13px; ${textShadow}">Disclose : ${getFormattedDateTime()}</p>
+            <p style="font-size: 20px; ${textShadow}">หมายเหตุ : ${noteInput.startsWith('<span') ? noteInput : redSpan(noteInput)}</p>
+        </div>`;
+        // ===== END: แก้ไขโครงสร้าง HTML =====
+    }
+
+    function setupPopupControls() {
+        const resultContentWrapper = document.getElementById("resultContentWrapper");
+        if (!resultContentWrapper) return;
+        
+        // ===== START: เพิ่ม .topic-box เข้าไปใน list เพื่อให้ปรับขนาดได้ =====
+        const textElements = resultContentWrapper.querySelectorAll('p, h2, h3, .topic-box');
+        // ===== END: เพิ่ม .topic-box =====
+        const fsSlider = document.getElementById("popupFontSizeSlider");
+        const fsValueSpan = document.getElementById("popupFontSizeValue");
+        
+        textElements.forEach(el => {
+            if (!el.dataset.originalSize) {
+                el.dataset.originalSize = parseFloat(window.getComputedStyle(el).fontSize);
             }
         });
-        const sortedPairs = [...new Set(uniquePairs)].sort();
 
-return `
-<div style="position: relative; text-align: center; color: blue; --font-scale: 1;">
-  <!-- หัวข้อหลัก -->
-  <div class="result-header">
-    <div class="topic-box" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <img src="logo.png" class="header-logo" alt="logo" style="height: 2rem;">
-      <span style="
-        font-size: calc(clamp(1.5rem, 6vw, 2.25rem) * var(--font-scale));
-        font-weight: normal;
-        text-shadow: 
-          -1px -1px 0 white,
-           1px -1px 0 white,
-          -1px  1px 0 white,
-           1px  1px 0 white,
-           ${commonData.textShadow};
-        background: linear-gradient(90deg, #0d47a1, #42a5f5);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      ">
-        ${commonData.topicName}
-      </span>
-      <img src="logo.png" class="header-logo" alt="logo" style="height: 2rem;">
-    </div>
-  </div>
+        function updateFontSize() {
+            const scale = fsSlider.value;
+            textElements.forEach(el => {
+                const originalSize = parseFloat(el.dataset.originalSize);
+                if (originalSize) {
+                    el.style.fontSize = (originalSize * scale) + 'px';
+                }
+            });
+            fsValueSpan.textContent = "ขนาด: " + Math.round(scale * 100) + "%";
+        }
+        fsSlider.addEventListener("input", updateFontSize);
+        
+        const lhSlider = document.getElementById("popupLineHeightSlider");
+        const lhValueSpan = document.getElementById("popupLineHeightValue");
 
-  <div style="
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${commonData.topicNameHtml}
-  </div>
-  <div style="
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${commonData.topicTimeHtml}
-  </div>
+        function updateLineHeight() {
+            const lineHeight = lhSlider.value;
+            resultContentWrapper.style.lineHeight = lineHeight;
+            lhValueSpan.textContent = "ความสูงของบรรทัด: " + lineHeight;
+        }
+        lhSlider.addEventListener("input", updateLineHeight);
 
-  <!-- วันที่ -->
-  <p style="
-    font-size: calc(clamp(0.9rem, 3vw, 1.125rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${getThaiDate(commonData.date)}
-  </p>
+        const saveBtn = document.getElementById("saveResultAsImageBtn");
+        
+        const newSaveBtn = saveBtn.cloneNode(true);
+        saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
 
-  ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
+        newSaveBtn.addEventListener("click", function() {
+            const captureElement = document.querySelector(".popup-content");
+            const controlsElement = captureElement.querySelector('.controls');
 
-  <!-- หัวข้อหลัก 2 ตัว -->
-  <h2 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.4rem, 6vw, 2rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    2 ตัว <span style="color: red;">${num}</span> By : <span style="color: green;">${commonData.selectedPerson}</span>
-  </h2>
+            controlsElement.style.display = 'none';
+            
+            const originalPadding = captureElement.style.padding;
+            captureElement.style.padding = '7px';
 
-  <!-- หัวข้อย่อย -->
-  <h3 style="
-    font-weight: bold;
-    font-size: calc(clamp(1.2rem, 5.5vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    จัดชุด 2 ตัว
-  </h3>
-
-  <!-- ตัวเลข -->
-  <p style="
-    font-weight: bold;
-    white-space: nowrap; 
-    font-size: calc(clamp(1.1rem, 7vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${sortedPairs.join(' - ')}
-  </p>
-
-  <!-- คำเตือน -->
-  <h2 style="
-    font-weight: bold;
-    color: red; 
-    font-size: calc(clamp(1.2rem, 5.5vw, 1.75rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    แนวทางเท่านั้น
-  </h2>
-
-  <!-- Disclosure -->
-  <p style="
-    font-size: calc(clamp(0.9rem, 3vw, 1.125rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    Disclose : ${getFormattedDate(new Date())} ${getThaiTime()}
-  </p>
-
-  <!-- หมายเหตุ -->
-  <p style="
-    font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale));
-    text-shadow: 
-      -1px -1px 0 white,
-       1px -1px 0 white,
-      -1px  1px 0 white,
-       1px  1px 0 white,
-       ${commonData.textShadow};
-  ">
-    ${commonData.noteHtml}
-  </p>
-</div>
-`;
-}
-
-function generateResultHTML() {
-  const num = document.getElementById("numberInput").value;
-  if (isNaN(num) || (num.length < 2 || num.length > 4)) {
-    alert("กรุณากรอกตัวเลข 2, 3 หรือ 4 หลักให้ถูกต้อง");
-    return null;
-  }
-
-  const dateInputStr = document.getElementById("dateInput").value;
-  const date = parseThaiDate(dateInputStr);
-  if (!date) {
-    alert("รูปแบบวันที่ไม่ถูกต้อง กรุณาใช้รูปแบบ: วว/ดด/ปปปป (เช่น 15/07/2568)");
-    return null;
-  }
-
-  const lunarDate = getLunarDate(date);
-  let noteValue = document.getElementById("noteInput").value.trim();
-  const engravedShadowStyle = "text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);";
-
-  // ปรับปรุงส่วน lunarHtml ให้ใช้คลาสใหม่และปรับขนาดฟอนต์
-  const lunarHtml = lunarDate ? 
-    `<p class="lunar-date" style="color: ${lunarDate.includes('วันพระ') ? 'red' : 'green'};">( ${lunarDate} )</p>` : '';
-
-const commonData = {
-  date: date,
-  topicName: getTopicName(),
-  topicNameHtml: (() => { 
-    const name = getTopicName();
-    const time = getTopicTime();
-    // แก้ไขส่วนนี้ - แยกเป็นสองบรรทัด
-    return `<p class="topic-main">${name}</p>`; 
-  })(),
-  topicTimeHtml: (() => { 
-    const t = getTopicTime(); 
-    // แก้ไขส่วนนี้ - แสดงเวลาต่างหาก
-    return t ? `<p class="topic-time">เวลา ${t} น.</p>` : ''; 
-  })(),
-  selectedPerson: getSelectedPerson(),
-  lunarHtml: lunarHtml,
-  noteHtml: `หมายเหตุ : ${noteValue ? `<span style="color: red;">${noteValue}</span>` : '<span style="color: red;">No remarks</span>'}`,
-  textShadow: engravedShadowStyle
-};
-
-  if (num.length === 2) { return generate2DigitHTML(num, commonData); }
-  else if (num.length === 3) { return generate3DigitHTML(num, commonData); }
-  else if (num.length === 4) { return generate4DigitHTML(num, commonData); }
-  return null;
-}
-
-function displayResultInPopup() {
-const resultHtml = generateResultHTML();
-if (resultHtml) {
-const wrapper = document.getElementById("resultContentWrapper");
-wrapper.innerHTML = resultHtml;
-
-// Reset the slider and the CSS variable
-document.getElementById("popupFontSizeSlider").value = 1.0;
-const resultDiv = wrapper.querySelector('div');
-if (resultDiv) {
-resultDiv.style.setProperty('--font-scale', '1');
-}
-
-initializePopupControls();
-showResultPopup();
-}
-}
-
-// Called when the popup is generated to set initial states
-function initializePopupControls() {
-  const lhSlider = document.getElementById("popupLineHeightSlider");
-  const fsSlider = document.getElementById("popupFontSizeSlider");
-  const fsValueSpan = document.getElementById("popupFontSizeValue");
-  const numLength = document.getElementById("numberInput").value.length;
-  const resultDiv = document.querySelector("#resultContentWrapper > div");
-
-  // ตั้งค่าเริ่มต้นของ font scale ตามจำนวนตัวเลข
-  let defaultFontScale;
-  if (numLength === 2) {
-    defaultFontScale = 1.5;    // 150% สำหรับ 2 ตัว
-    lhSlider.min = "0.8"; lhSlider.max = "2.5"; lhSlider.value = "1.4";
-  } else if (numLength === 3) {
-    defaultFontScale = 1.0;   // 100% สำหรับ 3 ตัว
-    lhSlider.min = "0.5"; lhSlider.max = "2.5"; lhSlider.value = "1.0";
-  } else { // 4 digits
-    defaultFontScale = 1.4;    // 100% สำหรับ 4 ตัว
-    lhSlider.min = "0.5"; lhSlider.max = "2.5"; lhSlider.value = "1.2";
-  }
-
-  // ตั้งค่า slider และค่าเริ่มต้น
-  fsSlider.value = defaultFontScale;
-  if (resultDiv) {
-    resultDiv.style.setProperty('--font-scale', defaultFontScale);
-  }
-  fsValueSpan.textContent = `ขนาด: ${Math.round(defaultFontScale * 100)}%`;
-
-  // ตั้งค่า line height
-  updateLineHeight();
-}
-
-// Global scope functions for slider controls
-function updateFontSize() {
-const fsSlider = document.getElementById("popupFontSizeSlider");
-const fsValueSpan = document.getElementById("popupFontSizeValue");
-const resultDiv = document.querySelector("#resultContentWrapper > div");
-
-if (!fsSlider || !resultDiv) return;
-
-const scale = fsSlider.value;
-resultDiv.style.setProperty('--font-scale', scale);
-fsValueSpan.textContent = `ขนาด: ${Math.round(scale * 100)}%`;
-}
-
-function updateLineHeight() {
-const lhSlider = document.getElementById("popupLineHeightSlider");
-const lhValueSpan = document.getElementById("popupLineHeightValue");
-const resultContentWrapper = document.getElementById("resultContentWrapper");
-if (!lhSlider || !resultContentWrapper) return;
-
-const lineHeight = lhSlider.value;
-resultContentWrapper.style.lineHeight = lineHeight;
-lhValueSpan.textContent = `ความสูงบรรทัด: ${lineHeight}`;
-}
-
-// === PAGE INITIALIZATION & MANAGEMENT LOGIC ===
-document.addEventListener("DOMContentLoaded", function() {
-// Attach event listeners ONCE
-document.getElementById("popupFontSizeSlider").addEventListener("input", updateFontSize);
-document.getElementById("popupLineHeightSlider").addEventListener("input", updateLineHeight);
-document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
-
-document.getElementById("saveResultAsImageBtn").addEventListener("click", function() {
-  const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
-  const controlsElement = captureElement.querySelector('.controls');
-  const num = document.getElementById("numberInput").value; // ดึงค่าตัวเลขจาก input
-
-  controlsElement.style.display = 'none';
-  const originalPadding = captureElement.style.padding;
-  captureElement.style.padding = '2px 2px 2px 2px';
-
-  html2canvas(captureElement, {
-    useCORS: true,
-    scale: 4,
-    backgroundColor: '#FFFFD1',
-    allowTaint: true,
-    onclone: function(clonedDoc) {
-      const clonedBackground = clonedDoc.querySelector('.background-logo-real');
-      if (clonedBackground) {
-        clonedBackground.style.opacity = '0.4';
-      }
+            html2canvas(captureElement, {
+                useCORS: true,
+                scale: 4,
+                backgroundColor: '#FFFFD1'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const num = document.getElementById("numberInput").value || "XXX";
+                link.download = `Result-${num}-${Date.now()}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }).catch(err => {
+                console.error("เกิดข้อผิดพลาดในการสร้างรูปภาพ:", err);
+                alert("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้");
+            }).finally(() => {
+                controlsElement.style.display = '';
+                captureElement.style.padding = originalPadding;
+            });
+        });
+        
+        updateFontSize();
+        updateLineHeight();
     }
-  }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = `Result-Gen-${num}-${Date.now()}.png`; // ใช้รูปแบบชื่อไฟล์ใหม่
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).finally(() => {
-    controlsElement.style.display = '';
-    captureElement.style.padding = originalPadding;
-  });
-});
-// Management Logic
-const TOPIC_STORAGE_KEY = 'customTopics_unified';
-const PERSON_STORAGE_KEY = 'customPersons_unified';
-const HIDDEN_TOPICS_KEY = 'hiddenDefaultTopics_unified';
-const HIDDEN_PERSONS_KEY = 'hiddenDefaultPersons_unified';
 
-const getStored = (key) => JSON.parse(localStorage.getItem(key)) || [];
-const setStored = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+    function displayResultInPopup() {
+        const resultHtml = generateResultHTML();
+        if (resultHtml) {
+            document.getElementById("resultContentWrapper").innerHTML = resultHtml;
+            setupPopupControls();
+            showResultPopup();
+        }
+    }
 
-function applyHiddenDefaults(selectId, storageKey) {
-const hiddenValues = getStored(storageKey);
-if (hiddenValues.length > 0) {
-document.querySelectorAll(`#${selectId} option[data-default="true"]`).forEach(opt => {
-if (hiddenValues.includes(opt.value)) { opt.hidden = true; }
-});
-}
-}
-
-function loadOptions(selectId, storageKey) {
-const select = document.getElementById(selectId);
-select.querySelectorAll('option:not([data-default])').forEach(opt => opt.value !== 'custom' && opt.remove());
-const otherOption = select.querySelector('option[value="custom"]');
-const stored = getStored(storageKey);
-stored.forEach(item => {
-const opt = document.createElement('option');
-opt.value = item.value;
-opt.textContent = item.text;
-select.insertBefore(opt, otherOption);
-});
-}
-
-applyHiddenDefaults('topicSelect', HIDDEN_TOPICS_KEY);
-applyHiddenDefaults('personSelect', HIDDEN_PERSONS_KEY);
-loadOptions('topicSelect', TOPIC_STORAGE_KEY);
-loadOptions('personSelect', PERSON_STORAGE_KEY);
-
-document.getElementById('toggleTopicControls').addEventListener('click', () => {
-document.getElementById('topicActions').style.display = document.getElementById('topicActions').style.display === 'flex' ? 'none' : 'flex';
-});
-document.getElementById('togglePersonControls').addEventListener('click', () => {
-document.getElementById('personActions').style.display = document.getElementById('personActions').style.display === 'flex' ? 'none' : 'flex';
-});
-
-const setupManagement = (type) => {
-const SELECT_ID = `${type}Select`;
-const STORAGE_KEY = `custom${type.charAt(0).toUpperCase() + type.slice(1)}s_unified`;
-const HIDDEN_STORAGE_KEY = `hiddenDefault${type.charAt(0).toUpperCase() + type.slice(1)}s_unified`;
-const MODAL_ID = `${type}Modal`;
-
-document.getElementById(`add${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-document.getElementById(`${type}ModalTitle`).textContent = `เพิ่ม${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}ใหม่`;
-if(type === 'topic') {
-document.getElementById('modalTopicName').value = ''; document.getElementById('modalTopicTime').value = ''; document.getElementById('topicEditIndex').value = '';
-} else {
-document.getElementById('modalPersonName').value = ''; document.getElementById('personEditValue').value = '';
-}
-document.getElementById(MODAL_ID).style.display = 'flex';
-});
-
-document.getElementById(`edit${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-const select = document.getElementById(SELECT_ID);
-const selectedOption = select.options[select.selectedIndex];
-if (selectedOption.value === 'custom' || selectedOption.hidden) return alert('ไม่สามารถแก้ไขรายการนี้ได้');
-
-document.getElementById(`${type}ModalTitle`).textContent = `แก้ไข${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}`;
-if (type === 'topic') {
-const [name, timePart] = selectedOption.value.split(' เวลา ');
-document.getElementById('modalTopicName').value = name;
-document.getElementById('modalTopicTime').value = timePart ? timePart.replace(' น.', '') : '';
-document.getElementById('topicEditIndex').value = selectedOption.value;
-} else {
-document.getElementById('modalPersonName').value = selectedOption.value;
-document.getElementById('personEditValue').value = selectedOption.value;
-}
-document.getElementById(MODAL_ID).style.display = 'flex';
-});
-
-document.getElementById(`delete${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-const select = document.getElementById(SELECT_ID);
-const selectedOption = select.options[select.selectedIndex];
-if (selectedOption.value === 'custom' || selectedOption.hidden) return alert('ไม่สามารถลบรายการนี้ได้');
-if (confirm(`คุณต้องการลบ "${selectedOption.textContent}" ใช่หรือไม่?`)) {
-if (selectedOption.hasAttribute('data-default')) {
-let hidden = getStored(HIDDEN_STORAGE_KEY);
-if (!hidden.includes(selectedOption.value)) { hidden.push(selectedOption.value); setStored(HIDDEN_STORAGE_KEY, hidden); }
-selectedOption.hidden = true;
-select.selectedIndex = [...select.options].findIndex(o => !o.hidden);
-} else {
-let options = getStored(STORAGE_KEY);
-options = options.filter(opt => opt.value !== selectedOption.value);
-setStored(STORAGE_KEY, options);
-loadOptions(SELECT_ID, STORAGE_KEY);
-}
-}
-});
-
-document.getElementById(`save${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-let name, time, oldValue, newValue;
-if (type === 'topic') {
-name = document.getElementById('modalTopicName').value.trim();
-time = document.getElementById('modalTopicTime').value.trim();
-oldValue = document.getElementById('topicEditIndex').value;
-if (!name) return alert('กรุณากรอกชื่อหัวข้อ');
-newValue = time ? `${name} เวลา ${time} น.` : name;
-} else {
-name = document.getElementById('modalPersonName').value.trim();
-oldValue = document.getElementById('personEditValue').value;
-if (!name) return alert('กรุณากรอกชื่อผู้บอก');
-newValue = name;
-}
-
-let options = getStored(STORAGE_KEY);
-const select = document.getElementById(SELECT_ID);
-
-if (oldValue) { // Edit Mode
-const oldOptionEl = select.querySelector(`option[value="${oldValue}"]`);
-if (oldOptionEl && oldOptionEl.hasAttribute('data-default')) {
-let hidden = getStored(HIDDEN_STORAGE_KEY);
-if (!hidden.includes(oldValue)) { hidden.push(oldValue); setStored(HIDDEN_STORAGE_KEY, hidden); }
-oldOptionEl.hidden = true;
-if (!options.some(opt => opt.value === newValue)) { options.push({ value: newValue, text: newValue }); }
-} else {
-const index = options.findIndex(opt => opt.value === oldValue);
-if (index > -1) options[index] = { value: newValue, text: newValue };
-else options.push({ value: newValue, text: newValue });
-}
-} else { // Add Mode
-if (options.some(opt => opt.value === newValue) || [...select.options].some(o => o.value === newValue && !o.hidden)) { return alert('มีรายการนี้อยู่แล้ว'); }
-options.push({ value: newValue, text: newValue });
-}
-setStored(STORAGE_KEY, options);
-loadOptions(SELECT_ID, STORAGE_KEY);
-select.value = newValue;
-document.getElementById(MODAL_ID).style.display = 'none';
-});
-
-document.getElementById(`reset${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-if (confirm(`คุณต้องการคืนค่ารายการ${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}ทั้งหมดใช่หรือไม่?\n(รายการที่สร้างเองและซ่อนไว้จะถูกลบทั้งหมด)`)) {
-localStorage.removeItem(STORAGE_KEY);
-localStorage.removeItem(HIDDEN_STORAGE_KEY);
-location.release();
-}
-});
-
-document.getElementById(`cancel${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-document.getElementById(MODAL_ID).style.display = 'none';
-});
-};
-
-setupManagement('topic');
-setupManagement('person');
-
-const dateInput = document.getElementById('dateInput');
-const calendarButton = document.getElementById('calendarButton');
-const hiddenDateInput = document.getElementById('hiddenDateInput');
-const today = new Date();
-dateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
-calendarButton.addEventListener('click', () => {
-try { hiddenDateInput.showPicker(); } catch (error) { hiddenDateInput.click(); }
-});
-hiddenDateInput.addEventListener('change', (e) => {
-    const selectedDate = e.target.value;
-    if (selectedDate) {
-        const parts = selectedDate.split('-');
-        dateInput.value = `${parts[2]}/${parts[1]}/${parseInt(parts[0], 10) + 543}`;
-    } else {
-        // เมื่อผู้ใช้ล้างค่า ให้ตั้งเป็นวันปัจจุบัน
+    // ===== Page Initialization =====
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('topicSelect').addEventListener('change', function() {
+            const isCustom = this.value === 'custom';
+            document.getElementById('customTopicContainer').style.display = isCustom ? 'flex' : 'none';
+            if (isCustom) document.getElementById('topicNameInput').focus();
+        });
+        document.getElementById('personSelect').addEventListener('change', function() {
+            const isCustom = this.value === 'custom';
+            document.getElementById('personCustomInput').style.display = isCustom ? 'block' : 'none';
+            if (isCustom) document.getElementById('personCustomInput').focus();
+        });
+        
         const today = new Date();
-        dateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
-    }
-});
-});
+        document.getElementById("dateInput").value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        
+        document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
+    });
 
-// --- PWA Service Worker Registration ---
-if ('serviceWorker' in navigator) {
-window.addEventListener('load', () => {
-navigator.serviceWorker.register('./sw-unified.js')
-.then(reg => console.log('Unified Service Worker registered successfully:', reg))
-.catch(err => console.log('Service Worker registration failed:', err));
-});
-}
+    // --- PWA Service Worker Registration ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw-3digit.js')
+                .then(reg => console.log('Service Worker for 3-digit registered successfully:', reg))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        });
+    }

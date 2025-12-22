@@ -3,239 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าหลักรวมแอปพลิเคชัน</title>
+    <title>เมนูหลัก Juckphai</title>
     
-    <link rel="manifest" href="manifest.json">
-    
-    <meta name="theme-color" content="#FF9800"/>
-    
+    <!-- PWA-related additions for main menu -->
+    <link rel="manifest" href="manifest-main.json">
+    <meta name="theme-color" content="#1e40af"/>
     <link rel="apple-touch-icon" href="192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="บริการข้อมูลหวย">
+    <meta name="apple-mobile-web-app-title" content="เมนู Juckphai">
+    <!-- End of PWA-related additions -->
     
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ตั้งค่าพื้นฐาน */
-        body {
-            font-family: 'Kanit', sans-serif;
-            background: linear-gradient(135deg, #fff3e0 0%, #fffde7 100%); /* พื้นหลังแบบไล่เฉดสี */
+        /* --- CSS Reset & Base Styles --- */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box; 
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Kanit', 'Arial', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            color: #1e40af;
+            line-height: 1.6;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-text-size-adjust: 100%;
         }
 
-        /* กรอบหลัก (Main Frame) */
+        /* --- Main Container --- */
         .container {
+            max-width: 700px;
+            border: 1.5px solid #F77DDA;
             background-color: #fffde7;
-            width: 100%;
-            max-width: 450px; /* จำกัดความกว้างไม่ให้ใหญ่เกินไปในคอม */
-            text-align: center;
-            padding: 40px 30px;
-            border-radius: 25px; /* มุมโค้งมน */
-            border: 3px solid #ffcc80; /* เส้นขอบสีส้มอ่อน */
-            box-shadow: 0 10px 30px rgba(230, 81, 0, 0.15); /* เงานุ่มๆ */
-            position: relative;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ส่วนโลโก้ */
-        .logo-area {
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-area img {
-            max-width: 120px;
-            height: auto;
-            border-radius: 50%; /* ถ้าโลโก้เป็นสี่เหลี่ยม จะทำให้มน */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            background-color: white;
-            padding: 5px;
-        }
-
-        /* หัวข้อ */
-        h1 {
-            color: #ef6c00;
-            font-size: 26px;
-            font-weight: 600;
-            margin: 10px 0 30px 0;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
-        }
-
-        /* ตารางเมนู */
-        .menu-grid {
+            border-radius: 15px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            padding: 15px;
         }
 
-        /* การ์ดเมนู (ปุ่ม) */
-        .menu-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 25px;
-            border-radius: 20px;
-            text-decoration: none;
-            color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-            border: 0; /* ลบขอบเดิมออกใช้ Shadow แทน */
-        }
-
-        /* เอฟเฟกต์เมื่อเอาเมาส์ชี้ */
-        .menu-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .menu-card:active {
-            transform: scale(0.98);
-        }
-
-        /* ปุ่มแอปที่ 1 (สีส้ม) */
-        .card-1 {
-            background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);
-            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
-        }
-
-        /* ปุ่มแอปที่ 2 (สีฟ้า) */
-        .card-2 {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
-        }
-
-        /* เนื้อหาในการ์ด */
-        .card-content {
-            text-align: left;
-            z-index: 1;
-        }
-
-        .card-title {
-            font-size: 22px;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        .card-desc {
-            font-size: 14px;
-            font-weight: 300;
-            opacity: 0.95;
-        }
-
-        /* ไอคอนในการ์ด */
-        .card-icon {
-            font-size: 32px;
-            background: rgba(255,255,255,0.2);
-            padding: 12px;
+        /* --- Card Style for Sections --- */
+        .card {
+            background-color: #FFFFD1;
             border-radius: 15px;
-            width: 50px;
-            height: 50px;
+            border: 1.5px solid #0070C0;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+            overflow: hidden; /* Important for border-radius */
+            transition: transform 0.3s ease;
+        }
+        
+        /* --- Main Section Styles --- */
+        .main-section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            margin: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .main-section-header:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .main-section-header.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .main-section-header.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .main-section-content {
+            display: none;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 0;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .main-section-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* --- Sub-Section Styles --- */
+        .sub-section-header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 3px solid #667eea;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .sub-section-header:hover {
+            background: linear-gradient(135deg, #fed6e3 0%, #a8edea 100%);
+            transform: translateX(3px);
+        }
+
+        .sub-section-header.active {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .sub-section-header.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .sub-section-content { 
+            display: none;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin: 3px 0 10px 0;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .sub-section-content.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+            display: inline-block;
+            font-size: 12px;
+        }
+
+        /* --- Section Header Variants --- */
+        .header-translate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header-translate:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .header-translate.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .header-fill-form {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .header-fill-form:hover {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        }
+
+        .header-fill-form.active {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: #4b5563; /* Gray text */
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* --- Button Grid Layout --- */
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 columns always */
+            gap: 10px;
+            width: 100%;
+        }
+
+        /* สำหรับแถวที่มีปุ่มจำนวนคี่ - ปุ่มสุดท้ายจะอยู่กึ่งกลาง */
+        .button-grid.odd-items .btn:last-child {
+            grid-column: 1 / span 2;
+            justify-self: center;
+            max-width: 50%; /* จำกัดความกว้างสูงสุด */
+        }
+
+        /* --- Base Button Styling --- */
+        .btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(5px);
+            padding: 10px 8px; 
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.85rem; 
+            font-weight: 500;
+            font-family: 'Kanit', sans-serif;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-height: 44px;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            gap: 8px;
         }
 
-        /* เส้นแบ่งตกแต่ง */
-        .divider {
-            height: 2px;
-            background: #ffecb3;
-            margin: 30px 50px;
-            border-radius: 2px;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        /* Footer */
+        /* --- สีปุ่มเมนูย่อยให้แตกต่างกันในแต่ละปุ่ม --- */
+        .button-grid .btn.color-1 { background-image: linear-gradient(45deg, #3b82f6, #60a5fa); }
+        .button-grid .btn.color-2 { background-image: linear-gradient(45deg, #22c55e, #4ade80); }
+        .button-grid .btn.color-3 { background-image: linear-gradient(45deg, #f97316, #fb923c); }
+        .button-grid .btn.color-4 { background-image: linear-gradient(45deg, #a855f7, #c084fc); }
+        .button-grid .btn.color-5 { background-image: linear-gradient(45deg, #ef4444, #f87171); }
+        .button-grid .btn.color-6 { background-image: linear-gradient(45deg, #6366f1, #818cf8); } /* Indigo */
+        .button-grid .btn.color-7 { background-image: linear-gradient(45deg, #84cc16, #a3e635); } /* Lime */
+        .button-grid .btn.color-8 { background-image: linear-gradient(45deg, #d946ef, #e879f9); } /* Fuchsia */
+        .button-grid .btn.color-9 { background-image: linear-gradient(45deg, #f59e0b, #facc15); } /* Amber */
+        
+        /* --- Footer --- */
         footer {
-            color: #9e9e9e;
-            font-size: 12px;
-            font-weight: 300;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
         }
 
-        /* Responsive สำหรับมือถือ */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px; /* ลดระยะขอบในมือถือ */
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-5px); 
             }
-            .container {
-                padding: 30px 20px;
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
             }
-            h1 {
-                font-size: 24px;
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-5px);
             }
-            .menu-card {
-                padding: 15px 20px;
+            to { 
+                opacity: 1;
+                transform: translateY(0);
             }
-            .card-title {
-                font-size: 20px;
+        }
+
+        /* --- Responsive Styles for Mobile --- */
+        @media (max-width: 600px) {
+            body { 
+                padding: 10px 5px; 
             }
-            .card-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 24px;
+            
+            .container { 
+                gap: 10px; 
+                padding: 10px;
+            }
+            
+            .main-section-header { 
+                font-size: 15px; 
+                padding: 8px 12px;
+            }
+            
+            .btn { 
+                font-size: 0.8rem; 
+                padding: 8px 6px;
+                min-height: 40px;
+                gap: 6px;
+            }
+            
+            /* ปรับให้ปุ่มแสดงใน 2 คอลัมน์เหมือนเดิม */
+            .button-grid { 
+                grid-template-columns: 1fr 1fr; /* 2 columns on mobile too */
+                gap: 8px;
+            }
+            
+            .section-subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 12px;
             }
         }
     </style>
+    <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+
+        function toggleMainSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            const isActive = header.classList.contains('active');
+
+            // ปิด section อื่นๆ ทั้งหมดก่อน
+            document.querySelectorAll('.main-section-header.active').forEach(activeHeader => {
+                if (activeHeader !== header) {
+                    activeHeader.classList.remove('active');
+                    activeHeader.nextElementSibling.classList.remove('active');
+                }
+            });
+
+            // เปิด/ปิด section ที่เลือก
+            header.classList.toggle('active', !isActive);
+            content.classList.toggle('active', !isActive);
+        }
+
+        function toggleSubSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        // ฟังก์ชันตรวจสอบจำนวนปุ่มและจัดกึ่งกลางเมื่อเป็นเลขคี่
+        function centerOddButtons() {
+            document.querySelectorAll('.button-grid').forEach(grid => {
+                const buttons = grid.querySelectorAll('.btn');
+                const buttonCount = buttons.length;
+                
+                // ถ้าจำนวนปุ่มเป็นเลขคี่ ให้เพิ่มคลาส odd-items
+                if (buttonCount % 2 !== 0) {
+                    grid.classList.add('odd-items');
+                } else {
+                    grid.classList.remove('odd-items');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ทำให้ส่วนของ Section แรกเปิดอยู่เสมอเมื่อโหลดหน้า
+            const firstHeader = document.querySelector('.main-section-header');
+            if (firstHeader) {
+                firstHeader.classList.add('active');
+                firstHeader.nextElementSibling.classList.add('active');
+            }
+            
+            // ตรวจสอบและจัดกึ่งกลางปุ่มเมื่อเป็นเลขคี่
+            centerOddButtons();
+        });
+        
+    </script>
 </head>
 <body>
 
     <div class="container">
-        <div class="logo-area">
-            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        <!-- Section: แปลตัวเลข -->
+        <div class="card">
+            <div class="main-section-header header-translate active" onclick="toggleMainSection('translate-section')">
+                <span><i class="fas fa-language"></i> เมนูฟอร์มแปลตัวเลข</span>
+                <span class="arrow">▶</span>
+            </div>
+            <div id="translate-section" class="main-section-content active">
+                <p class="section-subtitle">เลือกรายการแปลตัวเลขที่ต้องการใช้งาน</p>
+                <div class="button-grid">
+                    <button class="btn color-1" onclick="navigateTo('1.html')">
+                        <i class="fas fa-exchange-alt"></i> แปล 2 ถึง 4 ตัว
+                    </button>
+                    <button class="btn color-2" onclick="navigateTo('2.html')">
+                        <i class="fas fa-sync-alt"></i> แปล 2 ถึง 4 ตัว V2
+                    </button>
+                    <button class="btn color-5" onclick="navigateTo('9.html')">
+                        <i class="fas fa-cube"></i> แปลแค่ 3 ตัว
+                    </button>
+                    <button class="btn color-4" onclick="navigateTo('4.html')">
+                        <i class="fas fa-ban"></i> ไม่แปล 2 และ 3 ตัว
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <h1>ระบบบริการข้อมูล</h1>
-
-        <div class="menu-grid">
-            <a href="2.html" class="menu-card card-2">
-                <div class="card-content">
-                    <span class="card-title">แปลตัวเลข</span>
-                    <span class="card-desc">วิเคราะห์และจับคู่เลขเด็ด</span>
+        <!-- Section: กรอกผลตัวเลข -->
+        <div class="card">
+            <div class="main-section-header header-fill-form" onclick="toggleMainSection('fill-form-section')">
+                <span><i class="fas fa-edit"></i> เมนูฟอร์มกรอกผลตัวเลข</span>
+                <span class="arrow">▶</span>
+            </div>
+            <div id="fill-form-section" class="main-section-content">
+                <p class="section-subtitle">เลือกกลุ่มเพื่อกรอกผล</p>
+                <div class="button-grid">
+                    <button class="btn color-6" onclick="navigateTo('5.html')">
+                        <i class="fas fa-users"></i> กลุ่มลาว+รัฐบาล
+                    </button>
+                    <button class="btn color-1" onclick="navigateTo('8.html')">
+                        <i class="fas fa-user-tie"></i> กลุ่มลาว+รัฐบาลV2.1
+                    </button>
                 </div>
-                <div class="card-icon">🔢</div>
-            </a>
-
-            <a href="1.html" class="menu-card card-1">
-                <div class="card-content">
-                    <span class="card-title">กรอกผลรางวัล</span>
-                    <span class="card-desc">กรอกผลลาวและรัฐบาลไทย</span>
-                </div>
-                <div class="card-icon">🏆</div>
-            </a>
+            </div>
         </div>
-
-        <div class="divider"></div>
-
-        <footer>
-            &copy; 2025 Juckphai. All Rights Reserved.
-        </footer>
+        
     </div>
-
+      
+    <footer>
+        &copy; 2025 Juckphai. All Rights Reserved.
+    </footer>
+    
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(reg => console.log('Service Worker registered successfully:', reg))
-                    .catch(err => console.error('Service Worker registration failed:', err));
-            });
-        }
+    // --- PWA Service Worker Registration for Main Menu ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw-main.js')
+                .then(registration => {
+                    console.log('Main Menu Service Worker registered successfully:', registration);
+                })
+                .catch(error => {
+                    console.log('Main Menu Service Worker registration failed:', error);
+                });
+        });
+    }
     </script>
-
 </body>
 </html>

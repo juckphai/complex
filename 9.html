@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลรางวัลกลุ่มลาวและรัฐบาล</title>
+    
+    <link rel="manifest" href="manifest-all-lao.json">
+    <meta name="theme-color" content="#FF9800"/>
+    <link rel="apple-touch-icon" href="192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ผลรางวัลกลุ่มลาว">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style9.css">
+</head>
+<body>
+    <h1>ฟอร์มแปลตัวเลข 3 ตัว</h1>
+    
+    <div class="form-container">
+        <input type="text" id="numberInput" placeholder="กรุณากรอกตัวเลข 3 หลัก" pattern="\d{3}" maxlength="3" inputmode="numeric" />
+        
+        <div class="custom-select-wrapper">
+            <select id="topicSelect" class="custom-select">
+                <option value="ลาวประตูชัย เวลา 05.45 น.">ลาวประตูชัย เวลา 05.45 น.</option>
+                <option value="ลาวสันติภาพ เวลา 06.45 น.">ลาวสันติภาพ เวลา 06.45 น.</option>
+                <option value="ประชาชนลาว เวลา 07.45 น.">ประชาชนลาว เวลา 07.45 น.</option>
+                <option value="ลาว Extra เวลา 08.30 น.">ลาว Extra เวลา 08.30 น.</option>
+                <option value="ลาว TV เวลา 10.30 น.">ลาว TV เวลา 10.30 น.</option>
+                <option value="ลาว HD เวลา 13.45 น.">ลาว HD เวลา 13.45 น.</option>
+                <option value="ลาวสตาร์ เวลา 15.45 น.">ลาวสตาร์ เวลา 15.45 น.</option>
+                <option value="รัฐบาล เวลา 15.45 น.">รัฐบาล เวลา 15.45 น.</option>
+                <option value="ฮานอยกาชาด เวลา 16.30 น.">ฮานอยกาชาด เวลา 16.30 น.</option>
+                <option value="อานอยพิเศษ เวลา 17.30 น.">อานอยพิเศษ เวลา 17.30 น.</option>
+                <option value="ฮานอย เวลา 18.30 น.">ฮานอย เวลา 18.30 น.</option>
+                <option value="ฮานอย VIP เวลา 19.30 น.">ฮานอย VIP เวลา 19.30 น.</option>
+                <option value="ลาวสามัคคี เวลา 20.30 น.">ลาวสามัคคี เวลา 20.30 น.</option>
+                <option value="ลาวพัฒนา เวลา 20.30 น.">ลาวพัฒนา เวลา 20.30 น.</option>
+                <option value="ลาวอาเซียน เวลา 21.00 น.">ลาวอาเซียน เวลา 21.00 น.</option>
+                <option value="ลาว VIP เวลา 21.30 น.">ลาว VIP เวลา 21.30 น.</option>
+                <option value="ลาวสามัคคี VIP เวลา 21.30 น.">ลาวสามัคคี VIP เวลา 21.30 น.</option>
+                <option value="ลาวสตาร์ VIP เวลา 22.00 น.">ลาวสตาร์ VIP เวลา 22.00 น.</option>
+                <option value="ลาวกาชาด เวลา 23.30 น.">ลาวกาชาด เวลา 23.30 น.</option>
+                <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+            </select>
+            <div id="customTopicContainer" class="custom-input-container" style="display: none;">
+                <input type="text" id="topicNameInput" class="custom-input-split" placeholder="ชื่อหวย (เช่น: ลาว TV)" style="width: 60%;">
+                <input type="text" id="topicTimeInput" class="custom-input-split" placeholder="เวลา (เช่น: 10.30 น.)" style="width: 40%;">
+            </div>
+        </div>
+        
+        <div class="custom-select-wrapper">
+            <select id="personSelect" class="custom-select">
+                <option value="@">@</option>   
+               <option value="Team">Team</option>
+                <option value="Udon Don">Udon Don</option>
+                <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+            </select>
+            <input type="text" id="personCustomInput" class="custom-input" placeholder="กรอกชื่อผู้บอกตัวเลข">
+        </div>
+        
+        <input type="date" id="dateInput" />
+        <input type="text" id="noteInput" placeholder="หมายเหตุ (ถ้ามี)" />
+        <button id="convertButton">แปลตัวเลข</button>
+    </div>
+    
+    <button id="homeButton" class="homeButton" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
+
+    <!-- ---------- Popup Container ---------- -->
+    <div id="resultPopupOverlay" class="popup-overlay">
+        <div class="popup-content">
+            <div id="resultContainerDiv" class="result-container-popup">
+                <!-- ===== START: ลบ img logo พื้นหลังออก ===== -->
+                <!-- <img src="logo.png" class="result-bg-logo" alt=""> -->
+                <!-- ===== END: ลบ img logo พื้นหลังออก ===== -->
+                <div id="resultContentWrapper">
+                    <!-- เนื้อหาผลลัพธ์จะถูกใส่ที่นี่โดย JavaScript -->
+                </div>
+            </div>
+            <div class="controls">
+                <button id="saveResultAsImageBtn" class="close-popup-btn" style="background-color: #007bff; margin-bottom: 20px;">บันทึกเป็นรูปภาพ</button>
+                
+                <div class="control-group">
+                    <label for="popupFontSizeSlider">ปรับขนาดตัวอักษร:</label>
+                    <input type="range" id="popupFontSizeSlider" min="0.5" max="1.5" step="0.05" value="1.0">
+                    <span id="popupFontSizeValue">ขนาด: 100%</span>
+                </div>
+                <div class="control-group">
+                    <label for="popupLineHeightSlider">ปรับขนาดของบรรทัด:</label>
+                    <input type="range" id="popupLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.0">
+                    <span id="popupLineHeightValue">ความสูงของบรรทัด: 1.0</span>
+                </div>
+                <button class="close-popup-btn" onclick="closeResultPopup()">ปิดหน้าต่างนี้</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div style="text-align: center; margin-bottom: 20px;">
+            &copy; 2025 Juckphai. All Rights Reserved.
+        </div>
+    </footer>
+
+</footer>  
+    <script src="script9.js"></script>
+</body>
+</html>
