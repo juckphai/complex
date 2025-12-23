@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เมนูหลัก Juckphai</title>
     
-    <!-- PWA-related additions for main menu -->
     <link rel="manifest" href="manifest-main.json">
     <meta name="theme-color" content="#1e40af"/>
     <link rel="apple-touch-icon" href="192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="เมนู Juckphai">
-    <!-- End of PWA-related additions -->
-    
-    <!-- Google Fonts: Kanit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -58,6 +53,68 @@
             padding: 15px;
         }
 
+        /* --- Install Guide Styles (New) --- */
+        .install-prompt {
+            background-color: #ffffff;
+            border: 2px solid #ff9800; /* สีส้มให้ดูเด่น */
+            border-radius: 12px;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: none; /* ซ่อนไว้ก่อน จะโชว์ด้วย JS */
+            margin-bottom: 5px;
+        }
+
+        .install-prompt h4 {
+            margin-bottom: 10px;
+            color: #e65100;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .install-prompt ul {
+            padding-left: 25px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .install-prompt li {
+            margin-bottom: 6px;
+        }
+
+        .close-prompt {
+            position: absolute;
+            top: 5px;
+            right: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-prompt:hover {
+            color: #333;
+        }
+        
+        .btn-hide-prompt {
+            background-color: #6c757d; 
+            color: white; 
+            border: none; 
+            padding: 6px 16px; 
+            border-radius: 20px; 
+            cursor: pointer;
+            font-family: 'Kanit', sans-serif;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-hide-prompt:hover {
+            background-color: #5a6268;
+        }
+
         /* --- Card Style for Sections --- */
         .card {
             background-color: #FFFFD1;
@@ -87,13 +144,11 @@
         }
 
         .main-section-header:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
             transform: translateY(-1px);
             box-shadow: 0 4px 6px rgba(0,0,0,0.15);
         }
 
         .main-section-header.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
@@ -172,28 +227,37 @@
         }
 
         /* --- Section Header Variants --- */
+        /* 1. Purple/Blue Theme */
         .header-translate {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-
         .header-translate:hover {
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
         }
-
         .header-translate.active {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
+        /* 2. Blue/Cyan Theme */
         .header-fill-form {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
-
         .header-fill-form:hover {
             background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
         }
-
         .header-fill-form.active {
             background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        /* 3. Green/Teal Theme (New) */
+        .header-check-result {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .header-check-result:hover {
+            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+        }
+        .header-check-result.active {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
         }
 
         .section-subtitle {
@@ -374,6 +438,24 @@
                 }
             });
         }
+        
+        // --- ฟังก์ชันสำหรับจัดการ Install Guide (PWA) ---
+        function hideInstallPromptPermanently() {
+            const prompt = document.getElementById('install-guide');
+            if(prompt) {
+                prompt.style.display = 'none';
+                // บันทึกลง localStorage ว่าผู้ใช้กดปิดไปแล้ว
+                localStorage.setItem('installPromptDismissed', 'true');
+            }
+        }
+
+        function checkInstallPrompt() {
+            // ถ้ายังไม่เคยถูกปิด ให้แสดงขึ้นมา
+            if (!localStorage.getItem('installPromptDismissed')) {
+                const prompt = document.getElementById('install-guide');
+                if(prompt) prompt.style.display = 'block';
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             // ทำให้ส่วนของ Section แรกเปิดอยู่เสมอเมื่อโหลดหน้า
@@ -385,6 +467,9 @@
             
             // ตรวจสอบและจัดกึ่งกลางปุ่มเมื่อเป็นเลขคี่
             centerOddButtons();
+            
+            // ตรวจสอบสถานะกล่องแนะนำติดตั้งแอป
+            checkInstallPrompt();
         });
         
     </script>
@@ -392,7 +477,21 @@
 <body>
 
     <div class="container">
-        <!-- Section: แปลตัวเลข -->
+        
+        <div id="install-guide" class="install-prompt">
+            <span class="close-prompt" onclick="hideInstallPromptPermanently()">&times;</span>
+            <h4>📱 ติดตั้งแอปนี้ลงในเครื่องของคุณ!</h4>
+            <ul>
+                <li><b>📱 สำหรับ Android:</b> เบราว์เซอร์ Chrome จะมีปุ่ม "ติดตั้งแอป" หรือ "เพิ่มไปยังหน้าจอหลัก" แสดงขึ้นมาให้กด</li>
+                <li><b>📱 สำหรับ iPhone (iOS):</b> เปิดใน Safari แล้วกดที่ปุ่ม "แชร์" (Share) จากนั้นเลือก "เพิ่มไปยังหน้าจอโฮม" (Add to Home Screen)</li>
+            </ul>
+            <div style="text-align: center; margin-top: 10px;">
+                <button onclick="hideInstallPromptPermanently()" class="btn-hide-prompt">
+                    ❌ ไม่แสดงข้อความนี้อีก
+                </button>
+            </div>
+        </div>
+
         <div class="card">
             <div class="main-section-header header-translate active" onclick="toggleMainSection('translate-section')">
                 <span><i class="fas fa-language"></i> เมนูฟอร์มแปลตัวเลข</span>
@@ -417,10 +516,9 @@
             </div>
         </div>
 
-        <!-- Section: กรอกผลตัวเลข+ดูผล -->
         <div class="card">
             <div class="main-section-header header-fill-form" onclick="toggleMainSection('fill-form-section')">
-                <span><i class="fas fa-edit"></i> เมนูฟอร์มกรอกผลตัวเลข+ดูผล</span>
+                <span><i class="fas fa-edit"></i> เมนูฟอร์มกรอกผลตัวเลข</span>
                 <span class="arrow">▶</span>
             </div>
             <div id="fill-form-section" class="main-section-content">
@@ -432,11 +530,23 @@
                     <button class="btn color-6" onclick="navigateTo('8.html')">
                         <i class="fas fa-user-tie"></i> กลุ่มลาว+รัฐบาลV2.1
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="main-section-header header-check-result" onclick="toggleMainSection('check-result-section')">
+                <span><i class="fas fa-trophy"></i> เมนูดูผลรางวัล</span>
+                <span class="arrow">▶</span>
+            </div>
+            <div id="check-result-section" class="main-section-content">
+                <p class="section-subtitle">ตรวจสอบผลรางวัล</p>
+                <div class="button-grid">
                     <button class="btn color-7" onclick="navigateTo('11.html')">
-                        <i class="fas fa-user-tie"></i> ดูผลลาว
+                        <i class="fas fa-search-plus"></i> ดูผลลาว
                     </button>
                     <button class="btn color-8" onclick="navigateTo('12.html')">
-                        <i class="fas fa-user-tie"></i> ดูผลเวียดนาม
+                        <i class="fas fa-search-dollar"></i> ดูผลเวียดนาม
                     </button>
                 </div>
             </div>
