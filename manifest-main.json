@@ -1,6 +1,6 @@
 {
-  "name": "บริการข้อมูลหวยครบวงจร",
-  "short_name": "แปลและตรวจหวย",
+  "name": "๋Juckphai",
+  "short_name": "juck",
   "description": "รวมเครื่องมือแปลตัวเลข ทำนายฝัน และตรวจผลรางวัลลาว-ไทย",
   "start_url": "./index.html",
   "id": "lottery-unified-app",
@@ -48,4 +48,5 @@
       "label": "หน้าจอแปลตัวเลข"
     }
   ]
+
 }
