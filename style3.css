@@ -1,0 +1,288 @@
+  /* ===== Base Styles ===== */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #fffde7;
+        margin: 0;
+        padding: 0;
+        line-height: 1.0;
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 22px;
+        color: blue;
+        margin: 10px 0;
+        line-height: 1.0;
+    }
+    
+    footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 14px;
+        color: #95a5a6;
+    }
+
+    /* ===== Form Elements ===== */
+    input, select, button {
+        font-size: 18px;
+        padding: 10px;
+        width: 80%;
+        margin: 10px auto;
+        border-radius: 6px;
+        border: 1.5px solid #ddd;
+        display: block;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    input[type="date"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    
+    input[type="date"]::-webkit-datetime-edit {
+        text-align: center;
+        width: 100%;
+    }
+    
+    button#convertButton {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    button#convertButton:hover {
+        background-color: #45a049;
+    }
+
+    /* ===== Special Buttons ===== */
+    .homeButton {
+        display: block;
+        width: 90%;
+        max-width: 600px;
+        margin: 20px auto 10px;
+        padding: 10px 20px;
+        background-color: orange;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .homeButton:hover {
+        background-color: darkorange;
+    }
+    
+    /* ===== Container Styles ===== */
+    .form-container {
+        border: 1.5px solid orange;
+        background-color: #FEFEF0;
+        margin: 30px auto;
+        padding: 15px 5px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+        box-sizing: border-box;
+    }
+
+    /* ===== Custom Input Container Styles ===== */
+    .custom-input-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .custom-input-split {
+        flex: 1;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1.5px solid #ddd;
+        text-align: center;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
+    
+    .custom-select-wrapper {
+        position: relative;
+        width: 80%;
+        margin: 10px auto;
+    }
+
+    .custom-select {
+        width: 100%;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1.5px solid #ddd;
+        text-align: center;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: white;
+    }
+    
+    .custom-input {
+        width: 100%;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1.5px solid #ddd;
+        text-align: center;
+        margin-top: 5px;
+        display: none;
+    }
+
+.popup-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    padding: 20px 0;
+    align-items: center;
+}
+
+.popup-content {
+    background-color:  #FFFFD1;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 600px;
+    padding: 25px 5px; 
+    position: relative;
+    box-sizing: border-box;
+}
+    
+    .result-container-popup {
+        border: 1.5px solid #4CAF50;
+        background-color: #FFFFD1;
+        margin: 0;
+        padding: 15px 5px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+        position: relative;
+        min-height: 300px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* ===== START: เพิ่ม CSS จากไฟล์ 01 สำหรับ Header และ Logo ===== */
+.result-header { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.header-logo { width: 40px; height: auto; }
+.topic-box {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+background-color: #FF75FF;
+border: 2px solid #0070C0;
+color: white;
+border-radius: 50px;
+padding: 2px 2px;
+font-size: 24px;
+font-weight: bold;
+/* Engraved effect for white text */
+text-shadow: -1px -1px 1px rgba(0,0,0,0.5), 1px 1px 1px rgba(255,255,255,0.5);
+}
+.topic-time {
+font-size: 18px;
+color: blue;
+font-weight: bold;
+/* Engraved effect for dark text */
+text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);
+margin-top: 0;
+margin-bottom: 10px;
+}
+    /* ===== END: เพิ่ม CSS จากไฟล์ 01 ===== */
+
+    #resultContentWrapper {
+        position: relative;
+        z-index: 1; 
+        color: blue;
+        line-height: 0.7; 
+    }
+
+    #resultContentWrapper p, #resultContentWrapper h2, #resultContentWrapper h3 {
+        margin: 0 0 10px 0;
+        line-height: inherit;
+    }
+
+    .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .control-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .control-group label,
+    .control-group span {
+        font-size: 16px;
+        color: blue;
+        margin-bottom: 5px;
+    }
+
+    .control-group input[type="range"] {
+        width: 80%;
+        max-width: 300px;
+        margin: 0;
+    }
+    
+    .close-popup-btn {
+        padding: 10px 20px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+        width: 90%;
+        max-width: 200px;
+        text-align: center;
+    }
+    
+    .close-popup-btn:hover { background-color: #d32f2f; }
+
+    /* ===== Responsive Styles ===== */
+    @media only screen and (max-width: 600px) {
+        .form-container {
+            margin: 20px;
+            width: calc(100% - 40px);
+        }
+
+        input, select, button {
+            width: 90%;
+        }
+        
+        .custom-select-wrapper {
+            width: 90%;
+        }
+        
+        .custom-input-container {
+            flex-direction: column;
+        }
+        
+        .custom-input-split {
+            width: 100%;
+        }
+    }
