@@ -1495,6 +1495,7 @@ const lunarData = {
   "31/12/2571": "วันอาทิตย์ แรม ๑ ค่ำ เดือนยี่ (๒) ปีวอก",
 };
 
+
 const getLunarDate = (date = new Date()) => {
     const key = `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth()+1).padStart(2,'0')}/${date.getFullYear()+543}`;
     return lunarData[key] || "";
@@ -1593,8 +1594,13 @@ function generateResultHTML() {
             }
         });
     }
+    
     // เรียงลำดับผลลัพธ์สุดท้ายและใส่เครื่องหมาย " - "
-    const upDownResult = [...upDownSet].sort().join(' - ');
+    // ===== แก้ไข: กรองเลขที่ซ้ำกับ additional3d ออก =====
+    const upDownResult = [...upDownSet]
+        .filter(val => !additional3d.includes(val)) // ตรวจสอบว่าไม่อยู่ใน additional3d
+        .sort()
+        .join(' - ');
     // ===== END: Logic จัดชุด ตัวเลข ขึ้นลง =====
 
     const textShadow = "text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;";
@@ -1616,10 +1622,10 @@ function generateResultHTML() {
             <h2 style="font-weight: bold; ${textShadow}">3 ตัว ${redSpan(num)} By : ${greenSpan(selectedPerson)}</h2>
             <h3 style="font-weight: bold; ${textShadow}">จัดชุด 3 ตัว (ปกติ)</h3>
             <p style="font-size: 19px; font-weight: bold; ${textShadow}">${thirdSet.join(' - ')}</p>
-            <h3 style="font-weight: bold; ${textShadow}">จัดชุด 3 ตัว ${redSpan('(คัดกรอง)')}</h3>
+            <h3 style="font-weight: bold; ${textShadow}">จัดชุด 3 ตัว ${redSpan('(เจ้าอาวาสนาคา)')}</h3>
             <p style="font-size: 19px; font-weight: bold; ${textShadow}">${additional3d.length > 0 ? additional3d.join(' - ') : noDataSpan}</p>
-            
-            <h3 style="font-weight: bold; ${textShadow}">จัดชุด ตัวเลข ขึ้นลง</h3>
+            <h3 style="font-weight: bold; ${textShadow}">จัดชุด 3 ตัว ${redSpan('(มัคนายกนาคา)')}</h3>
+
             <p style="font-size: 19px; font-weight: bold; ${textShadow}">${upDownResult}</p>
             
             <h2 style="font-weight: bold; color: red; ${textShadow}">แนวทางเท่านั้น</h2>
