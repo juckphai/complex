@@ -18,16 +18,15 @@
     <h1>ผลรางวัลกลุ่มลาวและรัฐบาล</h1>
 
     <div class="form-container">
+        <div class="form-group">
+            <label for="topicSelect">1. เลือกชนิดผลรางวัล</label>
+            <select id="topicSelect" style="max-width: 100%;">
+            </select>
+        </div>
+
+        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+
         <div id="laoLotteryFormContent">
-            
-            <div class="form-group">
-                <label for="topicSelect">1. เลือกชนิดผลรางวัล</label>
-                <select id="topicSelect" style="max-width: 100%;">
-                </select>
-            </div>
-
-            <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
-
             <div id="laoFields">
                 <div class="form-group">
                     <label for="dateInput">2. เลือกวันที่</label>
@@ -41,52 +40,53 @@
                     <button id="convertButton" class="convert-button">แจงรายละเอียด</button>
                 </div>
             </div>
+        </div>
 
-            <div id="thaiLotteryFormContent" class="thai-lottery-form">
-                <div class="thai-grid-container">
-                    <div class="thai-grid-full">
-                        <label for="draw-date">งวดวันที่ (วว/ดด/ปปปป)</label>
-                        <div class="thai-date-wrapper">
-                            <input type="text" id="draw-date" placeholder="วว/ดด/ปปปป (พ.ศ.)" />
-                            <button type="button" id="calendarButton">📅</button>
-                        </div>
-                        <input type="date" id="hiddenDateInput" style="display: none; visibility: hidden;">
+        <div id="thaiLotteryFormContent" class="thai-lottery-form">
+            <div class="thai-grid-container">
+                <div class="thai-grid-full">
+                    <label for="draw-date">งวดวันที่ (วว/ดด/ปปปป)</label>
+                    <div class="thai-date-wrapper">
+                        <input type="text" id="draw-date" placeholder="วว/ดด/ปปปป (พ.ศ.)" />
+                        <button type="button" id="calendarButton">📅</button>
                     </div>
+                    <input type="date" id="hiddenDateInput" style="display: none; visibility: hidden;">
+                </div>
 
-                    <div>
-                        <label>เลขหน้า 3 ตัว (1)</label>
-                        <input type="text" id="front-three-1" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="หน้าชุด 1">
-                    </div>
-                    <div>
-                        <label>เลขหน้า 3 ตัว (2)</label>
-                        <input type="text" id="front-three-2" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="หน้าชุด 2">
-                    </div>
+                <div>
+                    <label>เลขหน้า 3 ตัว (1)</label>
+                    <input type="text" id="front-three-1" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="หน้าชุด 1">
+                </div>
+                <div>
+                    <label>เลขหน้า 3 ตัว (2)</label>
+                    <input type="text" id="front-three-2" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="หน้าชุด 2">
+                </div>
 
-                    <div>
-                        <label>เลขท้าย 3 ตัว (1)</label>
-                        <input type="text" id="back-three-1" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="ท้ายชุด 1">
-                    </div>
-                    <div>
-                        <label>เลขท้าย 3 ตัว (2)</label>
-                        <input type="text" id="back-three-2" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="ท้ายชุด 2">
-                    </div>
+                <div>
+                    <label>เลขท้าย 3 ตัว (1)</label>
+                    <input type="text" id="back-three-1" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="ท้ายชุด 1">
+                </div>
+                <div>
+                    <label>เลขท้าย 3 ตัว (2)</label>
+                    <input type="text" id="back-three-2" maxlength="3" inputmode="numeric" pattern="\d*" placeholder="ท้ายชุด 2">
+                </div>
 
-                    <div class="thai-grid-full">
-                        <label for="back-two">เลขท้าย 2 ตัว</label>
-                        <input type="text" id="back-two" maxlength="2" inputmode="numeric" pattern="\d*" placeholder="2 ตัวล่าง">
-                    </div>
-                    <div class="thai-grid-full">
-                        <label for="first-prize">รางวัลที่ 1 (6 ตัว)</label>
-                        <input type="text" id="first-prize" maxlength="6" inputmode="numeric" pattern="\d*" placeholder="รางวัลที่ 1">
-                    </div>
+                <div class="thai-grid-full">
+                    <label for="back-two">เลขท้าย 2 ตัว</label>
+                    <input type="text" id="back-two" maxlength="2" inputmode="numeric" pattern="\d*" placeholder="2 ตัวล่าง">
+                </div>
+                <div class="thai-grid-full">
+                    <label for="first-prize">รางวัลที่ 1 (6 ตัว)</label>
+                    <input type="text" id="first-prize" maxlength="6" inputmode="numeric" pattern="\d*" placeholder="รางวัลที่ 1">
+                </div>
 
-                    <div class="button-container full-width">
-                        <button id="displayThaiResultsButton">แสดงผล</button>
-                    </div>
+                <div class="button-container full-width">
+                    <button id="displayThaiResultsButton">แสดงผล</button>
                 </div>
             </div>
+        </div>
 
-        </div> </div>
+    </div>
 
     <div id="popupOverlay" class="popup-overlay">
         <div class="popup-content">
@@ -171,7 +171,7 @@
         </div>
     </div>
         <button class="back-button" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
-    <footer>&copy; 2025 Juckphai. All Rights Reserved.</footer>
+    <footer>&copy; 2026 juckphai. All Rights Reserved.</footer>
 
     
     <script src="script8.js"></script>
