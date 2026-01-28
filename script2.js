@@ -2235,8 +2235,6 @@ document.getElementById("shareResultBtn").addEventListener("click", async functi
 
     await navigator.share({
       files: [file],
-      title: "ผลการแปลตัวเลข",
-      text: "แชร์ผลการแปลตัวเลข"
     });
 
   } catch (err) {

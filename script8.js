@@ -306,8 +306,6 @@ async function shareCanvasImage(canvas, fileName) {
     if (navigator.canShare({ files: [file] })) {
         await navigator.share({
             files: [file],
-            title: "ผลรางวัล",
-            text: "ส่งต่อผลรางวัล"
         });
     } else {
         alert("ไม่สามารถแชร์ไฟล์นี้ได้");

@@ -340,8 +340,6 @@ function setupShareLaoImageButton() {
             const file = new File([blob], "lottery-result.png", { type: "image/png" });
 
             await navigator.share({
-                title: "ผลหวย",
-                text: "ส่งต่อผลหวย",
                 files: [file]
             });
 
@@ -482,8 +480,6 @@ function setupShareThaiImageButton() {
             const file = new File([blob], "thai-lottery-result.png", { type: "image/png" });
 
             await navigator.share({
-                title: "ผลสลากกินแบ่งรัฐบาล",
-                text: "ส่งต่อผลสลากกินแบ่งรัฐบาล",
                 files: [file]
             });
 
