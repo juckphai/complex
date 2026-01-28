@@ -2201,6 +2201,53 @@ document.getElementById("saveResultAsImageBtn").addEventListener("click", functi
     captureElement.style.padding = originalPadding;
   });
 });
+document.getElementById("shareResultBtn").addEventListener("click", async function () {
+
+  if (!navigator.share) {
+    alert("อุปกรณ์นี้ไม่รองรับการแชร์โดยตรง");
+    return;
+  }
+
+  const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
+  const controlsElement = captureElement.querySelector('.controls');
+
+  controlsElement.style.display = 'none';
+  const originalPadding = captureElement.style.padding;
+  captureElement.style.padding = '2px';
+
+  try {
+    const canvas = await html2canvas(captureElement, {
+      useCORS: true,
+      scale: 4,
+      backgroundColor: '#FFFFD1'
+    });
+
+    const blob = await new Promise(resolve =>
+      canvas.toBlob(resolve, "image/png")
+    );
+
+    const num = document.getElementById("numberInput").value || "XXXX";
+    const file = new File(
+      [blob],
+      `Result-${num}.png`,
+      { type: "image/png" }
+    );
+
+    await navigator.share({
+      files: [file],
+      title: "ผลการแปลตัวเลข",
+      text: "แชร์ผลการแปลตัวเลข"
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("ไม่สามารถแชร์ได้");
+  } finally {
+    controlsElement.style.display = '';
+    captureElement.style.padding = originalPadding;
+  }
+});
+
 // Management Logic
 const TOPIC_STORAGE_KEY = 'customTopics_unified';
 const PERSON_STORAGE_KEY = 'customPersons_unified';
