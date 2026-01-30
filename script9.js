@@ -1686,7 +1686,7 @@ const lunarData = {
                 controlsElement.style.display = 'none'; // ซ่อนแผงควบคุม
                 
                 const originalPadding = captureElement.style.padding;
-                captureElement.style.padding = '20px'; // จัดขอบภาพให้สวยงามเหมือน script1
+                captureElement.style.padding = '7px'; // 
 
                 // 3. เริ่มสร้างภาพด้วย html2canvas (ตั้งค่าเหมือน script1)
                 html2canvas(captureElement, {
