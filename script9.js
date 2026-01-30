@@ -1,4 +1,4 @@
-  document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('contextmenu', e => e.preventDefault());
 
     // ===== Popup Functions =====
     function showResultPopup() {
@@ -1660,6 +1660,61 @@ const lunarData = {
                 console.error("เกิดข้อผิดพลาดในการสร้างรูปภาพ:", err);
                 alert("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้");
             }).finally(() => {
+                controlsElement.style.display = '';
+                captureElement.style.padding = originalPadding;
+            });
+        });
+        
+        // ============================================================
+        // [เพิ่มใหม่] Logic สำหรับปุ่มแชร์ (Share Button)
+        // ============================================================
+        const shareBtn = document.getElementById("shareResultImageBtn");
+        const newShareBtn = shareBtn.cloneNode(true); // Clone เพื่อล้าง event เก่า (ถ้ามี)
+        shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+
+        newShareBtn.addEventListener("click", function() {
+            // 1. เตรียม Element เหมือนตอน Save (ซ่อนปุ่มกดชั่วคราว)
+            const captureElement = document.querySelector(".popup-content");
+            const controlsElement = captureElement.querySelector('.controls');
+
+            controlsElement.style.display = 'none';
+            const originalPadding = captureElement.style.padding;
+            captureElement.style.padding = '7px';
+
+            // 2. สร้างภาพด้วย html2canvas
+            html2canvas(captureElement, {
+                useCORS: true,
+                scale: 4,
+                backgroundColor: '#FFFFD1'
+            }).then(canvas => {
+                // 3. แปลง Canvas เป็น Blob เพื่อเตรียมแชร์
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        alert("ไม่สามารถสร้างรูปภาพได้");
+                        return;
+                    }
+
+                    // สร้าง File Object จาก Blob
+                    const num = document.getElementById("numberInput").value || "XXX";
+                    const file = new File([blob], `Result-${num}.png`, { type: "image/png" });
+
+                    // 4. เรียกใช้ Web Share API
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                        })
+                        .then(() => console.log('แชร์สำเร็จ'))
+                        .catch((error) => console.log('ยกเลิกการแชร์ หรือ เกิดข้อผิดพลาด', error));
+                    } else {
+                        alert("อุปกรณ์หรือเบราว์เซอร์นี้ไม่รองรับการแชร์รูปภาพโดยตรง (ลองใช้ปุ่ม 'บันทึก' แทน)");
+                    }
+                }, 'image/png');
+
+            }).catch(err => {
+                console.error("เกิดข้อผิดพลาดในการแชร์:", err);
+                alert("ขออภัย ไม่สามารถแชร์ได้");
+            }).finally(() => {
+                // 5. คืนค่าการแสดงผลปุ่มกลับมาเหมือนเดิม
                 controlsElement.style.display = '';
                 captureElement.style.padding = originalPadding;
             });
