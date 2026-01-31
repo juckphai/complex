@@ -259,6 +259,17 @@
         .header-check-result.active {
             background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
         }
+        
+        /* 4. Orange/Yellow Theme for Web Links */
+        .header-web-links {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        }
+        .header-web-links:hover {
+            background: linear-gradient(135deg, #f2c94c 0%, #f2994a 100%);
+        }
+        .header-web-links.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
 
         .section-subtitle {
             font-size: 0.9rem;
@@ -553,6 +564,25 @@
                     </button>
                     <button class="btn color-8" onclick="navigateTo('12.html')">
                         <i class="fas fa-search-dollar"></i> ดูผลเวียดนาม
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- เมนูที่ 4: เวปลิงค์ -->
+        <div class="card">
+            <div class="main-section-header header-web-links" onclick="toggleMainSection('web-links-section')">
+                <span><i class="fas fa-link"></i> เวปลิงค์</span>
+                <span class="arrow">▶</span>
+            </div>
+            <div id="web-links-section" class="main-section-content">
+                <p class="section-subtitle">ลิงค์เว็บไซต์ที่เกี่ยวข้อง</p>
+                <div class="button-grid">
+                    <button class="btn color-1" onclick="window.open('https://udon-p.github.io/don/', '_blank')">
+                        <i class="fas fa-external-link-alt"></i> Udon
+                    </button>
+                    <button class="btn color-2" onclick="window.open('https://juckmanphai.github.io/complex/', '_blank')">
+                        <i class="fas fa-external-link-alt"></i> Manphai 
                     </button>
                 </div>
             </div>
