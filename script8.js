@@ -507,32 +507,68 @@ function setupShareLaoImageButton() {
             });
         }
 
-// --- 4️⃣ ฝั่งรัฐบาลไทย (เพิ่มฟังก์ชันแชร์) ---
+// --- 4️⃣ ฝั่งรัฐบาลไทย (แก้ไขฟังก์ชันแชร์ให้ ID ถูกต้องและทำงานเสถียรขึ้น) ---
 function setupShareThaiImageButton() {
-    const btn = document.getElementById("shareThaiAsImageButton");
-    if (!btn) return;
+    // 1. แก้ ID ให้ตรงกับ HTML (จาก shareThaiAsImageButton เป็น shareThaiImageButton)
+    const shareBtn = document.getElementById("shareThaiImageButton");
+    
+    // ถ้าหาปุ่มไม่เจอ หรือ Browser ไม่รองรับการแชร์ ให้จบการทำงาน
+    if (!shareBtn) return;
+    if (!navigator.share) {
+        shareBtn.style.display = "none"; // ซ่อนปุ่มถ้าแชร์ไม่ได้
+        return;
+    }
 
-    btn.onclick = () => {
+    // 2. Clone ปุ่มเพื่อล้างค่าเก่า (ป้องกันการทำงานซ้ำซ้อน)
+    const newBtn = shareBtn.cloneNode(true);
+    shareBtn.parentNode.replaceChild(newBtn, shareBtn);
+
+    newBtn.addEventListener("click", async () => {
         const captureElement = document.querySelector("#thaiLotteryPopupContent");
         const controls = captureElement.querySelector('.popup-controls');
 
-        controls.style.display = "none";
+        // ซ่อนปุ่มเมนูก่อนแคปภาพ
+        if (controls) controls.style.display = "none";
 
-        setTimeout(() => {
-            html2canvas(captureElement, {
-                scale: 4,
+        try {
+            // สร้างภาพ
+            const canvas = await html2canvas(captureElement, {
+                scale: 3, 
                 backgroundColor: '#FFFFD1',
                 useCORS: true
-            }).then(canvas => {
-                const firstPrize = document.getElementById("first-prize").value || "XXXXXX";
-                const dateText = document.getElementById("display-draw-date").innerText.replace(/[^a-zA-Z0-9-]/g, '_');
-
-                shareCanvasImage(canvas, `ผลสลากรัฐบาล-${firstPrize}-${dateText}.png`);
-            }).finally(() => {
-                controls.style.display = "flex";
             });
-        }, 100);
-    };
+
+            // แปลงเป็นไฟล์
+            const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
+            
+            // ดึงข้อมูลงวดวันที่มาตั้งชื่อไฟล์
+            const dateText = document.getElementById("display-draw-date").innerText || "result";
+            const firstPrize = document.getElementById("first-prize").value || "xxxxxx";
+            const fileName = `thai-lottery-${firstPrize}-${dateText.replace(/\s/g, '_')}.png`;
+            
+            const file = new File([blob], fileName, { type: "image/png" });
+
+            // เช็คสิทธิ์การแชร์ไฟล์
+            if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+                alert("อุปกรณ์ของคุณไม่รองรับการแชร์ไฟล์รูปภาพนี้");
+                return;
+            }
+
+            // สั่งแชร์ (ต้องใส่ title/text เพื่อกัน Android บางรุ่นเงียบ)
+            await navigator.share({
+                files: [file]
+            });
+
+        } catch (err) {
+            console.error("Share Error:", err);
+            if (err.name !== 'AbortError') {
+                alert("เกิดข้อผิดพลาดในการแชร์: " + err.message);
+            }
+        } finally {
+            // แสดงปุ่มเมนูกลับมาเสมอ
+            if (controls) controls.style.display = "flex";
+        }
+    });
 }
 
         document.addEventListener('contextmenu', e => e.preventDefault());
