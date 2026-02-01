@@ -450,45 +450,71 @@ function setupShareThaiImageButton() {
     const shareBtn = document.getElementById("shareThaiImageButton");
     if (!shareBtn) return;
 
-    // UX: ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Web Share
+    // ตรวจสอบว่า Browser รองรับการแชร์หรือไม่
+    // หมายเหตุ: ต้องรันบน HTTPS หรือ localhost เท่านั้น
     if (!navigator.share) {
-        shareBtn.style.display = "none";
+        shareBtn.style.display = "none"; // ซ่อนปุ่มถ้าไม่รองรับ
+        console.log("Web Share API not supported or not on HTTPS");
         return;
     }
 
+    // Clone ปุ่มเพื่อล้าง Event Listener เก่าที่อาจค้างอยู่
     const newBtn = shareBtn.cloneNode(true);
     shareBtn.parentNode.replaceChild(newBtn, shareBtn);
 
     newBtn.addEventListener("click", async () => {
+        // ตรวจสอบอีกครั้งเพื่อความชัวร์
         if (!navigator.share) {
-            alert("อุปกรณ์นี้ไม่รองรับการส่งต่อ");
+            alert("อุปกรณ์นี้ไม่รองรับฟีเจอร์การแชร์ (ต้องใช้ผ่าน HTTPS)");
             return;
         }
 
         const captureElement = document.querySelector("#thaiLotteryPopupContent");
         const controls = captureElement.querySelector('.popup-controls');
+        
+        // ซ่อนปุ่มกดก่อนแคปภาพ
         if (controls) controls.style.display = "none";
 
         try {
+            // สร้างรูปภาพจาก HTML
             const canvas = await html2canvas(captureElement, {
-                scale: 3,
-                backgroundColor: '#FFFFD1',
-                useCORS: true
+                scale: 4, // ความชัด
+                backgroundColor: '#FFFFD1', // สีพื้นหลังเดียวกับธีมรัฐบาล
+                useCORS: true,
+                logging: false
             });
 
+            // แปลง Canvas เป็น Blob (ไฟล์รูป)
             const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-            const file = new File([blob], "thai-lottery-result.png", { type: "image/png" });
+            
+            // ดึงข้อมูลงวดวันที่มาตั้งชื่อไฟล์
+            const dateText = document.getElementById("display-draw-date").innerText || "result";
+            const fileName = `thai-lottery-${dateText.replace(/\s/g, '_')}.png`;
+            
+            const file = new File([blob], fileName, { type: "image/png" });
 
-            await navigator.share({
+            // เตรียมข้อมูลแชร์ (สำคัญ: ต้องใส่ title และ text เพื่อกันเบราว์เซอร์ปฏิเสธ)
+            const shareData = {
                 files: [file]
-            });
+            };
+
+            // ตรวจสอบว่าแชร์ไฟล์นี้ได้หรือไม่ (สำหรับ Android/Chrome รุ่นใหม่)
+            if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+                alert("อุปกรณ์ของคุณไม่รองรับการแชร์ไฟล์รูปภาพนี้");
+                return;
+            }
+
+            // สั่งแชร์
+            await navigator.share(shareData);
 
         } catch (err) {
-            console.error(err);
+            console.error("Share Error:", err);
+            // แจ้งเตือนถ้าไม่ใช่กรณีผู้ใช้กดยกเลิกเอง
             if (err.name !== 'AbortError') {
-                alert("ไม่สามารถส่งต่อได้");
+                alert("เกิดข้อผิดพลาดในการแชร์: " + err.message);
             }
         } finally {
+            // แสดงปุ่มกลับมาเหมือนเดิมไม่ว่าจะสำเร็จหรือล้มเหลว
             if (controls) controls.style.display = "flex";
         }
     });
