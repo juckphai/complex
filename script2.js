@@ -2119,7 +2119,7 @@ function initializePopupControls() {
   // ตั้งค่าเริ่มต้นของ font scale ตามจำนวนตัวเลข
   let defaultFontScale;
   if (numLength === 2) {
-    defaultFontScale = 1.5;    // 150% สำหรับ 2 ตัว
+    defaultFontScale = 1.4;    // 140% สำหรับ 2 ตัว
     lhSlider.min = "0.8"; lhSlider.max = "2.5"; lhSlider.value = "1.4";
   } else if (numLength === 3) {
     defaultFontScale = 1.0;   // 100% สำหรับ 3 ตัว
