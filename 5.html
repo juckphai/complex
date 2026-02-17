@@ -84,7 +84,8 @@
                 </div>
             </div>
             
-        </div> </div>
+        </div>
+    </div>
 
     <div id="popupOverlay" class="popup-overlay">
         <div class="popup-content">
@@ -120,12 +121,14 @@
                     <button id="popupCircleTopButton" class="popup-button" onclick="toggleSquareTopPopup()">สี่เหลี่ยมสองตัวบน</button>
                 </div>
                 <button id="saveLaoAsImageButton" class="popup-button" style="background-color: #007bff; max-width: 200px; width: 100%;">บันทึกเป็นรูปภาพ</button>
-<button id="shareLaoImageButton"
-        class="popup-button"
-        style="background-color:#28a745; max-width:200px; width:100%;">
-📤 ส่งต่อไปแอป
-</button>
-
+                <div style="display: flex; gap: 5px; max-width: 200px; width: 100%;">
+                    <button id="shareLaoImageButton" class="popup-button" style="background-color:#28a745; flex-grow: 1; margin: 0;">
+                        📤 ส่งต่อไปแอป
+                    </button>
+                    <button id="shareSettingsBtnLao" class="popup-button" style="background-color:#1e7e34; width: 50px; margin: 0;" title="ตั้งค่าการแชร์">
+                        ⚙️
+                    </button>
+                </div>
                 <button class="close-popup" onclick="closePopup()">ปิดหน้าต่างนี้</button>
             </div>
         </div>
@@ -169,25 +172,61 @@
                             </div>
                         </div>
                     </div>
-                    <div class="result-section prize-group-vertical"><div id="display-back-two" class="number-group"></div><p class="prize-label-orange">เลขท้าย 2 ตัว</p></div>
+                    <div class="result-section prize-group-vertical">
+                        <div id="display-back-two" class="number-group"></div>
+                        <p class="prize-label-orange">เลขท้าย 2 ตัว</p>
+                    </div>
                 </div>
             </div>
             <div class="popup-controls">
                 <button id="saveThaiAsImageButton" class="popup-button">บันทึกเป็นรูปภาพ</button>
-        <button id="shareThaiImageButton" class="action-btn btn-share">
-            📤 ส่งต่อ
-        </button>
+                <div style="display: flex; gap: 5px; width: 100%; justify-content: center;">
+                    <button id="shareThaiImageButton" class="popup-button" style="background-color:#28a745; flex-grow: 1; margin: 0;">
+                        📤 ส่งต่อ
+                    </button>
+                    <button id="shareSettingsBtnThai" class="popup-button" style="background-color:#1e7e34; width: 50px; margin: 0;" title="ตั้งค่าการแชร์">
+                        ⚙️
+                    </button>
+                </div>
                 <button class="close-popup" onclick="closeThaiPopup()">ปิดหน้าต่างนี้</button>
-
-</div>
+            </div>
         </div>
     </div>
-        <button class="back-button" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
+
+    <!-- Share Settings Modal -->
+    <div id="shareSettingsModal" class="popup-overlay" style="z-index: 2000; display: none;">
+        <div class="popup-content" style="max-width: 350px; background-color: #f0f8ff;">
+            <h2 style="color: #0056b3; text-align: center;">ตั้งค่าปุ่มแชร์ด่วน</h2>
+            <p style="text-align: center; font-size: 14px; margin-bottom: 15px;">เลือกการทำงานเมื่อกดปุ่มสีเขียว</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #ccc; display: flex; align-items: center;">
+                    <input type="radio" name="shareMode" value="system" style="margin-right: 10px;">
+                    <div>
+                        <strong>แชร์ปกติ (System Share)</strong><br>
+                        <span style="font-size: 12px; color: #666;">เรียกเมนูแชร์ของเครื่อง (เลือกแอปเองทุกครั้ง)</span>
+                    </div>
+                </label>
+
+                <label style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #ccc; display: flex; align-items: center;">
+                    <input type="radio" name="shareMode" value="copy" style="margin-right: 10px;">
+                    <div>
+                        <strong>คัดลอกรูปภาพ (Copy Image)</strong><br>
+                        <span style="font-size: 12px; color: #666;">คัดลอกทันที! เหมาะสำหรับนำไปวางในแชท Line/Face กลุ่มเดิมบ่อยๆ</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="modal-button-group" style="margin-top: 20px; text-align: center;">
+                <button id="saveShareSettingsBtn" class="popup-button" style="background-color: #28a745; width: 100px;">บันทึก</button>
+                <button id="closeShareSettingsBtn" class="popup-button" style="background-color: #6c757d; width: 100px;">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
     <footer>&copy; 2025 Juckphai. All Rights Reserved.</footer>
     
     <script src="script5.js"></script>
 </body>
-
 </html>
-
-

@@ -10,12 +10,78 @@ const lotteryTypes = {
     'laopattana':   { name: 'ลาวพัฒนา', time: '20.30 น', digits: 6, type: 'pattana' },
     'laosamakkee':  { name: 'ลาวสามัคคี', time: '20.30 น', digits: 5, type: 'samakkhee' },
     'laostar-2100': { name: 'ลาวอาเซียน', time: '21.00 น', digits: 5, type: 'star' },
-    'laovip-2130':  { name: 'ลาว VIP', time: '21.30 น', digits: 5, type: 'samakkhee' }, // Re-using samakkhee logic
+    'laovip-2130':  { name: 'ลาว VIP', time: '21.30 น', digits: 5, type: 'samakkhee' },
     'laosamakkeevip': { name: 'ลาวสามัคคี VIP', time: '21.30 น', digits: 5, type: 'samakkhee' },
     'laostar-2200': { name: 'ลาวสตาร์ VIP', time: '22.00 น', digits: 5, type: 'star' },
     'laostar-2330': { name: 'ลาวกาชาด', time: '23.30 น', digits: 5, type: 'star' },
     'thai-government': { name: 'รัฐบาลไทย', type: 'thai' }
 };
+
+// === SHARE SETTINGS LOGIC ===
+const SHARE_PREF_KEY = 'sharePreference_universal';
+
+function loadSharePreference() {
+    return localStorage.getItem(SHARE_PREF_KEY) || 'system';
+}
+
+function updateShareButtonsUI() {
+    const mode = loadSharePreference();
+    const laoBtn = document.getElementById("shareLaoImageButton");
+    const thaiBtn = document.getElementById("shareThaiImageButton");
+    
+    const text = mode === 'copy' ? "📋 คัดลอกรูป (วางแชท)" : "📤 ส่งต่อไปแอป";
+    const color = mode === 'copy' ? "#ff9800" : "#28a745";
+
+    if (laoBtn) {
+        laoBtn.textContent = text;
+        laoBtn.style.backgroundColor = color;
+    }
+    if (thaiBtn) {
+        thaiBtn.textContent = mode === 'copy' ? "📋 คัดลอกรูป" : "📤 ส่งต่อ";
+        thaiBtn.style.backgroundColor = color;
+    }
+}
+
+async function copyImageToClipboard(blob) {
+    try {
+        const item = new ClipboardItem({ "image/png": blob });
+        await navigator.clipboard.write([item]);
+        alert("คัดลอกรูปภาพแล้ว! \nคุณสามารถไปที่แอป Line หรือ Messenger แล้วกด 'วาง' ในช่องแชทได้เลย");
+    } catch (err) {
+        console.error("Copy failed", err);
+        alert("อุปกรณ์นี้ไม่รองรับการคัดลอกรูปภาพโดยตรง (ลองใช้แบบแชร์ปกติ)");
+    }
+}
+
+function initShareSettings() {
+    updateShareButtonsUI();
+
+    const openModal = () => {
+        const currentMode = loadSharePreference();
+        const radios = document.getElementsByName("shareMode");
+        radios.forEach(r => { if (r.value === currentMode) r.checked = true; });
+        document.getElementById("shareSettingsModal").style.display = "flex";
+    };
+
+    const btnLao = document.getElementById("shareSettingsBtnLao");
+    const btnThai = document.getElementById("shareSettingsBtnThai");
+    if(btnLao) btnLao.addEventListener("click", openModal);
+    if(btnThai) btnThai.addEventListener("click", openModal);
+
+    document.getElementById("closeShareSettingsBtn").addEventListener("click", () => {
+        document.getElementById("shareSettingsModal").style.display = "none";
+    });
+
+    document.getElementById("saveShareSettingsBtn").addEventListener("click", () => {
+        const radios = document.getElementsByName("shareMode");
+        let selected = 'system';
+        radios.forEach(r => { if(r.checked) selected = r.value; });
+        
+        localStorage.setItem(SHARE_PREF_KEY, selected);
+        updateShareButtonsUI();
+        document.getElementById("shareSettingsModal").style.display = "none";
+    });
+}
 
 // --- Core Functions ---
 function createPingPongBall(number, type = 'red', size = 42, fontSize = 22) {
@@ -203,7 +269,7 @@ function convertNumber() {
     
     showPopup();
     setupSaveLaoImageButton();
-    setupShareLaoImageButton(); // เพิ่มฟังก์ชันแชร์
+    setupShareLaoImageButton();
 }
 
 // --- Popup Button Functions ---
@@ -305,28 +371,18 @@ function setupSaveLaoImageButton() {
     });
 }
 
-// เพิ่มฟังก์ชันแชร์สำหรับป๊อปอัพลาว
 function setupShareLaoImageButton() {
     const shareBtn = document.getElementById("shareLaoImageButton");
     if (!shareBtn) return;
-
-    // UX: ซ่อนปุ่มถ้าเบราว์เซอร์ไม่รองรับ Web Share
-    if (!navigator.share) {
-        shareBtn.style.display = "none";
-        return;
-    }
 
     const newBtn = shareBtn.cloneNode(true);
     shareBtn.parentNode.replaceChild(newBtn, shareBtn);
 
     newBtn.addEventListener("click", async () => {
-        if (!navigator.share) {
-            alert("อุปกรณ์นี้ไม่รองรับการส่งต่อ");
-            return;
-        }
-
         const captureElement = document.querySelector("#popupOverlay .popup-content");
         const controls = captureElement.querySelector('.popup-buttons-container');
+        const mode = loadSharePreference();
+
         if (controls) controls.style.display = "none";
 
         try {
@@ -337,17 +393,18 @@ function setupShareLaoImageButton() {
             });
 
             const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-            const file = new File([blob], "lottery-result.png", { type: "image/png" });
 
-            await navigator.share({
-                files: [file]
-            });
+            if (mode === 'copy') {
+                await copyImageToClipboard(blob);
+            } else {
+                if (!navigator.share) { alert("อุปกรณ์นี้ไม่รองรับการส่งต่อ"); return; }
+                const file = new File([blob], "lottery-result.png", { type: "image/png" });
+                await navigator.share({ files: [file] });
+            }
 
         } catch (err) {
             console.error(err);
-            if (err.name !== 'AbortError') {
-                alert("ไม่สามารถส่งต่อได้");
-            }
+            if (err.name !== 'AbortError') alert("เกิดข้อผิดพลาด: " + err.message);
         } finally {
             if (controls) controls.style.display = "flex";
         }
@@ -401,7 +458,7 @@ function displayThaiResults() {
     
     showThaiPopup();
     setupSaveThaiImageButton();
-    setupShareThaiImageButton(); // เพิ่มฟังก์ชันแชร์
+    setupShareThaiImageButton();
 }
 
 function setupSaveThaiImageButton() {
@@ -445,76 +502,50 @@ function setupSaveThaiImageButton() {
     });
 }
 
-// เพิ่มฟังก์ชันแชร์สำหรับป๊อปอัพไทย
 function setupShareThaiImageButton() {
     const shareBtn = document.getElementById("shareThaiImageButton");
     if (!shareBtn) return;
 
-    // ตรวจสอบว่า Browser รองรับการแชร์หรือไม่
-    // หมายเหตุ: ต้องรันบน HTTPS หรือ localhost เท่านั้น
-    if (!navigator.share) {
-        shareBtn.style.display = "none"; // ซ่อนปุ่มถ้าไม่รองรับ
-        console.log("Web Share API not supported or not on HTTPS");
-        return;
-    }
-
-    // Clone ปุ่มเพื่อล้าง Event Listener เก่าที่อาจค้างอยู่
     const newBtn = shareBtn.cloneNode(true);
     shareBtn.parentNode.replaceChild(newBtn, shareBtn);
 
     newBtn.addEventListener("click", async () => {
-        // ตรวจสอบอีกครั้งเพื่อความชัวร์
-        if (!navigator.share) {
-            alert("อุปกรณ์นี้ไม่รองรับฟีเจอร์การแชร์ (ต้องใช้ผ่าน HTTPS)");
-            return;
-        }
-
         const captureElement = document.querySelector("#thaiLotteryPopupContent");
         const controls = captureElement.querySelector('.popup-controls');
+        const mode = loadSharePreference();
         
-        // ซ่อนปุ่มกดก่อนแคปภาพ
         if (controls) controls.style.display = "none";
 
         try {
-            // สร้างรูปภาพจาก HTML
             const canvas = await html2canvas(captureElement, {
-                scale: 4, // ความชัด
-                backgroundColor: '#FFFFD1', // สีพื้นหลังเดียวกับธีมรัฐบาล
+                scale: 4, 
+                backgroundColor: '#FFFFD1',
                 useCORS: true,
                 logging: false
             });
 
-            // แปลง Canvas เป็น Blob (ไฟล์รูป)
             const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-            
-            // ดึงข้อมูลงวดวันที่มาตั้งชื่อไฟล์
-            const dateText = document.getElementById("display-draw-date").innerText || "result";
-            const fileName = `thai-lottery-${dateText.replace(/\s/g, '_')}.png`;
-            
-            const file = new File([blob], fileName, { type: "image/png" });
 
-            // เตรียมข้อมูลแชร์ (สำคัญ: ต้องใส่ title และ text เพื่อกันเบราว์เซอร์ปฏิเสธ)
-            const shareData = {
-                files: [file]
-            };
+            if (mode === 'copy') {
+                await copyImageToClipboard(blob);
+            } else {
+                if (!navigator.share) { alert("อุปกรณ์นี้ไม่รองรับฟีเจอร์การแชร์"); return; }
+                
+                const dateText = document.getElementById("display-draw-date").innerText || "result";
+                const fileName = `thai-lottery-${dateText.replace(/\s/g, '_')}.png`;
+                const file = new File([blob], fileName, { type: "image/png" });
 
-            // ตรวจสอบว่าแชร์ไฟล์นี้ได้หรือไม่ (สำหรับ Android/Chrome รุ่นใหม่)
-            if (navigator.canShare && !navigator.canShare({ files: [file] })) {
-                alert("อุปกรณ์ของคุณไม่รองรับการแชร์ไฟล์รูปภาพนี้");
-                return;
+                if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+                    alert("อุปกรณ์ไม่รองรับการแชร์ไฟล์นี้");
+                    return;
+                }
+                await navigator.share({ files: [file] });
             }
-
-            // สั่งแชร์
-            await navigator.share(shareData);
 
         } catch (err) {
-            console.error("Share Error:", err);
-            // แจ้งเตือนถ้าไม่ใช่กรณีผู้ใช้กดยกเลิกเอง
-            if (err.name !== 'AbortError') {
-                alert("เกิดข้อผิดพลาดในการแชร์: " + err.message);
-            }
+            console.error("Error:", err);
+            if (err.name !== 'AbortError') alert("เกิดข้อผิดพลาด: " + err.message);
         } finally {
-            // แสดงปุ่มกลับมาเหมือนเดิมไม่ว่าจะสำเร็จหรือล้มเหลว
             if (controls) controls.style.display = "flex";
         }
     });
@@ -523,6 +554,7 @@ function setupShareThaiImageButton() {
 // --- Event Listeners ---
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener("DOMContentLoaded", () => {
+    initShareSettings();
     populateTopicSelect();
     setDefaultDate();
     updateFormVisibility(document.getElementById("topicSelect").value);
