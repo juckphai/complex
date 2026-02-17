@@ -1463,6 +1463,9 @@ const lunarData = {
   "31/12/2571": "วันอาทิตย์ แรม ๑ ค่ำ เดือนยี่ (๒) ปีวอก",
 };
 
+// === เพิ่มตัวแปร QUICK_SHARE_KEY ===
+const QUICK_SHARE_KEY = "quickShareMode_unified";
+
 // === SHARED UTILITY FUNCTIONS ===
 document.addEventListener('contextmenu', e => e.preventDefault());
 function showResultPopup() { document.getElementById("resultPopupOverlay").style.display = "flex"; }
@@ -1489,6 +1492,73 @@ function getFormattedDate(date) {
   const year = date.getFullYear() + 543;
   return `${day}/${month}/${year}`;
 }
+
+// === เพิ่มฟังก์ชันแสดงข้อความแชร์สำเร็จ ===
+function showShareSuccessMessage() {
+  const toast = document.getElementById("shareSuccessToast");
+  if (!toast) return;
+
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+}
+
+// === เพิ่มฟังก์ชันแชร์ด่วน (ไม่เปิด popup) ===
+async function quickShareNow() {
+
+  if (!navigator.share) {
+    alert("อุปกรณ์นี้ไม่รองรับการแชร์");
+    return;
+  }
+
+  const resultHtml = generateResultHTML();
+  if (!resultHtml) return;
+
+  const tempDiv = document.createElement("div");
+  tempDiv.style.position = "fixed";
+  tempDiv.style.left = "-9999px";
+  tempDiv.style.background = "#FFFFD1";
+  tempDiv.innerHTML = resultHtml;
+  document.body.appendChild(tempDiv);
+
+  try {
+
+    const canvas = await html2canvas(tempDiv, {
+      useCORS: true,
+      scale: 4,
+      backgroundColor: "#FFFFD1"
+    });
+
+    const blob = await new Promise(resolve =>
+      canvas.toBlob(resolve, "image/png")
+    );
+
+    const num = document.getElementById("numberInput").value || "XXXX";
+
+    const file = new File(
+      [blob],
+      `Result-${num}.png`,
+      { type: "image/png" }
+    );
+
+    await navigator.share({
+      files: [file]
+    });
+
+    // ✅ เพิ่ม 2 ความสามารถ
+    showShareSuccessMessage();
+    closeResultPopup();
+
+  } catch (err) {
+    console.error(err);
+    alert("ไม่สามารถแชร์ได้");
+  }
+
+  document.body.removeChild(tempDiv);
+}
+
 // === LOGIC FOR 4-DIGIT NUMBERS (UPDATED) ===
 function generate4DigitHTML(num, commonData) {
 const twoDigitPairs = ((n) => { const p = new Set(); for (let i = 0; i < n.length; i++) { for (let j = i + 1; j < n.length; j++) { p.add([n[i], n[j]].sort().join('')); } } return Array.from(p).sort(); })(num);
@@ -1994,10 +2064,34 @@ lhValueSpan.textContent = `ความสูงบรรทัด: ${lineHeight
 
 // === PAGE INITIALIZATION & MANAGEMENT LOGIC ===
 document.addEventListener("DOMContentLoaded", function() {
+
+// ===== QUICK SHARE MODE =====
+const quickToggle = document.getElementById("quickShareToggle");
+
+if (quickToggle) {
+  quickToggle.checked = localStorage.getItem(QUICK_SHARE_KEY) === "true";
+
+  quickToggle.addEventListener("change", function () {
+    localStorage.setItem(QUICK_SHARE_KEY, this.checked);
+  });
+}
+
 // Attach event listeners ONCE
 document.getElementById("popupFontSizeSlider").addEventListener("input", updateFontSize);
 document.getElementById("popupLineHeightSlider").addEventListener("input", updateLineHeight);
-document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
+
+// แก้ปุ่ม "แปลตัวเลข"
+document.getElementById("convertButton").addEventListener("click", function () {
+
+  const quickMode = localStorage.getItem(QUICK_SHARE_KEY) === "true";
+
+  if (quickMode) {
+    quickShareNow();   // แชร์ทันที
+  } else {
+    displayResultInPopup();   // โหมดปกติ
+  }
+
+});
 
 document.getElementById("saveResultAsImageBtn").addEventListener("click", function() {
 const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
@@ -2056,6 +2150,10 @@ document.getElementById("shareResultBtn").addEventListener("click", async functi
     await navigator.share({
       files: [file],
     });
+    
+    // เพิ่มระบบสำเร็จในปุ่มแชร์ popup ด้วย
+    showShareSuccessMessage();
+    closeResultPopup();
 
   } catch (err) {
     console.error(err);

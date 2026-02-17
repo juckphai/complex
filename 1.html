@@ -84,6 +84,12 @@
 
     <input type="text" id="noteInput" placeholder="หมายเหตุ (ถ้ามี)" />
     <button id="convertButton">แปลตัวเลข</button>
+    
+    <!-- เพิ่ม Checkbox เปิดโหมดแชร์ด่วน -->
+    <label style="display:block; margin-top:10px; font-weight:bold;">
+      <input type="checkbox" id="quickShareToggle">
+      🚀 เปิดโหมดแชร์ด่วน (กดแปลแล้วแชร์ทันที)
+    </label>
 </div>
 
 <button id="homeButton" class="homeButton" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
@@ -138,6 +144,25 @@
 </div>
 </div>
 </div>
+
+<!-- เพิ่มกล่องแจ้งเตือนแชร์สำเร็จ -->
+<div id="shareSuccessToast" style="
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #28a745;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+">
+  ✅ แชร์สำเร็จแล้ว
+</div>
+
 <footer>
 <div style="text-align: center; margin-bottom: 20px;">
 &copy; 2025 Juckphai. All Rights Reserved.
