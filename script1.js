@@ -1463,6 +1463,68 @@ const lunarData = {
   "31/12/2571": "วันอาทิตย์ แรม ๑ ค่ำ เดือนยี่ (๒) ปีวอก",
 };
 
+
+// === SHARE SETTINGS & LOGIC ===
+const SHARE_PREF_KEY = 'sharePreference_v1';
+
+function loadSharePreference() {
+    return localStorage.getItem(SHARE_PREF_KEY) || 'system';
+}
+
+function updateShareButtonUI() {
+    const mode = loadSharePreference();
+    const btn = document.getElementById("shareResultBtn");
+    if (mode === 'copy') {
+        btn.textContent = "📋 คัดลอกรูปภาพ (วางในแชท)";
+        btn.style.backgroundColor = "#ff9800"; // สีส้มเพื่อให้รู้ว่าเปลี่ยนโหมด
+    } else {
+        btn.textContent = "แชร์ไปยังแอป";
+        btn.style.backgroundColor = "#28a745"; // สีเขียวเดิม
+    }
+}
+
+async function copyImageToClipboard(blob) {
+    try {
+        const item = new ClipboardItem({ "image/png": blob });
+        await navigator.clipboard.write([item]);
+        alert("คัดลอกรูปภาพแล้ว! \nคุณสามารถไปที่แอป Line หรือ Messenger แล้วกด 'วาง' ในช่องแชทได้เลย");
+    } catch (err) {
+        console.error("Copy failed", err);
+        alert("อุปกรณ์นี้ไม่รองรับการคัดลอกรูปภาพโดยตรง (ลองใช้แบบแชร์ปกติ)");
+    }
+}
+
+function initShareSettings() {
+    // โหลดค่าเริ่มต้น
+    updateShareButtonUI();
+
+    // ปุ่มเปิดหน้าตั้งค่า
+    document.getElementById("shareSettingsBtn").addEventListener("click", () => {
+        const currentMode = loadSharePreference();
+        const radios = document.getElementsByName("shareMode");
+        radios.forEach(r => {
+            if (r.value === currentMode) r.checked = true;
+        });
+        document.getElementById("shareSettingsModal").style.display = "flex";
+    });
+
+    // ปุ่มปิดหน้าตั้งค่า
+    document.getElementById("closeShareSettingsBtn").addEventListener("click", () => {
+        document.getElementById("shareSettingsModal").style.display = "none";
+    });
+
+    // ปุ่มบันทึกค่า
+    document.getElementById("saveShareSettingsBtn").addEventListener("click", () => {
+        const radios = document.getElementsByName("shareMode");
+        let selected = 'system';
+        radios.forEach(r => { if(r.checked) selected = r.value; });
+        
+        localStorage.setItem(SHARE_PREF_KEY, selected);
+        updateShareButtonUI();
+        document.getElementById("shareSettingsModal").style.display = "none";
+    });
+}
+
 // === SHARED UTILITY FUNCTIONS ===
 document.addEventListener('contextmenu', e => e.preventDefault());
 function showResultPopup() { document.getElementById("resultPopupOverlay").style.display = "flex"; }
@@ -1489,6 +1551,7 @@ function getFormattedDate(date) {
   const year = date.getFullYear() + 543;
   return `${day}/${month}/${year}`;
 }
+
 // === LOGIC FOR 4-DIGIT NUMBERS (UPDATED) ===
 function generate4DigitHTML(num, commonData) {
 const twoDigitPairs = ((n) => { const p = new Set(); for (let i = 0; i < n.length; i++) { for (let j = i + 1; j < n.length; j++) { p.add([n[i], n[j]].sort().join('')); } } return Array.from(p).sort(); })(num);
@@ -2021,50 +2084,51 @@ controlsElement.style.display = '';
 captureElement.style.padding = originalPadding;
 });
 });
+
+// แทนที่ Logic ปุ่มแชร์เดิม ด้วยอันนี้
 document.getElementById("shareResultBtn").addEventListener("click", async function () {
+    const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
+    const controlsElement = captureElement.querySelector('.controls');
+    const mode = loadSharePreference(); // ตรวจสอบการตั้งค่า
 
-  if (!navigator.share) {
-    alert("อุปกรณ์นี้ไม่รองรับการแชร์โดยตรง");
-    return;
-  }
+    controlsElement.style.display = 'none';
+    const originalPadding = captureElement.style.padding;
+    captureElement.style.padding = '2px';
 
-  const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
-  const controlsElement = captureElement.querySelector('.controls');
+    try {
+        const canvas = await html2canvas(captureElement, {
+            useCORS: true,
+            scale: 4,
+            backgroundColor: '#FFFFD1'
+        });
 
-  controlsElement.style.display = 'none';
-  const originalPadding = captureElement.style.padding;
-  captureElement.style.padding = '2px';
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
 
-  try {
-    const canvas = await html2canvas(captureElement, {
-      useCORS: true,
-      scale: 4,
-      backgroundColor: '#FFFFD1'
-    });
+        // แยกการทำงานตามโหมดที่ตั้งค่าไว้
+        if (mode === 'copy') {
+            await copyImageToClipboard(blob);
+        } else {
+            // โหมด System Share (โค้ดเดิม)
+            if (!navigator.share) {
+                alert("อุปกรณ์นี้ไม่รองรับการแชร์โดยตรง");
+                return;
+            }
+            const num = document.getElementById("numberInput").value || "XXXX";
+            const file = new File([blob], `Result-${num}.png`, { type: "image/png" });
+            await navigator.share({ files: [file] });
+        }
 
-    const blob = await new Promise(resolve =>
-      canvas.toBlob(resolve, "image/png")
-    );
-
-    const num = document.getElementById("numberInput").value || "XXXX";
-    const file = new File(
-      [blob],
-      `Result-${num}.png`,
-      { type: "image/png" }
-    );
-
-    await navigator.share({
-      files: [file],
-    });
-
-  } catch (err) {
-    console.error(err);
-    alert("ไม่สามารถแชร์ได้");
-  } finally {
-    controlsElement.style.display = '';
-    captureElement.style.padding = originalPadding;
-  }
+    } catch (err) {
+        console.error(err);
+        alert("เกิดข้อผิดพลาดในการดำเนินการ");
+    } finally {
+        controlsElement.style.display = '';
+        captureElement.style.padding = originalPadding;
+    }
 });
+
+// เรียกใช้ฟังก์ชันตั้งค่าเริ่มต้นการแชร์
+initShareSettings();
 
 // Management Logic
 const TOPIC_STORAGE_KEY = 'customTopics_unified';

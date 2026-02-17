@@ -87,6 +87,7 @@
 </div>
 
 <button id="homeButton" class="homeButton" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
+
 <!-- Result Popup -->
 <div id="resultPopupOverlay" class="popup-overlay">
 <div class="popup-content">
@@ -95,11 +96,16 @@
 </div>
 <div class="controls">
 <button id="saveResultAsImageBtn" class="close-popup-btn" style="background-color: #007bff; margin-bottom: 15px;">บันทึกเป็นรูปภาพ</button>
-<button id="shareResultBtn"
-        class="close-popup-btn"
-        style="background-color:#28a745; margin-bottom:15px;">
-แชร์ไปยังแอป
-</button>
+
+<div style="display: flex; gap: 5px; margin-bottom: 15px; width: 100%;">
+    <button id="shareResultBtn" class="close-popup-btn" style="background-color:#28a745; flex-grow: 1; margin-bottom: 0;">
+        แชร์ไปยังแอป
+    </button>
+    <button id="shareSettingsBtn" class="close-popup-btn" style="background-color:#1e7e34; width: 60px; margin-bottom: 0;" title="ตั้งค่าการแชร์">
+        ⚙️
+    </button>
+</div>
+
 <div class="control-group">
 <label for="popupFontSizeSlider">ปรับขนาดตัวอักษร:</label>
 <input type="range" id="popupFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
@@ -114,6 +120,38 @@
 </div>
 </div>
 </div>
+
+<!-- Share Settings Modal -->
+<div id="shareSettingsModal" class="popup-overlay" style="z-index: 2000;">
+    <div class="popup-content" style="max-width: 350px; background-color: #f0f8ff;">
+        <h2 style="color: #0056b3; text-align: center;">ตั้งค่าปุ่มแชร์ด่วน</h2>
+        <p style="text-align: center; font-size: 14px; margin-bottom: 15px;">เลือกการทำงานเมื่อกดปุ่มสีเขียว</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #ccc; display: flex; align-items: center;">
+                <input type="radio" name="shareMode" value="system" style="margin-right: 10px;">
+                <div>
+                    <strong>แชร์ปกติ (System Share)</strong><br>
+                    <span style="font-size: 12px; color: #666;">เรียกเมนูแชร์ของเครื่อง (เลือกแอปเองทุกครั้ง)</span>
+                </div>
+            </label>
+
+            <label style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #ccc; display: flex; align-items: center;">
+                <input type="radio" name="shareMode" value="copy" style="margin-right: 10px;">
+                <div>
+                    <strong>คัดลอกรูปภาพ (Copy Image)</strong><br>
+                    <span style="font-size: 12px; color: #666;">คัดลอกทันที! เหมาะสำหรับนำไปวางในแชท Line/Face กลุ่มเดิมบ่อยๆ</span>
+                </div>
+            </label>
+        </div>
+
+        <div class="modal-button-group" style="margin-top: 20px;">
+            <button id="saveShareSettingsBtn" style="background-color: #28a745;">บันทึก</button>
+            <button id="closeShareSettingsBtn" class="close-popup-btn">ปิด</button>
+        </div>
+    </div>
+</div>
+
 <!-- Management Modals -->
 <div id="topicModal" class="popup-overlay">
 <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
@@ -127,6 +165,7 @@
 </div>
 </div>
 </div>
+
 <div id="personModal" class="popup-overlay">
 <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
 <h2 id="personModalTitle" style="color: #0056b3; text-align: center;"></h2>
@@ -138,6 +177,7 @@
 </div>
 </div>
 </div>
+
 <footer>
 <div style="text-align: center; margin-bottom: 20px;">
 &copy; 2025 Juckphai. All Rights Reserved.
