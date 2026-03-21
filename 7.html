@@ -2,93 +2,118 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>ระบบจัดเรียงตัวเลข 4 หลัก - แนวทางลาวและรัฐบาล</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* ============================================
            STYLE.CSS - จัดเรียงตัวเลข 4 หลัก (แบบเต็มรูปแบบ)
+           ปรับให้เต็มจอ ไม่มีพื้นที่ว่างด้านข้าง และแยกส่วนผลลัพธ์
+           ปรับสีตัวเลขให้สบายตา (น้ำเงินเข้ม) + บรรทัดข้อมูลกระชับ
            ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #fffde7;
             margin: 0;
-            padding: 20px;
-            line-height: 1.6;
+            padding: 0;
+            line-height: 1.5;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ห่อ main content ให้เต็มความกว้าง ไม่มี margin ซ้ายขวา */
+        .app-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 12px 10px;
+            background-color: #fffde7;
         }
 
         h1 {
             text-align: center;
-            font-size: 22px;
+            font-size: 20px;
             color: blue;
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-bottom: 12px;
+            padding: 0 8px;
+            word-break: break-word;
         }
 
+        /* ===== ส่วนกรอกข้อมูล (กรอบสีส้ม) ปรับให้เต็มขอบ ===== */
         .form-container {
-            border: 1.5px solid orange;
+            border: 2px solid orange;
             background-color: #FEFEF0;
-            margin: 20px auto;
-            padding: 15px 5px;
-            border-radius: 10px;
-            width: 98%;
-            max-width: 700px;
-            box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+            margin: 0 0 20px 0;
+            padding: 15px 12px;
+            border-radius: 16px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15);
             box-sizing: border-box;
         }
 
-        /* Input & Select */
+        /* Input & Select - ปรับให้เต็มความกว้างของ container */
         input, select, button {
-            font-size: 18px;
-            padding: 10px;
-            width: 80%;
-            margin: 10px auto;
-            border-radius: 6px;
+            font-size: 16px;
+            padding: 12px 10px;
+            width: 100%;
+            margin: 8px 0;
+            border-radius: 10px;
             border: 1.5px solid #ddd;
             display: block;
             text-align: center;
             box-sizing: border-box;
+            background-color: white;
         }
 
         label {
-            font-size: 18px;
+            font-size: 16px;
             color: #2c3e50;
             display: block;
-            text-align: center;
-            margin-bottom: 5px;
-            margin-top: 10px;
+            text-align: left;
+            margin-bottom: 4px;
+            margin-top: 12px;
             font-weight: bold;
+            padding-left: 4px;
         }
 
-        /* Select wrapper with inline manage button */
+        /* Select wrapper with inline manage button - ปรับให้เต็มพื้นที่ */
         .select-wrapper {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 8px;
-            width: 80%;
-            margin: 10px auto;
+            width: 100%;
+            margin: 8px 0;
         }
 
         .select-wrapper select {
             flex-grow: 1;
             width: auto;
             margin: 0;
+            padding: 12px 8px;
         }
 
         .manage-btn-inline {
             flex-shrink: 0;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             padding: 0;
             font-size: 24px;
-            border-radius: 8px;
+            border-radius: 12px;
             background-color: #6c757d;
             color: white;
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
-            line-height: 44px;
+            line-height: 48px;
+            margin: 0;
         }
 
         .manage-btn-inline:hover {
@@ -100,18 +125,20 @@
             display: none;
             justify-content: center;
             gap: 10px;
-            margin: 5px auto 15px;
+            margin: 8px 0 12px;
+            flex-wrap: wrap;
             animation: fadeIn 0.3s;
         }
 
         .management-actions button {
             width: auto;
-            padding: 6px 12px;
+            padding: 8px 14px;
             font-size: 14px;
             margin: 0;
             border: none;
             color: white;
             transition: background-color 0.2s ease;
+            flex: 1 0 auto;
         }
 
         .add-btn { background-color: #28a745; }
@@ -126,9 +153,9 @@
         .date-input-wrapper {
             display: flex;
             align-items: center;
-            width: 80%;
-            margin: 10px auto;
-            gap: 8px;
+            width: 100%;
+            margin: 8px 0;
+            gap: 10px;
         }
         #permDateInput, #permHiddenDate {
             flex-grow: 1;
@@ -139,11 +166,12 @@
             flex-shrink: 0;
             width: auto;
             margin: 0;
-            padding: 8px 12px;
+            padding: 12px 16px;
             font-size: 20px;
             background-color: #f0f0f0;
             border: 1.5px solid #ccc;
             cursor: pointer;
+            border-radius: 10px;
         }
 
         button#permutationConvertBtn {
@@ -151,8 +179,11 @@
             color: white;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            width: 90%;
-            margin: 20px auto;
+            width: 100%;
+            margin: 20px 0 8px;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 14px;
         }
         button#permutationConvertBtn:hover {
             background-color: #45a049;
@@ -160,10 +191,9 @@
 
         .homeButton {
             display: block;
-            width: 90%;
-            max-width: 600px;
-            margin: 20px auto 10px;
-            padding: 10px 20px;
+            width: 100%;
+            margin: 20px 0 10px;
+            padding: 12px 20px;
             background-color: orange;
             color: white;
             border: none;
@@ -172,111 +202,134 @@
             cursor: pointer;
             text-align: center;
             text-decoration: none;
+            font-weight: bold;
         }
         .homeButton:hover {
             background-color: darkorange;
         }
 
-        /* Permutation Result Container - สไตล์สมบูรณ์ */
+        /* ===== ส่วนแสดงผลลัพธ์ แยกต่างหาก ไม่มีขอบสีส้ม ===== */
         #permResultContainer {
             margin-top: 25px;
-            padding: 15px;
+            padding: 0;
             background-color: #ffffcc;
             border: 2px solid #4CAF50;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0, 128, 0, 0.2);
             text-align: center;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%;
             box-sizing: border-box;
             display: none;
+            overflow: hidden;
         }
 
-        /* Header Logo style - ปรับให้เหมือนไฟล์ 1 */
+        /* เนื้อหาด้านในของผลลัพธ์ */
+        #permResultContent {
+            position: relative;
+            text-align: center;
+            padding: 20px 12px 16px;
+            background-color: #ffffcc;
+            transition: all 0.2s ease;
+        }
+
+        /* Header Logo style */
         .result-header {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 5px;
+            gap: 10px;
+            margin-bottom: 8px;
             margin-top: 5px;
+            flex-wrap: wrap;
         }
         .header-logo {
-            width: 40px;
+            width: 38px;
             height: auto;
         }
         .topic-box {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
             background-color: #FF75FF;
             border: 1px solid #0070C0;
             color: white;
             border-radius: 50px;
-            padding: 5px 15px;
-            font-size: 22px;
+            padding: 8px 20px;
+            font-size: 20px;
             font-weight: bold;
             text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.5), 1px 1px 1px rgba(255, 255, 255, 0.5);
+            text-align: center;
+            word-break: break-word;
         }
         .topic-time {
-            font-size: 18px;
+            font-size: 17px;
             color: blue;
             font-weight: bold;
-            margin-top: 0;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), -1px -1px 1px rgba(255, 255, 255, 0.9);
+            margin-top: 5px;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
         }
         
-        /* ========== ปรับปรุงการแสดงผลตัวเลข ========== */
-        /* แสดงเป็น 4 คอลัมน์ ชิดขอบ ลดช่องว่าง */
+        /* ========== ปรับปรุงการแสดงผลตัวเลข ให้สบายตา สีน้ำเงินเข้ม พื้นหลังอ่อน ========== */
         #permResultNumbers {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
             margin: 20px 0;
-            padding: 0 5px;
+            padding: 0;
+            width: 100%;
         }
         #permResultNumbers span {
             display: inline-block;
-            padding: 6px 4px;
-            background-color: #e6f7ff;
-            color: #3333cc;
-            font-size: 16px;
-            font-weight: bold;
-            border: 1px solid #99ccff;
-            border-radius: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px 6px;
+            background: linear-gradient(135deg, #f5f9ff, #e8f0fe);
+            color: #1e3a8a;
+            font-size: 18px;
+            font-weight: 700;
+            border: 1px solid #9bb6d0;
+            border-radius: 28px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
             text-align: center;
             width: 100%;
             box-sizing: border-box;
+            letter-spacing: 1px;
+            transition: all 0.1s ease;
         }
         
-        /* ปรับแต่งสำหรับมือถือให้ชิดกันมากขึ้น */
-        @media only screen and (max-width: 500px) {
+        /* ปรับสำหรับมือถือขนาดเล็ก ให้ตัวเลขพอดี 4 คอลัมน์ */
+        @media only screen and (max-width: 480px) {
             #permResultNumbers {
-                grid-template-columns: repeat(4, 1fr);
                 gap: 6px;
-                padding: 0 2px;
             }
             #permResultNumbers span {
-                font-size: 13px;
-                padding: 5px 2px;
+                font-size: 14px;
+                padding: 8px 2px;
+                font-weight: 700;
+            }
+            .topic-box {
+                font-size: 16px;
+                padding: 6px 14px;
+            }
+            .header-logo {
+                width: 32px;
+            }
+            #permResultContent {
+                padding: 15px 10px;
             }
         }
-        /* ========== จบการปรับปรุง ========== */
         
         .comment-box {
-            font-size: 18px;
+            font-size: 16px;
             margin: 15px auto;
-            padding: 8px 12px;
+            padding: 10px 12px;
             color: #3333cc;
             background-color: #f2f2ff;
             border: 1px solid #ccccff;
-            border-radius: 8px;
-            max-width: 90%;
+            border-radius: 12px;
+            width: 100%;
             text-align: center;
+            word-break: break-word;
         }
         .perm-controls {
             display: flex;
@@ -284,6 +337,8 @@
             align-items: center;
             width: 100%;
             margin-top: 20px;
+            padding: 0 10px 15px;
+            background-color: #ffffcc;
         }
         .control-group {
             display: flex;
@@ -293,30 +348,119 @@
             margin-bottom: 15px;
         }
         .control-group label, .control-group span {
-            font-size: 15px;
+            font-size: 14px;
             color: blue;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
         .control-group input[type="range"] {
-            width: 80%;
-            max-width: 280px;
-            margin: 0;
+            width: 100%;
+            max-width: 300px;
+            margin: 5px 0;
         }
         .perm-controls button {
-            width: 90%;
-            max-width: 250px;
+            width: 100%;
+            max-width: 260px;
             margin: 8px auto;
+            padding: 12px;
+            font-size: 16px;
         }
 
         .close-popup-btn {
-            padding: 10px 20px;
+            padding: 12px 20px;
             background-color: #f44336;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 40px;
             cursor: pointer;
             font-size: 16px;
             margin-top: 10px;
+        }
+
+        /* ===== ปรับปรุงข้อมูลตัวเลขและผู้บอก + จัดเรียงเมื่อ ให้แสดงในบรรทัดเดียวแบบยืดหยุ่น ===== */
+        .info-row-inline {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: baseline;
+            gap: 6px 12px;
+            margin: 10px 0;
+            padding: 6px 8px;
+            background: #fff3cf;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .info-row-inline span {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        /* บนมือถือถ้าพื้นที่ไม่พอ ให้ตัวหนังสือลดขนาดและ wrap ตามความเหมาะสม */
+        @media (max-width: 550px) {
+            .info-row-inline {
+                font-size: 13px;
+                gap: 8px;
+                flex-wrap: wrap;
+                border-radius: 28px;
+                padding: 8px 12px;
+            }
+            .info-row-inline span {
+                white-space: normal;
+                word-break: keep-all;
+            }
+        }
+        @media (max-width: 420px) {
+            .info-row-inline {
+                font-size: 12px;
+                gap: 6px;
+            }
+        }
+        
+        /* บรรทัดวันที่และเวลาจัดเรียง ให้รวมในบรรทัดเดียว */
+        .datetime-inline {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: baseline;
+            gap: 6px 10px;
+            margin: 6px 0 8px;
+            font-size: 13px;
+            color: #2c6e9e;
+            background: #fff8e7;
+            padding: 6px 12px;
+            border-radius: 30px;
+        }
+        @media (max-width: 550px) {
+            .datetime-inline {
+                font-size: 11px;
+                gap: 6px;
+            }
+        }
+        
+        #permResultDate {
+            color: blue;
+            font-size: 16px;
+            margin: 6px 0;
+            font-weight: bold;
+        }
+        .note {
+            color: #FF0000;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .share-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .share-row button {
+            flex: 1;
         }
 
         /* Modal */
@@ -324,181 +468,209 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             z-index: 2000;
             justify-content: center;
             align-items: center;
         }
         .popup-content {
-            background: #f0f8ff;
-            padding: 20px;
-            border-radius: 10px;
+            background: #fef7e0;
+            padding: 24px 20px;
+            border-radius: 28px;
             max-width: 380px;
             width: 90%;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         .modal-button-group {
             display: flex;
             justify-content: space-around;
-            margin-top: 20px;
+            margin-top: 25px;
+            gap: 12px;
         }
-        .modal-button-group button { width: 45%; margin: 0; }
+        .modal-button-group button { width: 45%; margin: 0; padding: 12px; }
 
         footer {
             text-align: center;
-            padding: 20px;
-            font-size: 14px;
+            padding: 20px 10px;
+            font-size: 13px;
             color: #95a5a6;
+            width: 100%;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @media only screen and (max-width: 600px) {
-            .form-container { margin: 10px; width: calc(100% - 20px); }
-            input, select, button, .select-wrapper, .date-input-wrapper { width: 90%; }
+        
+        #permCustomTypeInputs div {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        #permCustomTypeInputs input {
+            flex: 1;
+            margin: 0;
+        }
+        
+        /* ตัวเลขที่แสดงในหัวข้อเดิมให้สวยงาม */
+        .highlight-number {
+            color: #1e3a8a;
+            font-weight: 800;
+            background: #fff0c0;
+            padding: 2px 10px;
+            border-radius: 30px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-<h1>🔄 จัดเรียงตัวเลข 4 หลัก (แนวทางลาวและรัฐบาล)</h1>
-<div class="form-container">
-    <!-- โหมดจัดเรียงตัวเลข 4 หลัก เต็มรูปแบบ -->
-    <div id="permutationModeContent">
-        <div class="permutation-container" style="width:100%; max-width:650px; margin:0 auto; padding:5px;">
-            <label for="permNumbers">🔢 ตัวเลข 4 หลัก:</label>
-            <input type="text" id="permNumbers" maxlength="4" placeholder="เช่น 1234" pattern="\d*" inputmode="numeric">
-            
-            <!-- ประเภท: รองรับการจัดการ (เพิ่ม/แก้ไข/ลบ) -->
-            <div class="select-wrapper">
-                <select id="permTypeSelect">
-                    <option value="ลาวพัฒนา เวลา 20.30 น." data-default="true">ลาวพัฒนา เวลา 20.30 น.</option>
-                    <option value="ลาวสตาร์ เวลา 15.45 น." data-default="true">ลาวสตาร์ เวลา 15.45 น.</option>
-                    <option value="รัฐบาล เวลา 15.45 น." data-default="true">รัฐบาล เวลา 15.45 น.</option>
-                    <option value="ฮานอยกาชาด เวลา 16.30 น." data-default="true">ฮานอยกาชาด เวลา 16.30 น.</option>
-                    <option value="อานอยพิเศษ เวลา 17.30 น." data-default="true">อานอยพิเศษ เวลา 17.30 น.</option>
-                    <option value="ฮานอย เวลา 18.30 น." data-default="true">ฮานอย เวลา 18.30 น.</option>
-                    <option value="ฮานอย VIP เวลา 19.30 น." data-default="true">ฮานอย VIP เวลา 19.30 น.</option>
-                    <option value="ลาวสามัคคี เวลา 20.30 น." data-default="true">ลาวสามัคคี เวลา 20.30 น.</option>
-                    <option value="custom">อื่นๆ (พิมพ์เอง)</option>
-                </select>
-                <button class="manage-btn-inline" id="togglePermTypeControls" title="จัดการประเภท">⚙️</button>
-            </div>
-            <div class="management-actions" id="permTypeActions">
-                <button id="addPermTypeBtn" class="add-btn">เพิ่ม</button>
-                <button id="editPermTypeBtn" class="edit-btn">แก้ไข</button>
-                <button id="deletePermTypeBtn" class="delete-btn">ลบ</button>
-                <button id="resetPermTypeBtn" class="reset-btn">คืนค่า</button>
-            </div>
-            <div id="permCustomTypeInputs" style="display: none; text-align: center; margin: 5px auto; width: 80%;">
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="permCustomTypeName" placeholder="ชื่อประเภท (เช่น ลาวVIP)" style="flex:2;">
-                    <input type="text" id="permCustomTypeTime" placeholder="เวลา (เช่น 21.30)" style="flex:1;">
+<div class="app-wrapper">
+    <h1>🔄 จัดเรียงตัวเลข 4 หลัก (แนวทางลาวและรัฐบาล)</h1>
+    
+    <!-- ส่วนกรอกข้อมูล (กรอบสีส้ม) -->
+    <div class="form-container">
+        <div id="permutationModeContent">
+            <div class="permutation-container" style="width:100%; margin:0 auto;">
+                <label for="permNumbers">🔢 ตัวเลข 4 หลัก:</label>
+                <input type="text" id="permNumbers" maxlength="4" placeholder="เช่น 1234" pattern="\d*" inputmode="numeric">
+                
+                <!-- ประเภท: รองรับการจัดการ -->
+                <div class="select-wrapper">
+                    <select id="permTypeSelect">
+                        <option value="ลาวพัฒนา เวลา 20.30 น." data-default="true">ลาวพัฒนา เวลา 20.30 น.</option>
+                        <option value="ลาวสตาร์ เวลา 15.45 น." data-default="true">ลาวสตาร์ เวลา 15.45 น.</option>
+                        <option value="รัฐบาล เวลา 15.45 น." data-default="true">รัฐบาล เวลา 15.45 น.</option>
+                        <option value="ฮานอยกาชาด เวลา 16.30 น." data-default="true">ฮานอยกาชาด เวลา 16.30 น.</option>
+                        <option value="อานอยพิเศษ เวลา 17.30 น." data-default="true">อานอยพิเศษ เวลา 17.30 น.</option>
+                        <option value="ฮานอย เวลา 18.30 น." data-default="true">ฮานอย เวลา 18.30 น.</option>
+                        <option value="ฮานอย VIP เวลา 19.30 น." data-default="true">ฮานอย VIP เวลา 19.30 น.</option>
+                        <option value="ลาวสามัคคี เวลา 20.30 น." data-default="true">ลาวสามัคคี เวลา 20.30 น.</option>
+                        <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+                    </select>
+                    <button class="manage-btn-inline" id="togglePermTypeControls" title="จัดการประเภท">⚙️</button>
                 </div>
-            </div>
-
-            <!-- ผู้บอก: รองรับการจัดการ -->
-            <div class="select-wrapper">
-                <select id="permProviderSelect">
-                    <option value="Team" data-default="true">Team</option>
-                    <option value="@" data-default="true">@</option>
-                    <option value="Udon Don" data-default="true">Udon Don</option>
-                    <option value="นาคน้อยทีม" data-default="true">นาคน้อยทีม</option>
-                    <option value="เจ้าที่โรงงาน" data-default="true">เจ้าที่โรงงาน</option>
-                    <option value="custom">อื่นๆ (พิมพ์เอง)</option>
-                </select>
-                <button class="manage-btn-inline" id="togglePermProviderControls" title="จัดการผู้บอก">⚙️</button>
-            </div>
-            <div class="management-actions" id="permProviderActions">
-                <button id="addPermProviderBtn" class="add-btn">เพิ่ม</button>
-                <button id="editPermProviderBtn" class="edit-btn">แก้ไข</button>
-                <button id="deletePermProviderBtn" class="delete-btn">ลบ</button>
-                <button id="resetPermProviderBtn" class="reset-btn">คืนค่า</button>
-            </div>
-            <input type="text" id="permCustomProviderInput" placeholder="กรอกชื่อผู้บอกเอง" style="display: none; width: 80%; margin: 5px auto;">
-
-            <label for="permComment">📝 หมายเหตุ:</label>
-            <input type="text" id="permComment" placeholder="หมายเหตุ (ถ้ามี)">
-            
-            <label for="permDateInput">📅 วันที่:</label>
-            <div class="date-input-wrapper" style="width:80%; margin:5px auto;">
-                <input type="text" id="permDateInput" placeholder="วว/ดด/ปปปป" />
-                <button type="button" id="permCalendarButton">📅</button>
-                <input type="date" id="permHiddenDate" style="display:none;">
-            </div>
-            
-            <button id="permutationConvertBtn">✨ จัดเรียงตัวเลข</button>
-        </div>
-
-        <!-- พื้นที่แสดงผลลัพธ์แบบเต็มรูปแบบ ปรับปรุงให้เวลาไม่ซ้ำซ้อน -->
-        <div id="permResultContainer">
-            <div id="permResultContent" style="position: relative; text-align: center;">
-                <div class="result-header">
-                    <img src="logo.png" class="header-logo" alt="Logo" style="width:40px;">
-                    <div class="topic-box" id="permResultTopicBox">
-                        <span id="permResultTypeDisplay">ประเภท</span>
+                <div class="management-actions" id="permTypeActions">
+                    <button id="addPermTypeBtn" class="add-btn">เพิ่ม</button>
+                    <button id="editPermTypeBtn" class="edit-btn">แก้ไข</button>
+                    <button id="deletePermTypeBtn" class="delete-btn">ลบ</button>
+                    <button id="resetPermTypeBtn" class="reset-btn">คืนค่า</button>
+                </div>
+                <div id="permCustomTypeInputs" style="display: none;">
+                    <div>
+                        <input type="text" id="permCustomTypeName" placeholder="ชื่อประเภท (เช่น ลาวVIP)">
+                        <input type="text" id="permCustomTypeTime" placeholder="เวลา (เช่น 21.30)">
                     </div>
-                    <img src="logo.png" class="header-logo" alt="Logo" style="width:40px;">
                 </div>
-                <!-- แสดงเวลาแยกต่างหาก ไม่ซ้ำกับใน topic-box -->
-                <div id="permResultTimeHtml" class="topic-time"></div>
-                <h2 id="permResultDate" style="color: blue; font-size: 18px; margin: 8px 0;">วันที่: </h2>
-                <h3 id="permInputNumbersAndProvider" style="color: blue; font-size: 18px; font-weight: normal;">ตัวเลขที่กรอก: | ผู้บอก:</h3>
-                <h3 style="color: blue; font-size: 18px; font-weight: normal;">✨ ตัวเลขที่จัดเรียงทั้งหมด ✨</h3>
-                <div id="permResultNumbers"></div>
-                <div class="note" style="color: #FF0000; font-size: 20px; font-weight: bold; margin: 15px 0;">⚠️ แนวทางเท่านั้น ⚠️</div>
-                <h5 id="permCurrentDateTime" style="color: blue; font-size: 14px;">จัดเรียงเมื่อ:</h5>
-                <div class="comment-box">📌 หมายเหตุ: <span id="permCommentText" style="color: red;"></span></div>
-            </div>
-            
-            <div class="perm-controls">
-                <button id="savePermAsImageBtn" class="close-popup-btn" style="background-color: #007bff;">📸 บันทึกเป็นรูปภาพ</button>
-                <div style="display: flex; gap: 10px; width: 90%; justify-content: center;">
-                    <button id="sharePermResultBtn" style="background-color:#28a745; flex:2;">📤 แชร์ไปยังแอป</button>
-                    <button id="sharePermSettingsBtn" style="background-color:#1e7e34; width: 60px;" title="ตั้งค่าการแชร์">⚙️</button>
+
+                <!-- ผู้บอก -->
+                <div class="select-wrapper">
+                    <select id="permProviderSelect">
+                        <option value="Team" data-default="true">Team</option>
+                        <option value="@" data-default="true">@</option>
+                        <option value="Udon Don" data-default="true">Udon Don</option>
+                        <option value="นาคน้อยทีม" data-default="true">นาคน้อยทีม</option>
+                        <option value="เจ้าที่โรงงาน" data-default="true">เจ้าที่โรงงาน</option>
+                        <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+                    </select>
+                    <button class="manage-btn-inline" id="togglePermProviderControls" title="จัดการผู้บอก">⚙️</button>
                 </div>
-                <div class="control-group">
-                    <label>🔍 ปรับขนาดตัวอักษร:</label>
-                    <input type="range" id="permFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
-                    <span id="permFontSizeValue">ขนาด: 100%</span>
+                <div class="management-actions" id="permProviderActions">
+                    <button id="addPermProviderBtn" class="add-btn">เพิ่ม</button>
+                    <button id="editPermProviderBtn" class="edit-btn">แก้ไข</button>
+                    <button id="deletePermProviderBtn" class="delete-btn">ลบ</button>
+                    <button id="resetPermProviderBtn" class="reset-btn">คืนค่า</button>
                 </div>
-                <div class="control-group">
-                    <label>📏 ปรับความสูงบรรทัด:</label>
-                    <input type="range" id="permLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
-                    <span id="permLineHeightValue">ความสูงบรรทัด: 1.3</span>
+                <input type="text" id="permCustomProviderInput" placeholder="กรอกชื่อผู้บอกเอง" style="display: none;">
+
+                <label for="permComment">📝 หมายเหตุ:</label>
+                <input type="text" id="permComment" placeholder="หมายเหตุ (ถ้ามี)">
+                
+                <label for="permDateInput">📅 วันที่:</label>
+                <div class="date-input-wrapper">
+                    <input type="text" id="permDateInput" placeholder="วว/ดด/ปปปป" />
+                    <button type="button" id="permCalendarButton">📅</button>
+                    <input type="date" id="permHiddenDate" style="display:none;">
                 </div>
+                
+                <button id="permutationConvertBtn">✨ จัดเรียงตัวเลข</button>
             </div>
         </div>
     </div>
-</div>
 
-<button class="homeButton" onclick="window.location.href='index.html'">🏠 กลับสู่หน้าหลัก</button>
-<footer>© 2024-2025 Juckphai. All Rights Reserved.</footer>
+    <!-- ส่วนแสดงผลลัพธ์ แยกต่างหาก -->
+    <div id="permResultContainer">
+        <div id="permResultContent">
+            <div class="result-header">
+                <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
+                <div class="topic-box" id="permResultTopicBox">
+                    <span id="permResultTypeDisplay">ประเภท</span>
+                </div>
+                <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
+            </div>
+            <div id="permResultTimeHtml" class="topic-time"></div>
+            <h2 id="permResultDate" style="color: blue; font-size: 18px; margin: 8px 0;">วันที่: </h2>
+            
+            <!-- บรรทัดแสดงตัวเลขและผู้บอก แบบ inline กระชับ (ปรับอัตโนมัติ) -->
+            <div id="permInputNumbersAndProvider" class="info-row-inline"></div>
+            
+            <h3 style="color: #2c3e50; font-size: 18px; margin: 12px 0;">✨ ตัวเลขที่จัดเรียงทั้งหมด ✨</h3>
+            <div id="permResultNumbers"></div>
+            <div class="note">⚠️ แนวทางเท่านั้น ⚠️</div>
+            
+            <!-- บรรทัดจัดเรียงเมื่อ แบบ inline -->
+            <div id="permCurrentDateTime" class="datetime-inline"></div>
+            
+            <div class="comment-box">📌 หมายเหตุ: <span id="permCommentText" style="color: red;"></span></div>
+        </div>
+        
+        <div class="perm-controls">
+            <button id="savePermAsImageBtn" class="close-popup-btn" style="background-color: #007bff;">📸 บันทึกเป็นรูปภาพ</button>
+            <div class="share-row">
+                <button id="sharePermResultBtn" style="background-color:#28a745;">📤 แชร์ไปยังแอป</button>
+                <button id="sharePermSettingsBtn" style="background-color:#1e7e34;" title="ตั้งค่าการแชร์">⚙️</button>
+            </div>
+            <div class="control-group">
+                <label>🔍 ปรับขนาดตัวอักษร:</label>
+                <input type="range" id="permFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
+                <span id="permFontSizeValue">ขนาด: 100%</span>
+            </div>
+            <div class="control-group">
+                <label>📏 ปรับความสูงบรรทัด:</label>
+                <input type="range" id="permLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
+                <span id="permLineHeightValue">ความสูงบรรทัด: 1.3</span>
+            </div>
+        </div>
+    </div>
+
+    <button class="homeButton" onclick="window.location.href='index.html'">🏠 กลับสู่หน้าหลัก</button>
+    <footer>© 2024-2025 Juckphai. All Rights Reserved.</footer>
+</div>
 
 <!-- Modal สำหรับจัดการประเภท/ผู้บอก -->
 <div id="permTypeModal" class="popup-overlay">
     <div class="popup-content"><h3 id="permTypeModalTitle"></h3>
         <input type="hidden" id="permTypeEditIndex">
-        <input type="text" id="permModalTypeName" placeholder="ชื่อประเภท"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)">
+        <input type="text" id="permModalTypeName" placeholder="ชื่อประเภท" style="width:100%"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)" style="width:100%; margin-top:10px">
         <div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div>
     </div>
 </div>
 <div id="permProviderModal" class="popup-overlay">
     <div class="popup-content"><h3 id="permProviderModalTitle"></h3>
-        <input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก">
+        <input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก" style="width:100%">
         <div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div>
     </div>
 </div>
 <!-- Modal ตั้งค่าแชร์ -->
 <div id="shareSettingsModal" class="popup-overlay">
     <div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์</h3>
-        <label style="display:flex;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share)</label>
-        <label style="display:flex; margin-top:10px;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท)</label>
+        <label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share)</label>
+        <label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท)</label>
         <div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div>
     </div>
 </div>
 
 <script>
-    // === ระบบจัดการประเภท/ผู้บอก (ครบถ้วนเหมือนเดิม) ===
+    // ระบบจัดการประเภท/ผู้บอก (คงเดิมครบถ้วน)
     const PERM_TYPE_STORAGE = 'perm_custom_types';
     const PERM_PROVIDER_STORAGE = 'perm_custom_providers';
     const PERM_HIDDEN_TYPES = 'perm_hidden_default_types';
@@ -569,7 +741,6 @@
         }
     }
 
-    // ฟังก์ชันแยกชื่อประเภทกับเวลา (ให้แสดงชื่ออย่างเดียวใน topic-box และเวลาใน topic-time)
     function getTypeNameAndTime(fullTypeText) {
         const timeMatch = fullTypeText.match(/เวลา ([\d.]+) น\./);
         if (timeMatch) {
@@ -602,7 +773,6 @@
         return select.value;
     }
 
-    // ระบบแชร์และ capture
     const SHARE_PREF_KEY = 'sharePreference_perm_only';
     function loadPermSharePref() { return localStorage.getItem(SHARE_PREF_KEY) || 'system'; }
     function updatePermShareButtonUI() {
@@ -615,23 +785,20 @@
         try { await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); alert("✅ คัดลอกรูปภาพสำเร็จ! ไปวางในแชทได้เลย"); }
         catch(e) { alert("ไม่รองรับการคัดลอกรูปภาพ"); }
     }
-
     async function capturePermContainer() {
         const container = document.getElementById("permResultContainer");
         const controls = container.querySelector('.perm-controls');
         if(!container || container.style.display === 'none') { alert("ไม่มีผลลัพธ์ให้บันทึก"); return null; }
         const originalDisplay = controls ? controls.style.display : null;
         if(controls) controls.style.display = 'none';
-        const canvas = await html2canvas(container, { scale: 3, backgroundColor: '#ffffcc', useCORS: true });
+        const canvas = await html2canvas(container, { scale: 2.5, backgroundColor: '#ffffcc', useCORS: true });
         if(controls) controls.style.display = originalDisplay;
         return canvas;
     }
-
     async function savePermAsImage() {
         const canvas = await capturePermContainer();
         if(canvas) { const link = document.createElement('a'); link.download = `perm-${Date.now()}.png`; link.href = canvas.toDataURL(); link.click(); }
     }
-
     async function sharePermResult() {
         const canvas = await capturePermContainer();
         if(!canvas) return;
@@ -641,7 +808,6 @@
         else { if(navigator.share) await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})] }); else alert("ไม่รองรับแชร์"); }
     }
 
-    // จัดเรียงตัวเลข 4 หลัก (ปรับปรุงให้แสดงชื่อและเวลาไม่ซ้ำซ้อน และตัวเลขสีแดงหนา)
     function processPermutation() {
         const numbersInput = document.getElementById("permNumbers").value.trim();
         if(!/^\d{4}$/.test(numbersInput)) { alert("กรุณากรอกตัวเลข 4 หลักให้ถูกต้อง (เฉพาะตัวเลข 4 หลัก)"); return; }
@@ -660,7 +826,6 @@
         const nowThai = now.toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
         const nowTime = now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
         
-        // สร้างการเรียงสับเปลี่ยนทั้งหมด 4!
         const unique = new Set();
         function permute(str, prefix="") {
             if(str.length===0) unique.add(prefix);
@@ -673,14 +838,18 @@
         sorted.forEach(num => { let span = document.createElement("span"); span.textContent=num; container.appendChild(span); });
         
         document.getElementById("permResultDate").innerHTML = `📅 ${thaiFullDate}`;
-        // แสดงเฉพาะชื่อประเภทใน topic-box (ไม่มีเวลา)
         document.getElementById("permResultTypeDisplay").innerHTML = typeName;
-        // แสดงเวลาแยกใน topic-time (ถ้ามี)
         document.getElementById("permResultTimeHtml").innerHTML = timeText ? timeText : '';
-        // แก้ไขตรงนี้: ให้ตัวเลขเป็นสีแดงและตัวหนา
-        document.getElementById("permInputNumbersAndProvider").innerHTML = `🔢 ตัวเลข <span style="color: red; font-weight: bold;">${numbersInput}</span> | 👤 ผู้บอก: ${provider}`;
+        
+        // บรรทัดตัวเลขและผู้บอกแบบ inline กระชับ
+        const infoDiv = document.getElementById("permInputNumbersAndProvider");
+        infoDiv.innerHTML = `<span>🔢 ตัวเลข <strong style="color:#1e3a8a; background:#FFF0C0; padding:2px 10px; border-radius:30px;">${numbersInput}</strong></span> <span>| 👤 ผู้บอก: ${provider}</span>`;
+        
         document.getElementById("permCommentText").innerHTML = comment;
-        document.getElementById("permCurrentDateTime").innerHTML = `📆 จัดเรียงเมื่อ: ${nowThai} เวลา ${nowTime} น.`;
+        // บรรทัดจัดเรียงเมื่อ แบบ inline
+        const dateTimeDiv = document.getElementById("permCurrentDateTime");
+        dateTimeDiv.innerHTML = `📆 จัดเรียงเมื่อ: ${nowThai} เวลา ${nowTime} น.`;
+        
         document.getElementById("permResultContainer").style.display = "block";
         window.scrollTo({ top: document.getElementById("permResultContainer").offsetTop-20, behavior: 'smooth' });
     }
