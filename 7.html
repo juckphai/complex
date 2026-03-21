@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ระบบจัดเรียงตัวเลข 4 หลัก - แนวทางลาวและรัฐบาล</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* ============================================
+           STYLE.CSS - จัดเรียงตัวเลข 4 หลัก (แบบเต็มรูปแบบ)
+           ============================================ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fffde7;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            color: blue;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            border: 1.5px solid orange;
+            background-color: #FEFEF0;
+            margin: 20px auto;
+            padding: 15px 5px;
+            border-radius: 10px;
+            width: 98%;
+            max-width: 700px;
+            box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+            box-sizing: border-box;
+        }
+
+        /* Input & Select */
+        input, select, button {
+            font-size: 18px;
+            padding: 10px;
+            width: 80%;
+            margin: 10px auto;
+            border-radius: 6px;
+            border: 1.5px solid #ddd;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-size: 18px;
+            color: #2c3e50;
+            display: block;
+            text-align: center;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Select wrapper with inline manage button */
+        .select-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 80%;
+            margin: 10px auto;
+        }
+
+        .select-wrapper select {
+            flex-grow: 1;
+            width: auto;
+            margin: 0;
+        }
+
+        .manage-btn-inline {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            font-size: 24px;
+            border-radius: 8px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 44px;
+        }
+
+        .manage-btn-inline:hover {
+            background-color: #5a6268;
+            transform: rotate(45deg);
+        }
+
+        .management-actions {
+            display: none;
+            justify-content: center;
+            gap: 10px;
+            margin: 5px auto 15px;
+            animation: fadeIn 0.3s;
+        }
+
+        .management-actions button {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 14px;
+            margin: 0;
+            border: none;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+
+        .add-btn { background-color: #28a745; }
+        .add-btn:hover { background-color: #218838; }
+        .edit-btn { background-color: #ffc107; color: #212529 !important; }
+        .edit-btn:hover { background-color: #e0a800; }
+        .delete-btn { background-color: #dc3545; }
+        .delete-btn:hover { background-color: #c82333; }
+        .reset-btn { background-color: #17a2b8; }
+        .reset-btn:hover { background-color: #138496; }
+
+        .date-input-wrapper {
+            display: flex;
+            align-items: center;
+            width: 80%;
+            margin: 10px auto;
+            gap: 8px;
+        }
+        #permDateInput, #permHiddenDate {
+            flex-grow: 1;
+            margin: 0;
+            width: auto;
+        }
+        #permCalendarButton {
+            flex-shrink: 0;
+            width: auto;
+            margin: 0;
+            padding: 8px 12px;
+            font-size: 20px;
+            background-color: #f0f0f0;
+            border: 1.5px solid #ccc;
+            cursor: pointer;
+        }
+
+        button#permutationConvertBtn {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 90%;
+            margin: 20px auto;
+        }
+        button#permutationConvertBtn:hover {
+            background-color: #45a049;
+        }
+
+        .homeButton {
+            display: block;
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto 10px;
+            padding: 10px 20px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        .homeButton:hover {
+            background-color: darkorange;
+        }
+
+        /* Permutation Result Container - สไตล์สมบูรณ์ */
+        #permResultContainer {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #ffffcc;
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+            text-align: center;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        /* Header Logo style - ปรับให้เหมือนไฟล์ 1 */
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .header-logo {
+            width: 40px;
+            height: auto;
+        }
+        .topic-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background-color: #FF75FF;
+            border: 1px solid #0070C0;
+            color: white;
+            border-radius: 50px;
+            padding: 5px 15px;
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.5), 1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+        .topic-time {
+            font-size: 18px;
+            color: blue;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), -1px -1px 1px rgba(255, 255, 255, 0.9);
+        }
+        #permResultNumbers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        #permResultNumbers span {
+            display: inline-block;
+            padding: 6px 14px;
+            background-color: #e6f7ff;
+            color: #3333cc;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid #99ccff;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .comment-box {
+            font-size: 18px;
+            margin: 15px auto;
+            padding: 8px 12px;
+            color: #3333cc;
+            background-color: #f2f2ff;
+            border: 1px solid #ccccff;
+            border-radius: 8px;
+            max-width: 90%;
+            text-align: center;
+        }
+        .perm-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .control-group label, .control-group span {
+            font-size: 15px;
+            color: blue;
+            margin-bottom: 5px;
+        }
+        .control-group input[type="range"] {
+            width: 80%;
+            max-width: 280px;
+            margin: 0;
+        }
+        .perm-controls button {
+            width: 90%;
+            max-width: 250px;
+            margin: 8px auto;
+        }
+
+        .close-popup-btn {
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* Modal */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 380px;
+            width: 90%;
+        }
+        .modal-button-group {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .modal-button-group button { width: 45%; margin: 0; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media only screen and (max-width: 600px) {
+            .form-container { margin: 10px; width: calc(100% - 20px); }
+            input, select, button, .select-wrapper, .date-input-wrapper { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+<h1>🔄 จัดเรียงตัวเลข 4 หลัก (แนวทางลาวและรัฐบาล)</h1>
+<div class="form-container">
+    <!-- โหมดจัดเรียงตัวเลข 4 หลัก เต็มรูปแบบ -->
+    <div id="permutationModeContent">
+        <div class="permutation-container" style="width:100%; max-width:650px; margin:0 auto; padding:5px;">
+            <label for="permNumbers">🔢 ตัวเลข 4 หลัก:</label>
+            <input type="text" id="permNumbers" maxlength="4" placeholder="เช่น 1234" pattern="\d*" inputmode="numeric">
+            
+            <!-- ประเภท: รองรับการจัดการ (เพิ่ม/แก้ไข/ลบ) -->
+            <div class="select-wrapper">
+                <select id="permTypeSelect">
+                    <option value="ลาวพัฒนา เวลา 20.30 น." data-default="true">ลาวพัฒนา เวลา 20.30 น.</option>
+                    <option value="ลาวสตาร์ เวลา 15.45 น." data-default="true">ลาวสตาร์ เวลา 15.45 น.</option>
+                    <option value="รัฐบาล เวลา 15.45 น." data-default="true">รัฐบาล เวลา 15.45 น.</option>
+                    <option value="ฮานอยกาชาด เวลา 16.30 น." data-default="true">ฮานอยกาชาด เวลา 16.30 น.</option>
+                    <option value="อานอยพิเศษ เวลา 17.30 น." data-default="true">อานอยพิเศษ เวลา 17.30 น.</option>
+                    <option value="ฮานอย เวลา 18.30 น." data-default="true">ฮานอย เวลา 18.30 น.</option>
+                    <option value="ฮานอย VIP เวลา 19.30 น." data-default="true">ฮานอย VIP เวลา 19.30 น.</option>
+                    <option value="ลาวสามัคคี เวลา 20.30 น." data-default="true">ลาวสามัคคี เวลา 20.30 น.</option>
+                    <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+                </select>
+                <button class="manage-btn-inline" id="togglePermTypeControls" title="จัดการประเภท">⚙️</button>
+            </div>
+            <div class="management-actions" id="permTypeActions">
+                <button id="addPermTypeBtn" class="add-btn">เพิ่ม</button>
+                <button id="editPermTypeBtn" class="edit-btn">แก้ไข</button>
+                <button id="deletePermTypeBtn" class="delete-btn">ลบ</button>
+                <button id="resetPermTypeBtn" class="reset-btn">คืนค่า</button>
+            </div>
+            <div id="permCustomTypeInputs" style="display: none; text-align: center; margin: 5px auto; width: 80%;">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="permCustomTypeName" placeholder="ชื่อประเภท (เช่น ลาวVIP)" style="flex:2;">
+                    <input type="text" id="permCustomTypeTime" placeholder="เวลา (เช่น 21.30)" style="flex:1;">
+                </div>
+            </div>
+
+            <!-- ผู้บอก: รองรับการจัดการ -->
+            <div class="select-wrapper">
+                <select id="permProviderSelect">
+                    <option value="Team" data-default="true">Team</option>
+                    <option value="@" data-default="true">@</option>
+                    <option value="Udon Don" data-default="true">Udon Don</option>
+                    <option value="นาคน้อยทีม" data-default="true">นาคน้อยทีม</option>
+                    <option value="เจ้าที่โรงงาน" data-default="true">เจ้าที่โรงงาน</option>
+                    <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+                </select>
+                <button class="manage-btn-inline" id="togglePermProviderControls" title="จัดการผู้บอก">⚙️</button>
+            </div>
+            <div class="management-actions" id="permProviderActions">
+                <button id="addPermProviderBtn" class="add-btn">เพิ่ม</button>
+                <button id="editPermProviderBtn" class="edit-btn">แก้ไข</button>
+                <button id="deletePermProviderBtn" class="delete-btn">ลบ</button>
+                <button id="resetPermProviderBtn" class="reset-btn">คืนค่า</button>
+            </div>
+            <input type="text" id="permCustomProviderInput" placeholder="กรอกชื่อผู้บอกเอง" style="display: none; width: 80%; margin: 5px auto;">
+
+            <label for="permComment">📝 หมายเหตุ:</label>
+            <input type="text" id="permComment" placeholder="หมายเหตุ (ถ้ามี)">
+            
+            <label for="permDateInput">📅 วันที่:</label>
+            <div class="date-input-wrapper" style="width:80%; margin:5px auto;">
+                <input type="text" id="permDateInput" placeholder="วว/ดด/ปปปป" />
+                <button type="button" id="permCalendarButton">📅</button>
+                <input type="date" id="permHiddenDate" style="display:none;">
+            </div>
+            
+            <button id="permutationConvertBtn">✨ จัดเรียงตัวเลข</button>
+        </div>
+
+        <!-- พื้นที่แสดงผลลัพธ์แบบเต็มรูปแบบ ปรับปรุงให้เวลาไม่ซ้ำซ้อน -->
+        <div id="permResultContainer">
+            <div id="permResultContent" style="position: relative; text-align: center;">
+                <div class="result-header">
+                    <img src="logo.png" class="header-logo" alt="Logo" style="width:40px;">
+                    <div class="topic-box" id="permResultTopicBox">
+                        <span id="permResultTypeDisplay">ประเภท</span>
+                    </div>
+                    <img src="logo.png" class="header-logo" alt="Logo" style="width:40px;">
+                </div>
+                <!-- แสดงเวลาแยกต่างหาก ไม่ซ้ำกับใน topic-box -->
+                <div id="permResultTimeHtml" class="topic-time"></div>
+                <h2 id="permResultDate" style="color: blue; font-size: 18px; margin: 8px 0;">วันที่: </h2>
+                <h3 id="permInputNumbersAndProvider" style="color: blue; font-size: 18px; font-weight: normal;">ตัวเลขที่กรอก: | ผู้บอก:</h3>
+                <h3 style="color: blue; font-size: 18px; font-weight: normal;">✨ ตัวเลขที่จัดเรียงทั้งหมด ✨</h3>
+                <div id="permResultNumbers"></div>
+                <div class="note" style="color: #FF0000; font-size: 20px; font-weight: bold; margin: 15px 0;">⚠️ แนวทางเท่านั้น ⚠️</div>
+                <h5 id="permCurrentDateTime" style="color: blue; font-size: 14px;">จัดเรียงเมื่อ:</h5>
+                <div class="comment-box">📌 หมายเหตุ: <span id="permCommentText" style="color: red;"></span></div>
+            </div>
+            
+            <div class="perm-controls">
+                <button id="savePermAsImageBtn" class="close-popup-btn" style="background-color: #007bff;">📸 บันทึกเป็นรูปภาพ</button>
+                <div style="display: flex; gap: 10px; width: 90%; justify-content: center;">
+                    <button id="sharePermResultBtn" style="background-color:#28a745; flex:2;">📤 แชร์ไปยังแอป</button>
+                    <button id="sharePermSettingsBtn" style="background-color:#1e7e34; width: 60px;" title="ตั้งค่าการแชร์">⚙️</button>
+                </div>
+                <div class="control-group">
+                    <label>🔍 ปรับขนาดตัวอักษร:</label>
+                    <input type="range" id="permFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
+                    <span id="permFontSizeValue">ขนาด: 100%</span>
+                </div>
+                <div class="control-group">
+                    <label>📏 ปรับความสูงบรรทัด:</label>
+                    <input type="range" id="permLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
+                    <span id="permLineHeightValue">ความสูงบรรทัด: 1.3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="homeButton" onclick="window.location.href='index.html'">🏠 กลับสู่หน้าหลัก</button>
+<footer>© 2024-2025 Juckphai. All Rights Reserved.</footer>
+
+<!-- Modal สำหรับจัดการประเภท/ผู้บอก -->
+<div id="permTypeModal" class="popup-overlay">
+    <div class="popup-content"><h3 id="permTypeModalTitle"></h3>
+        <input type="hidden" id="permTypeEditIndex">
+        <input type="text" id="permModalTypeName" placeholder="ชื่อประเภท"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)">
+        <div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div>
+    </div>
+</div>
+<div id="permProviderModal" class="popup-overlay">
+    <div class="popup-content"><h3 id="permProviderModalTitle"></h3>
+        <input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก">
+        <div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div>
+    </div>
+</div>
+<!-- Modal ตั้งค่าแชร์ -->
+<div id="shareSettingsModal" class="popup-overlay">
+    <div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์</h3>
+        <label style="display:flex;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share)</label>
+        <label style="display:flex; margin-top:10px;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท)</label>
+        <div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div>
+    </div>
+</div>
+
+<script>
+    // === ระบบจัดการประเภท/ผู้บอก (ครบถ้วนเหมือนเดิม) ===
+    const PERM_TYPE_STORAGE = 'perm_custom_types';
+    const PERM_PROVIDER_STORAGE = 'perm_custom_providers';
+    const PERM_HIDDEN_TYPES = 'perm_hidden_default_types';
+    const PERM_HIDDEN_PROVIDERS = 'perm_hidden_default_providers';
+
+    function getStored(key, def=[]) { return JSON.parse(localStorage.getItem(key)) || def; }
+    function setStored(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+    function loadPermSelectOptions(selectId, storageKey, hiddenKey, isType=true) {
+        const select = document.getElementById(selectId);
+        if(!select) return;
+        const stored = getStored(storageKey);
+        const hidden = getStored(hiddenKey);
+        const optionsToKeep = Array.from(select.options).filter(opt => opt.hasAttribute('data-default') || opt.value === 'custom');
+        select.innerHTML = '';
+        optionsToKeep.forEach(opt => select.appendChild(opt));
+        stored.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.value;
+            opt.textContent = item.text;
+            select.insertBefore(opt, select.querySelector('option[value="custom"]'));
+        });
+        if(hidden.length){
+            Array.from(select.options).forEach(opt => {
+                if(opt.hasAttribute('data-default') && hidden.includes(opt.value)) opt.hidden = true;
+            });
+        }
+    }
+
+    function savePermCustom(selectId, storageKey, newValue, oldValue=null, isType=true) {
+        let items = getStored(storageKey);
+        if(oldValue) {
+            const idx = items.findIndex(i => i.value === oldValue);
+            if(idx !== -1) items[idx] = { value: newValue, text: newValue };
+            else items.push({ value: newValue, text: newValue });
+        } else {
+            if(items.some(i => i.value === newValue)) return false;
+            items.push({ value: newValue, text: newValue });
+        }
+        setStored(storageKey, items);
+        loadPermSelectOptions(selectId, storageKey, isType ? PERM_HIDDEN_TYPES : PERM_HIDDEN_PROVIDERS, isType);
+        return true;
+    }
+
+    function deletePermItem(selectId, storageKey, hiddenKey, isType) {
+        const select = document.getElementById(selectId);
+        const selected = select.options[select.selectedIndex];
+        if(!selected || selected.value === 'custom') return alert('ไม่สามารถลบตัวเลือกนี้ได้');
+        if(selected.hasAttribute('data-default')) {
+            let hidden = getStored(hiddenKey);
+            if(!hidden.includes(selected.value)) hidden.push(selected.value);
+            setStored(hiddenKey, hidden);
+            selected.hidden = true;
+            select.selectedIndex = Array.from(select.options).findIndex(o => !o.hidden);
+        } else {
+            let items = getStored(storageKey);
+            items = items.filter(i => i.value !== selected.value);
+            setStored(storageKey, items);
+            loadPermSelectOptions(selectId, storageKey, hiddenKey, isType);
+        }
+    }
+
+    function resetPermSelect(selectId, storageKey, hiddenKey, isType) {
+        if(confirm('คืนค่ารายการทั้งหมด? รายการที่สร้างเองจะถูกลบ')) {
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem(hiddenKey);
+            loadPermSelectOptions(selectId, storageKey, hiddenKey, isType);
+        }
+    }
+
+    // ฟังก์ชันแยกชื่อประเภทกับเวลา (ให้แสดงชื่ออย่างเดียวใน topic-box และเวลาใน topic-time)
+    function getTypeNameAndTime(fullTypeText) {
+        const timeMatch = fullTypeText.match(/เวลา ([\d.]+) น\./);
+        if (timeMatch) {
+            const namePart = fullTypeText.replace(` เวลา ${timeMatch[1]} น.`, '');
+            return { typeName: namePart, timeText: `⏰ เวลา ${timeMatch[1]} น.` };
+        }
+        return { typeName: fullTypeText, timeText: '' };
+    }
+
+    function getSelectedPermType() {
+        const select = document.getElementById('permTypeSelect');
+        if(select.value === 'custom') {
+            const name = document.getElementById('permCustomTypeName').value.trim();
+            const time = document.getElementById('permCustomTypeTime').value.trim();
+            if(!name) return { fullText: 'ไม่ระบุประเภท', typeName: 'ไม่ระบุประเภท', timeText: '' };
+            const fullText = time ? `${name} เวลา ${time} น.` : name;
+            return { fullText: fullText, typeName: name, timeText: time ? `⏰ เวลา ${time} น.` : '' };
+        }
+        const fullText = select.options[select.selectedIndex].text;
+        const { typeName, timeText } = getTypeNameAndTime(fullText);
+        return { fullText, typeName, timeText };
+    }
+
+    function getSelectedPermProvider() {
+        const select = document.getElementById('permProviderSelect');
+        if(select.value === 'custom') {
+            const custom = document.getElementById('permCustomProviderInput').value.trim();
+            return custom || '@';
+        }
+        return select.value;
+    }
+
+    // ระบบแชร์และ capture
+    const SHARE_PREF_KEY = 'sharePreference_perm_only';
+    function loadPermSharePref() { return localStorage.getItem(SHARE_PREF_KEY) || 'system'; }
+    function updatePermShareButtonUI() {
+        const mode = loadPermSharePref();
+        const btn = document.getElementById("sharePermResultBtn");
+        if(mode === 'copy') { btn.textContent = "📋 คัดลอกรูปภาพ"; btn.style.backgroundColor = "#ff9800"; }
+        else { btn.textContent = "📤 แชร์ไปยังแอป"; btn.style.backgroundColor = "#28a745"; }
+    }
+    async function copyImageToClipboard(blob) {
+        try { await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); alert("✅ คัดลอกรูปภาพสำเร็จ! ไปวางในแชทได้เลย"); }
+        catch(e) { alert("ไม่รองรับการคัดลอกรูปภาพ"); }
+    }
+
+    async function capturePermContainer() {
+        const container = document.getElementById("permResultContainer");
+        const controls = container.querySelector('.perm-controls');
+        if(!container || container.style.display === 'none') { alert("ไม่มีผลลัพธ์ให้บันทึก"); return null; }
+        const originalDisplay = controls ? controls.style.display : null;
+        if(controls) controls.style.display = 'none';
+        const canvas = await html2canvas(container, { scale: 3, backgroundColor: '#ffffcc', useCORS: true });
+        if(controls) controls.style.display = originalDisplay;
+        return canvas;
+    }
+
+    async function savePermAsImage() {
+        const canvas = await capturePermContainer();
+        if(canvas) { const link = document.createElement('a'); link.download = `perm-${Date.now()}.png`; link.href = canvas.toDataURL(); link.click(); }
+    }
+
+    async function sharePermResult() {
+        const canvas = await capturePermContainer();
+        if(!canvas) return;
+        const blob = await new Promise(r => canvas.toBlob(r));
+        const mode = loadPermSharePref();
+        if(mode === 'copy') await copyImageToClipboard(blob);
+        else { if(navigator.share) await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})] }); else alert("ไม่รองรับแชร์"); }
+    }
+
+    // จัดเรียงตัวเลข 4 หลัก (ปรับปรุงให้แสดงชื่อและเวลาไม่ซ้ำซ้อน และตัวเลขสีแดงหนา)
+    function processPermutation() {
+        const numbersInput = document.getElementById("permNumbers").value.trim();
+        if(!/^\d{4}$/.test(numbersInput)) { alert("กรุณากรอกตัวเลข 4 หลักให้ถูกต้อง (เฉพาะตัวเลข 4 หลัก)"); return; }
+        const provider = getSelectedPermProvider();
+        const { typeName, timeText, fullText } = getSelectedPermType();
+        let comment = document.getElementById("permComment").value.trim() || "ไม่มีหมายเหตุ";
+        let dateStr = document.getElementById("permDateInput").value;
+        let displayDate = new Date();
+        if(dateStr && dateStr.match(/\d{1,2}\/\d{1,2}\/\d{4}/)) {
+            let parts = dateStr.split('/');
+            let y = parseInt(parts[2]) - 543;
+            displayDate = new Date(y, parseInt(parts[1])-1, parseInt(parts[0]));
+        }
+        const thaiFullDate = displayDate.toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+        const now = new Date();
+        const nowThai = now.toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+        const nowTime = now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+        
+        // สร้างการเรียงสับเปลี่ยนทั้งหมด 4!
+        const unique = new Set();
+        function permute(str, prefix="") {
+            if(str.length===0) unique.add(prefix);
+            else for(let i=0;i<str.length;i++) permute(str.slice(0,i)+str.slice(i+1), prefix+str[i]);
+        }
+        permute(numbersInput);
+        const sorted = [...unique].sort((a,b)=>a.localeCompare(b));
+        const container = document.getElementById("permResultNumbers");
+        container.innerHTML = "";
+        sorted.forEach(num => { let span = document.createElement("span"); span.textContent=num; container.appendChild(span); });
+        
+        document.getElementById("permResultDate").innerHTML = `📅 ${thaiFullDate}`;
+        // แสดงเฉพาะชื่อประเภทใน topic-box (ไม่มีเวลา)
+        document.getElementById("permResultTypeDisplay").innerHTML = typeName;
+        // แสดงเวลาแยกใน topic-time (ถ้ามี)
+        document.getElementById("permResultTimeHtml").innerHTML = timeText ? timeText : '';
+        // แก้ไขตรงนี้: ให้ตัวเลขเป็นสีแดงและตัวหนา
+        document.getElementById("permInputNumbersAndProvider").innerHTML = `🔢 ตัวเลข <span style="color: red; font-weight: bold;">${numbersInput}</span> | 👤 ผู้บอก: ${provider}`;
+        document.getElementById("permCommentText").innerHTML = comment;
+        document.getElementById("permCurrentDateTime").innerHTML = `📆 จัดเรียงเมื่อ: ${nowThai} เวลา ${nowTime} น.`;
+        document.getElementById("permResultContainer").style.display = "block";
+        window.scrollTo({ top: document.getElementById("permResultContainer").offsetTop-20, behavior: 'smooth' });
+    }
+
+    function initPermManagement() {
+        loadPermSelectOptions('permTypeSelect', PERM_TYPE_STORAGE, PERM_HIDDEN_TYPES, true);
+        loadPermSelectOptions('permProviderSelect', PERM_PROVIDER_STORAGE, PERM_HIDDEN_PROVIDERS, false);
+        document.getElementById('togglePermTypeControls').onclick = () => { const a=document.getElementById('permTypeActions'); a.style.display = a.style.display==='flex'?'none':'flex'; };
+        document.getElementById('togglePermProviderControls').onclick = () => { const a=document.getElementById('permProviderActions'); a.style.display = a.style.display==='flex'?'none':'flex'; };
+        document.getElementById('addPermTypeBtn').onclick = () => { document.getElementById('permTypeModalTitle').innerHTML='➕ เพิ่มประเภท'; document.getElementById('permTypeEditIndex').value=''; document.getElementById('permModalTypeName').value=''; document.getElementById('permModalTypeTime').value=''; document.getElementById('permTypeModal').style.display='flex'; };
+        document.getElementById('editPermTypeBtn').onclick = () => { let s=document.getElementById('permTypeSelect'); let opt=s.options[s.selectedIndex]; if(opt.value==='custom'||opt.hidden) return alert('ไม่สามารถแก้ไขรายการนี้'); let [name,timePart] = opt.text.split(' เวลา '); document.getElementById('permModalTypeName').value=name||''; document.getElementById('permModalTypeTime').value=timePart?timePart.replace(' น.',''):''; document.getElementById('permTypeEditIndex').value=opt.text; document.getElementById('permTypeModalTitle').innerHTML='✏️ แก้ไขประเภท'; document.getElementById('permTypeModal').style.display='flex'; };
+        document.getElementById('deletePermTypeBtn').onclick = () => deletePermItem('permTypeSelect', PERM_TYPE_STORAGE, PERM_HIDDEN_TYPES, true);
+        document.getElementById('resetPermTypeBtn').onclick = () => resetPermSelect('permTypeSelect', PERM_TYPE_STORAGE, PERM_HIDDEN_TYPES, true);
+        document.getElementById('savePermTypeBtn').onclick = () => { let name=document.getElementById('permModalTypeName').value.trim(); let time=document.getElementById('permModalTypeTime').value.trim(); if(!name) return alert('กรุณากรอกชื่อ'); let newVal = time ? `${name} เวลา ${time} น.` : name; let old=document.getElementById('permTypeEditIndex').value; if(savePermCustom('permTypeSelect', PERM_TYPE_STORAGE, newVal, old||null, true)) document.getElementById('permTypeModal').style.display='none'; else alert('มีรายการนี้อยู่แล้ว'); };
+        document.getElementById('cancelPermTypeBtn').onclick = () => document.getElementById('permTypeModal').style.display='none';
+
+        document.getElementById('addPermProviderBtn').onclick = () => { document.getElementById('permProviderModalTitle').innerHTML='➕ เพิ่มผู้บอก'; document.getElementById('permProviderEditValue').value=''; document.getElementById('permModalProviderName').value=''; document.getElementById('permProviderModal').style.display='flex'; };
+        document.getElementById('editPermProviderBtn').onclick = () => { let s=document.getElementById('permProviderSelect'); let opt=s.options[s.selectedIndex]; if(opt.value==='custom'||opt.hidden) return alert('ไม่สามารถแก้ไข'); document.getElementById('permModalProviderName').value=opt.value; document.getElementById('permProviderEditValue').value=opt.value; document.getElementById('permProviderModalTitle').innerHTML='✏️ แก้ไขผู้บอก'; document.getElementById('permProviderModal').style.display='flex'; };
+        document.getElementById('deletePermProviderBtn').onclick = () => deletePermItem('permProviderSelect', PERM_PROVIDER_STORAGE, PERM_HIDDEN_PROVIDERS, false);
+        document.getElementById('resetPermProviderBtn').onclick = () => resetPermSelect('permProviderSelect', PERM_PROVIDER_STORAGE, PERM_HIDDEN_PROVIDERS, false);
+        document.getElementById('savePermProviderBtn').onclick = () => { let name=document.getElementById('permModalProviderName').value.trim(); if(!name) return alert('กรุณากรอกชื่อ'); let old=document.getElementById('permProviderEditValue').value; if(savePermCustom('permProviderSelect', PERM_PROVIDER_STORAGE, name, old||null, false)) document.getElementById('permProviderModal').style.display='none'; else alert('มีชื่อนี้แล้ว'); };
+        document.getElementById('cancelPermProviderBtn').onclick = () => document.getElementById('permProviderModal').style.display='none';
+
+        const typeSelect = document.getElementById('permTypeSelect');
+        typeSelect.addEventListener('change', (e) => { document.getElementById('permCustomTypeInputs').style.display = e.target.value === 'custom' ? 'block' : 'none'; });
+        const provSelect = document.getElementById('permProviderSelect');
+        provSelect.addEventListener('change', (e) => { document.getElementById('permCustomProviderInput').style.display = e.target.value === 'custom' ? 'block' : 'none'; });
+        document.getElementById('permCustomTypeInputs').style.display = 'none';
+        document.getElementById('permCustomProviderInput').style.display = 'none';
+    }
+
+    function initPermDatePicker() {
+        const input = document.getElementById('permDateInput');
+        const btn = document.getElementById('permCalendarButton');
+        const hidden = document.getElementById('permHiddenDate');
+        const today = new Date();
+        input.value = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()+543}`;
+        btn.addEventListener('click', () => { hidden.showPicker(); });
+        hidden.addEventListener('change', (e) => {
+            if(e.target.value) { let [y,m,d] = e.target.value.split('-'); input.value = `${d}/${m}/${parseInt(y)+543}`; }
+        });
+    }
+
+    function initPermControls() {
+        document.getElementById("permutationConvertBtn").addEventListener("click", processPermutation);
+        document.getElementById("savePermAsImageBtn").addEventListener("click", savePermAsImage);
+        document.getElementById("sharePermResultBtn").addEventListener("click", sharePermResult);
+        document.getElementById("sharePermSettingsBtn").addEventListener("click", () => { document.getElementById("shareSettingsModal").style.display = "flex"; });
+        document.getElementById("savePermShareSettingsBtn").addEventListener("click", () => { let val=document.querySelector('input[name="shareModePerm"]:checked').value; localStorage.setItem(SHARE_PREF_KEY, val); updatePermShareButtonUI(); document.getElementById("shareSettingsModal").style.display="none"; });
+        document.getElementById("closePermShareSettingsBtn").addEventListener("click", () => document.getElementById("shareSettingsModal").style.display="none");
+        updatePermShareButtonUI();
+        const fsSlider = document.getElementById("permFontSizeSlider");
+        const lhSlider = document.getElementById("permLineHeightSlider");
+        const content = document.getElementById("permResultContent");
+        fsSlider.addEventListener("input", () => { let val=fsSlider.value; content.style.transform=`scale(${val})`; content.style.transformOrigin="top center"; document.getElementById("permFontSizeValue").innerHTML=`ขนาด: ${Math.round(val*100)}%`; });
+        lhSlider.addEventListener("input", () => { let val=lhSlider.value; content.style.lineHeight=val; document.getElementById("permLineHeightValue").innerHTML=`ความสูงบรรทัด: ${val}`; });
+        fsSlider.dispatchEvent(new Event('input')); lhSlider.dispatchEvent(new Event('input'));
+    }
+
+    window.onload = () => {
+        initPermManagement();
+        initPermDatePicker();
+        initPermControls();
+        document.getElementById('permCustomTypeInputs').style.display = 'none';
+        document.getElementById('permCustomProviderInput').style.display = 'none';
+    };
+</script>
+</body>
+</html>
