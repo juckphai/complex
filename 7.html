@@ -227,16 +227,20 @@
             margin-bottom: 10px;
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), -1px -1px 1px rgba(255, 255, 255, 0.9);
         }
+        
+        /* ========== ปรับปรุงการแสดงผลตัวเลข ========== */
+        /* แสดงเป็น 4 คอลัมน์ ชิดขอบ ลดช่องว่าง */
         #permResultNumbers {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             justify-content: center;
-            gap: 10px;
             margin: 20px 0;
+            padding: 0 5px;
         }
         #permResultNumbers span {
             display: inline-block;
-            padding: 6px 14px;
+            padding: 6px 4px;
             background-color: #e6f7ff;
             color: #3333cc;
             font-size: 16px;
@@ -244,7 +248,25 @@
             border: 1px solid #99ccff;
             border-radius: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
         }
+        
+        /* ปรับแต่งสำหรับมือถือให้ชิดกันมากขึ้น */
+        @media only screen and (max-width: 500px) {
+            #permResultNumbers {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                padding: 0 2px;
+            }
+            #permResultNumbers span {
+                font-size: 13px;
+                padding: 5px 2px;
+            }
+        }
+        /* ========== จบการปรับปรุง ========== */
+        
         .comment-box {
             font-size: 18px;
             margin: 15px auto;
