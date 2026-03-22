@@ -654,7 +654,7 @@
     async function captureGreenFrameOnly() {
         const frame = document.getElementById("popupGreenFrame");
         if(!frame) return null;
-        const canvas = await html2canvas(frame, { scale: 2.5, backgroundColor: '#ffffcc', useCORS: true });
+        const canvas = await html2canvas(frame, { scale: 4, backgroundColor: '#ffffcc', useCORS: true });
         return canvas;
     }
     async function saveAsImageFromPopup() { const canvas = await captureGreenFrameOnly(); if(canvas) { const link = document.createElement('a'); link.download = `perm-result-${Date.now()}.png`; link.href = canvas.toDataURL(); link.click(); } else alert("ไม่มีผลลัพธ์"); }
