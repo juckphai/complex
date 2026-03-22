@@ -1,5 +1,5 @@
-const staticCacheName = 'lottery-app-static-v13'; // เปลี่ยนเวอร์ชันเมื่อมีการแก้ไขโค้ด
-const dynamicCacheName = 'lottery-app-dynamic-v13';
+const staticCacheName = 'lottery-app-static-v113'; // เปลี่ยนเวอร์ชันเมื่อมีการแก้ไขโค้ด
+const dynamicCacheName = 'lottery-app-dynamic-v113';
 
 // รายการไฟล์ที่ต้องการให้โหลดเก็บไว้ทันที (Pre-cache)
 const assets = [
@@ -9,6 +9,7 @@ const assets = [
   './2.html',
   './4.html',
   './5.html',
+   './7.html',
   './8.html',
   './9.html',
   './style1.css', 
