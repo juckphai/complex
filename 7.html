@@ -206,7 +206,7 @@
             width: 100%;
         }
 
-        /* ========== POPUP MODAL หลัก ========== */
+        /* ========== POPUP MODAL หลัก - ปรับให้เต็มพื้นที่ด้านซ้ายขวาบนมือถือ ========== */
         .result-popup-overlay {
             display: none;
             position: fixed;
@@ -219,20 +219,25 @@
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(4px);
-            padding: 15px;
+            padding: 0;
             box-sizing: border-box;
+            overflow-y: auto;
         }
+        
         .result-popup-container {
-            max-width: 600px;
+            max-width: 100%;
             width: 100%;
-            max-height: 90vh;
+            max-height: 100vh;
             overflow-y: auto;
             background: transparent;
-            border-radius: 10px;
             display: flex;
             flex-direction: column;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        /* กรอบสีเขียวสำหรับผลลัพธ์ - ปรับให้พอดีกับเนื้อหาแบบไดนามิก */
+        
+        /* กรอบสีเขียวสำหรับผลลัพธ์ - ปรับให้เต็มพื้นที่ด้านซ้ายขวา */
         .green-frame {
             background-color: #ffffcc;
             border: 3px solid #4CAF50;
@@ -240,11 +245,15 @@
             box-shadow: 0 12px 28px rgba(0, 128, 0, 0.4);
             overflow: visible;
             transition: all 0.2s ease;
+            margin: 0 8px;
+            width: calc(100% - 16px);
+            box-sizing: border-box;
         }
+        
         #popupResultContent {
             position: relative;
             text-align: center;
-            padding: 20px 16px 24px;
+            padding: 20px 12px 24px;
             background-color: #ffffcc;
             border-radius: 10px;
             transform-origin: center top;
@@ -252,15 +261,19 @@
             width: 100%;
             box-sizing: border-box;
         }
+        
         /* ส่วนควบคุมด้านล่างกรอบสีเขียว (อยู่ภายนอกกรอบ แต่ภายใน popup) */
         .popup-controls-panel {
             background: #fff9e8;
             border-radius: 10px;
-            margin-top: 12px;
+            margin: 8px 8px 12px 8px;
             padding: 16px 14px;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
             border: 1px solid #ffd966;
+            width: calc(100% - 16px);
+            box-sizing: border-box;
         }
+        
         .control-buttons-row {
             display: flex;
             gap: 10px;
@@ -381,23 +394,7 @@
             width: 100%;
             box-sizing: border-box;
         }
-
-        /* ===== ปรับการแสดงผลบนมือถือให้เต็มจอ ===== */
         @media only screen and (max-width: 480px) {
-            .result-popup-overlay {
-                padding: 20px 0; /* ลดช่องว่างด้านข้างให้แสดงเต็มจอ */
-                align-items: flex-start; /* ดันเนื้อหาขึ้นบนเหมือนไฟล์ 1 */
-            }
-            .result-popup-container {
-                width: 98%; /* กว้าง 98% เพื่อให้เต็มพื้นที่ซ้ายขวา */
-                margin: 0 auto;
-            }
-            #popupResultContent {
-                padding: 15px 4px 20px; /* ลด padding ด้านข้างในกรอบเนื้อหา */
-            }
-            .popup-controls-panel {
-                padding: 12px 8px;
-            }
             #popupResultNumbers {
                 gap: 6px;
             }
@@ -417,8 +414,15 @@
                 min-width: 70px;
                 font-size: 12px;
             }
+            .green-frame {
+                margin: 0 4px;
+                width: calc(100% - 8px);
+            }
+            .popup-controls-panel {
+                margin: 8px 4px 12px 4px;
+                width: calc(100% - 8px);
+            }
         }
-
         .info-row-inline {
             display: flex;
             flex-wrap: wrap;
@@ -519,18 +523,44 @@
             z-index: 999;
             pointer-events: none;
         }
+        
+        /* ปรับปรุงให้ scroll ได้เรียบร้อย */
+        .result-popup-overlay::-webkit-scrollbar {
+            width: 5px;
+        }
+        .result-popup-overlay::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+        }
+        .result-popup-overlay::-webkit-scrollbar-thumb {
+            background: #ff9800;
+            border-radius: 5px;
+        }
+        
+        /* สำหรับวันที่และข้อความที่ขยายให้เต็ม */
+        #popupResultDate {
+            word-break: break-word;
+            padding: 0 5px;
+        }
+        
+        /* จัดการให้เนื้อหาในกรอบไม่ล้น */
+        #popupResultContent .topic-time {
+            word-break: break-word;
+            white-space: normal;
+        }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
     <h1>🔄 จัดเรียงตัวเลข 4 หลัก (แนวทางลาวและรัฐบาล)</h1>
     
+    <!-- ส่วนกรอกข้อมูล (กรอบสีส้ม) -->
     <div class="form-container">
         <div id="permutationModeContent">
             <div class="permutation-container" style="width:100%; margin:0 auto;">
                 <label for="permNumbers">🔢 ตัวเลข 4 หลัก:</label>
                 <input type="text" id="permNumbers" maxlength="4" placeholder="เช่น 1234" pattern="\d*" inputmode="numeric">
                 
+                <!-- ประเภท -->
                 <div class="select-wrapper">
                     <select id="permTypeSelect">
                         <option value="ลาวพัฒนา เวลา 20.30 น." data-default="true">ลาวพัฒนา เวลา 20.30 น.</option>
@@ -558,6 +588,7 @@
                     </div>
                 </div>
 
+                <!-- ผู้บอก -->
                 <div class="select-wrapper">
                     <select id="permProviderSelect">
                         <option value="Team" data-default="true">Team</option>
@@ -596,8 +627,10 @@
     <footer>© 2024-2025 Juckphai. All Rights Reserved.</footer>
 </div>
 
+<!-- POPUP สำหรับแสดงผลลัพธ์ - ปรับให้เต็มพื้นที่ด้านซ้ายขวาบนมือถือ -->
 <div id="resultPopup" class="result-popup-overlay">
     <div class="result-popup-container">
+        <!-- กรอบสีเขียวส่วนผลลัพธ์ - ให้เต็มพื้นที่ด้านซ้ายขวา -->
         <div class="green-frame" id="popupGreenFrame">
             <div id="popupResultContent">
                 <div class="result-header">
@@ -616,6 +649,7 @@
             </div>
         </div>
         
+        <!-- แผงควบคุมทั้งหมด (อยู่นอกกรอบสีเขียว แต่ภายใน popup) -->
         <div class="popup-controls-panel">
             <div class="control-buttons-row">
                 <button id="popupSaveAsImageBtn" style="background-color:#007bff; color:white;">📸 บันทึกเป็นรูปภาพ (คมชัดสูง)</button>
@@ -639,6 +673,7 @@
     </div>
 </div>
 
+<!-- Modal สำหรับจัดการประเภท/ผู้บอก (คงเดิม) -->
 <div id="permTypeModal" class="popup-overlay"><div class="popup-content"><h3 id="permTypeModalTitle"></h3><input type="hidden" id="permTypeEditIndex"><input type="text" id="permModalTypeName" placeholder="ชื่อประเภท" style="width:100%"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)" style="width:100%; margin-top:10px"><div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
 <div id="permProviderModal" class="popup-overlay"><div class="popup-content"><h3 id="permProviderModalTitle"></h3><input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก" style="width:100%"><div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
 <div id="shareSettingsModal" class="popup-overlay"><div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์ (คุณภาพสูง)</h3><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share) - คุณภาพสูง</label><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท) - คุณภาพสูง</label><div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div></div></div>
@@ -676,97 +711,64 @@
     function loadPermSharePref() { return localStorage.getItem(SHARE_PREF_KEY) || 'system'; }
     
     // ============ ปรับปรุงคุณภาพรูปภาพสูงสุด ============
-    // ฟังก์ชันจับภาพเฉพาะกรอบสีเขียวด้วยคุณภาพสูงสุด
     async function captureGreenFrameOnly() {
         const frame = document.getElementById("popupGreenFrame");
         if(!frame) return null;
-        
-        // เพิ่ม scale สูงขึ้นเพื่อความคมชัด (5 เท่าสำหรับความละเอียดสูงสุด)
         const canvas = await html2canvas(frame, { 
-            scale: 5,                    // เพิ่มเป็น 5 เท่า ให้คมชัดระดับ 4K
+            scale: 5,
             backgroundColor: '#ffffcc',
             useCORS: true,
             logging: false,
             windowWidth: frame.scrollWidth,
             windowHeight: frame.scrollHeight,
-            onclone: (clonedDoc, element) => {
-                // ปรับแต่งใน cloned document ให้ได้คุณภาพสูงสุด
-                const clonedFrame = clonedDoc.getElementById("popupGreenFrame");
-                if(clonedFrame) {
-                    clonedFrame.style.transform = 'none';
-                }
-            }
         });
         return canvas;
     }
     
-    // ฟังก์ชันบันทึกเป็นรูปภาพคุณภาพสูง
     async function saveAsImageFromPopup() { 
         const canvas = await captureGreenFrameOnly(); 
         if(canvas) { 
             const link = document.createElement('a'); 
             link.download = `perm-result-${Date.now()}.png`; 
-            // ใช้ PNG คุณภาพสูงสุด (PNG เป็น lossless อยู่แล้ว)
             link.href = canvas.toDataURL('image/png'); 
             link.click(); 
         } else alert("ไม่มีผลลัพธ์"); 
     }
     
-    // ฟังก์ชันคัดลอกรูปภาพไปคลิปบอร์ด
     async function copyImageToClipboard(blob) { 
         try { 
-            await navigator.clipboard.write([new ClipboardItem({
-                [blob.type]: blob
-            })]); 
+            await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]); 
             alert("✅ คัดลอกรูปภาพคุณภาพสูงสำเร็จ! (วางในแชทได้เลย)");
         } catch(e) { 
             alert("เบราว์เซอร์นี้ไม่รองรับการคัดลอกรูปภาพ"); 
         } 
     }
     
-    // ฟังก์ชันแชร์รูปภาพคุณภาพสูง
     async function shareFromPopup() { 
         const canvas = await captureGreenFrameOnly(); 
         if(!canvas) return alert("ไม่มีผลลัพธ์"); 
-        
-        // สร้าง blob ด้วยคุณภาพสูงสุด
         const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
         const mode = loadPermSharePref(); 
-        
         if(mode === 'copy') {
             await copyImageToClipboard(blob);
         } else { 
             if(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "perm.png", {type:"image/png"})] })) {
                 try {
-                    await navigator.share({ 
-                        files: [new File([blob], "perm.png", {type:"image/png"})],
-                        title: "แนวทางตัวเลข 4 หลัก",
-                    });
-                } catch(e) {
-                    if(e.name !== 'AbortError') {
-                        alert("แชร์ไม่สำเร็จ ลองใช้โหมดคัดลอกแทน");
-                    }
-                }
-            } else {
-                // Fallback: คัดลอกรูปภาพแทน
-                alert("เบราว์เซอร์ไม่รองรับการแชร์ไฟล์ เปลี่ยนเป็นโหมดคัดลอกแทน");
-                await copyImageToClipboard(blob);
-            }
+                    await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})], title: "แนวทางตัวเลข 4 หลัก" });
+                } catch(e) { if(e.name !== 'AbortError') alert("แชร์ไม่สำเร็จ ลองใช้โหมดคัดลอกแทน"); }
+            } else { alert("เบราว์เซอร์ไม่รองรับการแชร์ไฟล์ เปลี่ยนเป็นโหมดคัดลอกแทน"); await copyImageToClipboard(blob); }
         } 
     }
     
-    // ปรับขนาดตัวอักษรและความสูงบรรทัด ให้กรอบขยายอัตโนมัติตามเนื้อหา
     function applyPopupTextScaling() {
         const contentDiv = document.getElementById("popupResultContent");
         const fsSlider = document.getElementById("popupFontSizeSlider");
         const lhSlider = document.getElementById("popupLineHeightSlider");
         const scaleVal = parseFloat(fsSlider.value);
         const lineHeightVal = parseFloat(lhSlider.value);
-        // ใช้ scale transform เพื่อขยายเนื้อหาทั้งหมด แต่กรอบจะขยายตามอัตโนมัติเพราะ overflow:visible
         contentDiv.style.transform = `scale(${scaleVal})`;
         contentDiv.style.transformOrigin = "center top";
         contentDiv.style.lineHeight = lineHeightVal;
-        // อัปเดตค่าแสดงผล
         document.getElementById("popupFontSizeValue").innerHTML = `ขนาด: ${Math.round(scaleVal*100)}%`;
         document.getElementById("popupLineHeightValue").innerHTML = `ความสูงบรรทัด: ${lineHeightVal.toFixed(1)}`;
     }
@@ -779,13 +781,12 @@
         const infoDiv = document.getElementById("popupInputNumbersAndProvider");
         infoDiv.innerHTML = `<span>🔢 ตัวเลข <strong style="color:#1e3a8a; background:#FFF0C0; padding:2px 10px; border-radius:15px;">${numbersInput}</strong></span> <span>| 👤 ผู้บอก: ${provider}</span>`;
         document.getElementById("popupCommentText").innerHTML = comment;
-        document.getElementById("popupCurrentDateTime").innerHTML = `📆 จัดเรียงเมื่อ: ${nowDateTimeStr}`;
+        // แสดงผลรูปแบบใหม่ตามที่ต้องการ
+        document.getElementById("popupCurrentDateTime").innerHTML = `${nowDateTimeStr}`;
         const container = document.getElementById("popupResultNumbers");
         container.innerHTML = "";
         sortedNumbers.forEach(num => { let span = document.createElement("span"); span.textContent = num; container.appendChild(span); });
         popup.style.display = "flex";
-        
-        // รีเซ็ตการปรับขนาดให้เป็นค่าปัจจุบันจากสไลด์ และปรับให้กรอบขยายได้
         applyPopupTextScaling();
     }
     
@@ -804,9 +805,17 @@
         }
         const thaiFullDate = displayDate.toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
         const now = new Date();
-        const nowThai = now.toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-        const nowTime = now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
-        const nowDateTimeStr = `${nowThai} เวลา ${nowTime} น.`;
+        
+        // ปรับปรุงรูปแบบวันที่และเวลาตามที่ต้องการ: 22/03/2569 เวลา 15.22 น.
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear() + 543;
+        const formattedDate = `${day}/${month}/${year}`;
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const formattedTime = `${hours}.${minutes} น.`;
+        const nowDateTimeStr = `จัดเรียงเมื่อ: ${formattedDate} เวลา ${formattedTime}`;
+        
         const unique = new Set();
         function permute(str, prefix="") { if(str.length===0) unique.add(prefix); else for(let i=0;i<str.length;i++) permute(str.slice(0,i)+str.slice(i+1), prefix+str[i]); }
         permute(numbersInput);
