@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>ระบบจัดเรียงตัวเลข 4 หลัก - แนวทางลาวและรัฐบาล</title>
+    <title>ระบบจัดเรียงตัวเลข 4 หลัก - แนวทางลาวและรัฐบาล (Popup Results)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* ============================================
-           STYLE.CSS - จัดเรียงตัวเลข 4 หลัก (แบบเต็มรูปแบบ)
-           ปรับให้เต็มจอ ไม่มีพื้นที่ว่างด้านข้าง และแยกส่วนผลลัพธ์
-           ปรับสีตัวเลขให้สบายตา (น้ำเงินเข้ม) + บรรทัดข้อมูลกระชับ
-           ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -27,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* ห่อ main content ให้เต็มความกว้าง ไม่มี margin ซ้ายขวา */
         .app-wrapper {
             width: 100%;
             max-width: 100%;
@@ -46,7 +40,7 @@
             word-break: break-word;
         }
 
-        /* ===== ส่วนกรอกข้อมูล (กรอบสีส้ม) ปรับให้เต็มขอบ ===== */
+        /* ส่วนกรอกข้อมูล (กรอบสีส้ม) */
         .form-container {
             border: 2px solid orange;
             background-color: #FEFEF0;
@@ -58,7 +52,6 @@
             box-sizing: border-box;
         }
 
-        /* Input & Select - ปรับให้เต็มความกว้างของ container */
         input, select, button {
             font-size: 16px;
             padding: 12px 10px;
@@ -83,7 +76,6 @@
             padding-left: 4px;
         }
 
-        /* Select wrapper with inline manage button - ปรับให้เต็มพื้นที่ */
         .select-wrapper {
             display: flex;
             align-items: center;
@@ -201,38 +193,139 @@
             font-size: 16px;
             cursor: pointer;
             text-align: center;
-            text-decoration: none;
             font-weight: bold;
         }
         .homeButton:hover {
             background-color: darkorange;
         }
-
-        /* ===== ส่วนแสดงผลลัพธ์ แยกต่างหาก ไม่มีขอบสีส้ม ===== */
-        #permResultContainer {
-            margin-top: 25px;
-            padding: 0;
-            background-color: #ffffcc;
-            border: 2px solid #4CAF50;
-            border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(0, 128, 0, 0.2);
+        footer {
             text-align: center;
+            padding: 20px 10px;
+            font-size: 13px;
+            color: #95a5a6;
             width: 100%;
-            box-sizing: border-box;
-            display: none;
-            overflow: hidden;
         }
 
-        /* เนื้อหาด้านในของผลลัพธ์ */
-        #permResultContent {
-            position: relative;
-            text-align: center;
-            padding: 20px 12px 16px;
+        /* ========== POPUP MODAL หลัก ========== */
+        .result-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .result-popup-container {
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: transparent;
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+        }
+        /* กรอบสีเขียวสำหรับผลลัพธ์ - ปรับให้พอดีกับเนื้อหาแบบไดนามิก */
+        .green-frame {
             background-color: #ffffcc;
+            border: 3px solid #4CAF50;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0, 128, 0, 0.4);
+            overflow: visible; /* เปลี่ยนจาก hidden เป็น visible ให้เนื้อหาขยายได้เต็มที่ */
             transition: all 0.2s ease;
         }
-
-        /* Header Logo style */
+        #popupResultContent {
+            position: relative;
+            text-align: center;
+            padding: 20px 16px 24px;
+            background-color: #ffffcc;
+            border-radius: 28px;
+            /* ไม่กำหนด transform origin ที่นี่ เพื่อให้ scale ทำงานได้ดี และกรอบขยายตาม */
+            transform-origin: center top;
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        /* ส่วนควบคุมด้านล่างกรอบสีเขียว (อยู่ภายนอกกรอบ แต่ภายใน popup) */
+        .popup-controls-panel {
+            background: #fff9e8;
+            border-radius: 28px;
+            margin-top: 12px;
+            padding: 16px 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            border: 1px solid #ffd966;
+        }
+        .control-buttons-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .control-buttons-row button {
+            flex: 1;
+            min-width: 100px;
+            margin: 0;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .sliders-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .slider-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #fff3cf;
+            padding: 10px 12px;
+            border-radius: 40px;
+        }
+        .slider-item label {
+            margin: 0;
+            font-size: 14px;
+            width: auto;
+            flex-shrink: 0;
+        }
+        .slider-item input {
+            flex: 2;
+            min-width: 150px;
+            margin: 0;
+        }
+        .slider-item span {
+            font-size: 12px;
+            background: #fff0b5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            flex-shrink: 0;
+        }
+        .close-popup-btn-large {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 20px;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .close-popup-btn-large:hover {
+            background-color: #d32f2f;
+        }
         .result-header {
             display: flex;
             align-items: center;
@@ -258,8 +351,6 @@
             font-size: 20px;
             font-weight: bold;
             text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.5), 1px 1px 1px rgba(255, 255, 255, 0.5);
-            text-align: center;
-            word-break: break-word;
         }
         .topic-time {
             font-size: 17px;
@@ -267,11 +358,8 @@
             font-weight: bold;
             margin-top: 5px;
             margin-bottom: 8px;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
         }
-        
-        /* ========== ปรับปรุงการแสดงผลตัวเลข ให้สบายตา สีน้ำเงินเข้ม พื้นหลังอ่อน ========== */
-        #permResultNumbers {
+        #popupResultNumbers {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
@@ -280,7 +368,7 @@
             padding: 0;
             width: 100%;
         }
-        #permResultNumbers span {
+        #popupResultNumbers span {
             display: inline-block;
             padding: 10px 6px;
             background: linear-gradient(135deg, #f5f9ff, #e8f0fe);
@@ -293,90 +381,28 @@
             text-align: center;
             width: 100%;
             box-sizing: border-box;
-            letter-spacing: 1px;
-            transition: all 0.1s ease;
         }
-        
-        /* ปรับสำหรับมือถือขนาดเล็ก ให้ตัวเลขพอดี 4 คอลัมน์ */
         @media only screen and (max-width: 480px) {
-            #permResultNumbers {
+            #popupResultNumbers {
                 gap: 6px;
             }
-            #permResultNumbers span {
+            #popupResultNumbers span {
                 font-size: 14px;
                 padding: 8px 2px;
-                font-weight: 700;
             }
             .topic-box {
                 font-size: 16px;
                 padding: 6px 14px;
             }
-            .header-logo {
-                width: 32px;
+            .slider-item {
+                flex-direction: column;
+                align-items: stretch;
             }
-            #permResultContent {
-                padding: 15px 10px;
+            .control-buttons-row button {
+                min-width: 70px;
+                font-size: 12px;
             }
         }
-        
-        .comment-box {
-            font-size: 16px;
-            margin: 15px auto;
-            padding: 10px 12px;
-            color: #3333cc;
-            background-color: #f2f2ff;
-            border: 1px solid #ccccff;
-            border-radius: 12px;
-            width: 100%;
-            text-align: center;
-            word-break: break-word;
-        }
-        .perm-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-top: 20px;
-            padding: 0 10px 15px;
-            background-color: #ffffcc;
-        }
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .control-group label, .control-group span {
-            font-size: 14px;
-            color: blue;
-            margin-bottom: 6px;
-        }
-        .control-group input[type="range"] {
-            width: 100%;
-            max-width: 300px;
-            margin: 5px 0;
-        }
-        .perm-controls button {
-            width: 100%;
-            max-width: 260px;
-            margin: 8px auto;
-            padding: 12px;
-            font-size: 16px;
-        }
-
-        .close-popup-btn {
-            padding: 12px 20px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-
-        /* ===== ปรับปรุงข้อมูลตัวเลขและผู้บอก + จัดเรียงเมื่อ ให้แสดงในบรรทัดเดียวแบบยืดหยุ่น ===== */
         .info-row-inline {
             display: flex;
             flex-wrap: wrap;
@@ -390,41 +416,11 @@
             font-size: 15px;
             font-weight: 500;
             color: #2c3e50;
-            text-align: center;
         }
-        .info-row-inline span {
-            display: inline-flex;
-            align-items: baseline;
-            gap: 4px;
-            white-space: nowrap;
-        }
-        /* บนมือถือถ้าพื้นที่ไม่พอ ให้ตัวหนังสือลดขนาดและ wrap ตามความเหมาะสม */
-        @media (max-width: 550px) {
-            .info-row-inline {
-                font-size: 13px;
-                gap: 8px;
-                flex-wrap: wrap;
-                border-radius: 28px;
-                padding: 8px 12px;
-            }
-            .info-row-inline span {
-                white-space: normal;
-                word-break: keep-all;
-            }
-        }
-        @media (max-width: 420px) {
-            .info-row-inline {
-                font-size: 12px;
-                gap: 6px;
-            }
-        }
-        
-        /* บรรทัดวันที่และเวลาจัดเรียง ให้รวมในบรรทัดเดียว */
         .datetime-inline {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: baseline;
             gap: 6px 10px;
             margin: 6px 0 8px;
             font-size: 13px;
@@ -433,18 +429,16 @@
             padding: 6px 12px;
             border-radius: 30px;
         }
-        @media (max-width: 550px) {
-            .datetime-inline {
-                font-size: 11px;
-                gap: 6px;
-            }
-        }
-        
-        #permResultDate {
-            color: blue;
+        .comment-box {
             font-size: 16px;
-            margin: 6px 0;
-            font-weight: bold;
+            margin: 15px auto;
+            padding: 10px 12px;
+            color: #3333cc;
+            background-color: #f2f2ff;
+            border: 1px solid #ccccff;
+            border-radius: 12px;
+            width: 100%;
+            text-align: center;
         }
         .note {
             color: #FF0000;
@@ -452,34 +446,29 @@
             font-weight: bold;
             margin: 15px 0;
         }
-        .share-row {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-            justify-content: center;
-            margin: 10px 0;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .share-row button {
-            flex: 1;
+        .result-popup-container .green-frame {
+            animation: fadeIn 0.2s ease;
         }
-
-        /* Modal */
+        /* Modal จัดการอื่นๆ */
         .popup-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.75);
-            z-index: 2000;
+            z-index: 4000;
             justify-content: center;
             align-items: center;
         }
         .popup-content {
             background: #fef7e0;
-            padding: 24px 20px;
             border-radius: 28px;
+            padding: 24px;
             max-width: 380px;
             width: 90%;
-            margin: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         .modal-button-group {
@@ -489,37 +478,16 @@
             gap: 12px;
         }
         .modal-button-group button { width: 45%; margin: 0; padding: 12px; }
-
-        footer {
-            text-align: center;
-            padding: 20px 10px;
-            font-size: 13px;
-            color: #95a5a6;
-            width: 100%;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        button:active { transform: scale(0.98); }
         
-        #permCustomTypeInputs div {
-            display: flex;
-            gap: 10px;
-            width: 100%;
+        /* ปรับแต่งให้กรอบสีเขียวขยายตาม scale โดยไม่ถูกตัด */
+        .green-frame-auto-height {
+            transition: height 0.1s ease;
         }
-        #permCustomTypeInputs input {
-            flex: 1;
-            margin: 0;
-        }
-        
-        /* ตัวเลขที่แสดงในหัวข้อเดิมให้สวยงาม */
-        .highlight-number {
-            color: #1e3a8a;
-            font-weight: 800;
-            background: #fff0c0;
-            padding: 2px 10px;
-            border-radius: 30px;
-            display: inline-block;
+        /* ทำให้เนื้อหาภายในกรอบสามารถขยายได้เต็มที่โดยไม่ถูกจำกัด */
+        #popupResultContent * {
+            max-width: 100%;
+            word-break: break-word;
         }
     </style>
 </head>
@@ -534,7 +502,7 @@
                 <label for="permNumbers">🔢 ตัวเลข 4 หลัก:</label>
                 <input type="text" id="permNumbers" maxlength="4" placeholder="เช่น 1234" pattern="\d*" inputmode="numeric">
                 
-                <!-- ประเภท: รองรับการจัดการ -->
+                <!-- ประเภท -->
                 <div class="select-wrapper">
                     <select id="permTypeSelect">
                         <option value="ลาวพัฒนา เวลา 20.30 น." data-default="true">ลาวพัฒนา เวลา 20.30 น.</option>
@@ -592,52 +560,7 @@
                     <input type="date" id="permHiddenDate" style="display:none;">
                 </div>
                 
-                <button id="permutationConvertBtn">✨ จัดเรียงตัวเลข</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ส่วนแสดงผลลัพธ์ แยกต่างหาก -->
-    <div id="permResultContainer">
-        <div id="permResultContent">
-            <div class="result-header">
-                <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
-                <div class="topic-box" id="permResultTopicBox">
-                    <span id="permResultTypeDisplay">ประเภท</span>
-                </div>
-                <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
-            </div>
-            <div id="permResultTimeHtml" class="topic-time"></div>
-            <h2 id="permResultDate" style="color: blue; font-size: 18px; margin: 8px 0;">วันที่: </h2>
-            
-            <!-- บรรทัดแสดงตัวเลขและผู้บอก แบบ inline กระชับ (ปรับอัตโนมัติ) -->
-            <div id="permInputNumbersAndProvider" class="info-row-inline"></div>
-            
-            <h3 style="color: #2c3e50; font-size: 18px; margin: 12px 0;">✨ ตัวเลขที่จัดเรียงทั้งหมด ✨</h3>
-            <div id="permResultNumbers"></div>
-            <div class="note">⚠️ แนวทางเท่านั้น ⚠️</div>
-            
-            <!-- บรรทัดจัดเรียงเมื่อ แบบ inline -->
-            <div id="permCurrentDateTime" class="datetime-inline"></div>
-            
-            <div class="comment-box">📌 หมายเหตุ: <span id="permCommentText" style="color: red;"></span></div>
-        </div>
-        
-        <div class="perm-controls">
-            <button id="savePermAsImageBtn" class="close-popup-btn" style="background-color: #007bff;">📸 บันทึกเป็นรูปภาพ</button>
-            <div class="share-row">
-                <button id="sharePermResultBtn" style="background-color:#28a745;">📤 แชร์ไปยังแอป</button>
-                <button id="sharePermSettingsBtn" style="background-color:#1e7e34;" title="ตั้งค่าการแชร์">⚙️</button>
-            </div>
-            <div class="control-group">
-                <label>🔍 ปรับขนาดตัวอักษร:</label>
-                <input type="range" id="permFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
-                <span id="permFontSizeValue">ขนาด: 100%</span>
-            </div>
-            <div class="control-group">
-                <label>📏 ปรับความสูงบรรทัด:</label>
-                <input type="range" id="permLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
-                <span id="permLineHeightValue">ความสูงบรรทัด: 1.3</span>
+                <button id="permutationConvertBtn">✨ จัดเรียงตัวเลข (แสดงผล Popup)</button>
             </div>
         </div>
     </div>
@@ -646,39 +569,67 @@
     <footer>© 2024-2025 Juckphai. All Rights Reserved.</footer>
 </div>
 
-<!-- Modal สำหรับจัดการประเภท/ผู้บอก -->
-<div id="permTypeModal" class="popup-overlay">
-    <div class="popup-content"><h3 id="permTypeModalTitle"></h3>
-        <input type="hidden" id="permTypeEditIndex">
-        <input type="text" id="permModalTypeName" placeholder="ชื่อประเภท" style="width:100%"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)" style="width:100%; margin-top:10px">
-        <div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div>
-    </div>
-</div>
-<div id="permProviderModal" class="popup-overlay">
-    <div class="popup-content"><h3 id="permProviderModalTitle"></h3>
-        <input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก" style="width:100%">
-        <div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div>
-    </div>
-</div>
-<!-- Modal ตั้งค่าแชร์ -->
-<div id="shareSettingsModal" class="popup-overlay">
-    <div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์</h3>
-        <label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share)</label>
-        <label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท)</label>
-        <div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div>
+<!-- POPUP สำหรับแสดงผลลัพธ์ (ภายในมีกรอบสีเขียว + แผงควบคุมด้านล่าง) -->
+<div id="resultPopup" class="result-popup-overlay">
+    <div class="result-popup-container">
+        <!-- กรอบสีเขียวส่วนผลลัพธ์ - ปล่อยให้ขยายตามเนื้อหา -->
+        <div class="green-frame" id="popupGreenFrame">
+            <div id="popupResultContent">
+                <div class="result-header">
+                    <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
+                    <div class="topic-box" id="popupResultTopicBox"><span id="popupResultTypeDisplay">ประเภท</span></div>
+                    <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
+                </div>
+                <div id="popupResultTimeHtml" class="topic-time"></div>
+                <h2 id="popupResultDate" style="color: blue; font-size: 18px; margin: 8px 0;">วันที่: </h2>
+                <div id="popupInputNumbersAndProvider" class="info-row-inline"></div>
+                <h3 style="color: #2c3e50; font-size: 18px; margin: 12px 0;">✨ ตัวเลขที่จัดเรียงทั้งหมด ✨</h3>
+                <div id="popupResultNumbers"></div>
+                <div class="note">⚠️ แนวทางเท่านั้น ⚠️</div>
+                <div id="popupCurrentDateTime" class="datetime-inline"></div>
+                <div class="comment-box">📌 หมายเหตุ: <span id="popupCommentText" style="color: red;"></span></div>
+            </div>
+        </div>
+        
+        <!-- แผงควบคุมทั้งหมด (อยู่นอกกรอบสีเขียว แต่ภายใน popup) -->
+        <div class="popup-controls-panel">
+            <div class="control-buttons-row">
+                <button id="popupSaveAsImageBtn" style="background-color:#007bff; color:white;">📸 บันทึกเป็นรูปภาพ</button>
+                <button id="popupShareResultBtn" style="background-color:#28a745; color:white;">📤 แชร์ไปยังแอป</button>
+                <button id="popupShareSettingsBtn" style="background-color:#1e7e34; color:white;" title="ตั้งค่าการแชร์">⚙️</button>
+            </div>
+            <div class="sliders-container">
+                <div class="slider-item">
+                    <label>🔍 ปรับขนาดตัวอักษร (Popup):</label>
+                    <input type="range" id="popupFontSizeSlider" min="0.7" max="2.0" step="0.05" value="1.0">
+                    <span id="popupFontSizeValue">ขนาด: 100%</span>
+                </div>
+                <div class="slider-item">
+                    <label>📏 ปรับความสูงบรรทัด (Popup):</label>
+                    <input type="range" id="popupLineHeightSlider" min="0.5" max="2.5" step="0.1" value="1.3">
+                    <span id="popupLineHeightValue">ความสูงบรรทัด: 1.3</span>
+                </div>
+            </div>
+            <button id="closePopupMainBtn" class="close-popup-btn-large">✖ ปิดหน้าต่าง</button>
+        </div>
     </div>
 </div>
 
+<!-- Modal สำหรับจัดการประเภท/ผู้บอก (คงเดิม) -->
+<div id="permTypeModal" class="popup-overlay"><div class="popup-content"><h3 id="permTypeModalTitle"></h3><input type="hidden" id="permTypeEditIndex"><input type="text" id="permModalTypeName" placeholder="ชื่อประเภท" style="width:100%"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)" style="width:100%; margin-top:10px"><div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
+<div id="permProviderModal" class="popup-overlay"><div class="popup-content"><h3 id="permProviderModalTitle"></h3><input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก" style="width:100%"><div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
+<div id="shareSettingsModal" class="popup-overlay"><div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์</h3><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share)</label><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท)</label><div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div></div></div>
+
 <script>
-    // ระบบจัดการประเภท/ผู้บอก (คงเดิมครบถ้วน)
+    // ==================== ระบบจัดการประเภท/ผู้บอก ====================
     const PERM_TYPE_STORAGE = 'perm_custom_types';
     const PERM_PROVIDER_STORAGE = 'perm_custom_providers';
     const PERM_HIDDEN_TYPES = 'perm_hidden_default_types';
     const PERM_HIDDEN_PROVIDERS = 'perm_hidden_default_providers';
+    const SHARE_PREF_KEY = 'sharePreference_perm_only';
 
     function getStored(key, def=[]) { return JSON.parse(localStorage.getItem(key)) || def; }
     function setStored(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-
     function loadPermSelectOptions(selectId, storageKey, hiddenKey, isType=true) {
         const select = document.getElementById(selectId);
         if(!select) return;
@@ -687,132 +638,67 @@
         const optionsToKeep = Array.from(select.options).filter(opt => opt.hasAttribute('data-default') || opt.value === 'custom');
         select.innerHTML = '';
         optionsToKeep.forEach(opt => select.appendChild(opt));
-        stored.forEach(item => {
-            const opt = document.createElement('option');
-            opt.value = item.value;
-            opt.textContent = item.text;
-            select.insertBefore(opt, select.querySelector('option[value="custom"]'));
-        });
-        if(hidden.length){
-            Array.from(select.options).forEach(opt => {
-                if(opt.hasAttribute('data-default') && hidden.includes(opt.value)) opt.hidden = true;
-            });
-        }
+        stored.forEach(item => { const opt = document.createElement('option'); opt.value = item.value; opt.textContent = item.text; select.insertBefore(opt, select.querySelector('option[value="custom"]')); });
+        if(hidden.length){ Array.from(select.options).forEach(opt => { if(opt.hasAttribute('data-default') && hidden.includes(opt.value)) opt.hidden = true; }); }
     }
-
-    function savePermCustom(selectId, storageKey, newValue, oldValue=null, isType=true) {
-        let items = getStored(storageKey);
-        if(oldValue) {
-            const idx = items.findIndex(i => i.value === oldValue);
-            if(idx !== -1) items[idx] = { value: newValue, text: newValue };
-            else items.push({ value: newValue, text: newValue });
-        } else {
-            if(items.some(i => i.value === newValue)) return false;
-            items.push({ value: newValue, text: newValue });
-        }
-        setStored(storageKey, items);
-        loadPermSelectOptions(selectId, storageKey, isType ? PERM_HIDDEN_TYPES : PERM_HIDDEN_PROVIDERS, isType);
-        return true;
-    }
-
-    function deletePermItem(selectId, storageKey, hiddenKey, isType) {
-        const select = document.getElementById(selectId);
-        const selected = select.options[select.selectedIndex];
-        if(!selected || selected.value === 'custom') return alert('ไม่สามารถลบตัวเลือกนี้ได้');
-        if(selected.hasAttribute('data-default')) {
-            let hidden = getStored(hiddenKey);
-            if(!hidden.includes(selected.value)) hidden.push(selected.value);
-            setStored(hiddenKey, hidden);
-            selected.hidden = true;
-            select.selectedIndex = Array.from(select.options).findIndex(o => !o.hidden);
-        } else {
-            let items = getStored(storageKey);
-            items = items.filter(i => i.value !== selected.value);
-            setStored(storageKey, items);
-            loadPermSelectOptions(selectId, storageKey, hiddenKey, isType);
-        }
-    }
-
-    function resetPermSelect(selectId, storageKey, hiddenKey, isType) {
-        if(confirm('คืนค่ารายการทั้งหมด? รายการที่สร้างเองจะถูกลบ')) {
-            localStorage.removeItem(storageKey);
-            localStorage.removeItem(hiddenKey);
-            loadPermSelectOptions(selectId, storageKey, hiddenKey, isType);
-        }
-    }
-
-    function getTypeNameAndTime(fullTypeText) {
-        const timeMatch = fullTypeText.match(/เวลา ([\d.]+) น\./);
-        if (timeMatch) {
-            const namePart = fullTypeText.replace(` เวลา ${timeMatch[1]} น.`, '');
-            return { typeName: namePart, timeText: `⏰ เวลา ${timeMatch[1]} น.` };
-        }
-        return { typeName: fullTypeText, timeText: '' };
-    }
-
-    function getSelectedPermType() {
-        const select = document.getElementById('permTypeSelect');
-        if(select.value === 'custom') {
-            const name = document.getElementById('permCustomTypeName').value.trim();
-            const time = document.getElementById('permCustomTypeTime').value.trim();
-            if(!name) return { fullText: 'ไม่ระบุประเภท', typeName: 'ไม่ระบุประเภท', timeText: '' };
-            const fullText = time ? `${name} เวลา ${time} น.` : name;
-            return { fullText: fullText, typeName: name, timeText: time ? `⏰ เวลา ${time} น.` : '' };
-        }
-        const fullText = select.options[select.selectedIndex].text;
-        const { typeName, timeText } = getTypeNameAndTime(fullText);
-        return { fullText, typeName, timeText };
-    }
-
-    function getSelectedPermProvider() {
-        const select = document.getElementById('permProviderSelect');
-        if(select.value === 'custom') {
-            const custom = document.getElementById('permCustomProviderInput').value.trim();
-            return custom || '@';
-        }
-        return select.value;
-    }
-
-    const SHARE_PREF_KEY = 'sharePreference_perm_only';
+    function savePermCustom(selectId, storageKey, newValue, oldValue=null, isType=true) { let items = getStored(storageKey); if(oldValue) { const idx = items.findIndex(i => i.value === oldValue); if(idx !== -1) items[idx] = { value: newValue, text: newValue }; else items.push({ value: newValue, text: newValue }); } else { if(items.some(i => i.value === newValue)) return false; items.push({ value: newValue, text: newValue }); } setStored(storageKey, items); loadPermSelectOptions(selectId, storageKey, isType ? PERM_HIDDEN_TYPES : PERM_HIDDEN_PROVIDERS, isType); return true; }
+    function deletePermItem(selectId, storageKey, hiddenKey, isType) { const select = document.getElementById(selectId); const selected = select.options[select.selectedIndex]; if(!selected || selected.value === 'custom') return alert('ไม่สามารถลบตัวเลือกนี้ได้'); if(selected.hasAttribute('data-default')) { let hidden = getStored(hiddenKey); if(!hidden.includes(selected.value)) hidden.push(selected.value); setStored(hiddenKey, hidden); selected.hidden = true; select.selectedIndex = Array.from(select.options).findIndex(o => !o.hidden); } else { let items = getStored(storageKey); items = items.filter(i => i.value !== selected.value); setStored(storageKey, items); loadPermSelectOptions(selectId, storageKey, hiddenKey, isType); } }
+    function resetPermSelect(selectId, storageKey, hiddenKey, isType) { if(confirm('คืนค่ารายการทั้งหมด?')) { localStorage.removeItem(storageKey); localStorage.removeItem(hiddenKey); loadPermSelectOptions(selectId, storageKey, hiddenKey, isType); } }
+    function getTypeNameAndTime(fullTypeText) { const timeMatch = fullTypeText.match(/เวลา ([\d.]+) น\./); if (timeMatch) { const namePart = fullTypeText.replace(` เวลา ${timeMatch[1]} น.`, ''); return { typeName: namePart, timeText: `⏰ เวลา ${timeMatch[1]} น.` }; } return { typeName: fullTypeText, timeText: '' }; }
+    function getSelectedPermType() { const select = document.getElementById('permTypeSelect'); if(select.value === 'custom') { const name = document.getElementById('permCustomTypeName').value.trim(); const time = document.getElementById('permCustomTypeTime').value.trim(); if(!name) return { fullText: 'ไม่ระบุประเภท', typeName: 'ไม่ระบุประเภท', timeText: '' }; const fullText = time ? `${name} เวลา ${time} น.` : name; return { fullText, typeName: name, timeText: time ? `⏰ เวลา ${time} น.` : '' }; } const fullText = select.options[select.selectedIndex].text; const { typeName, timeText } = getTypeNameAndTime(fullText); return { fullText, typeName, timeText }; }
+    function getSelectedPermProvider() { const select = document.getElementById('permProviderSelect'); if(select.value === 'custom') { const custom = document.getElementById('permCustomProviderInput').value.trim(); return custom || '@'; } return select.value; }
+    
     function loadPermSharePref() { return localStorage.getItem(SHARE_PREF_KEY) || 'system'; }
-    function updatePermShareButtonUI() {
-        const mode = loadPermSharePref();
-        const btn = document.getElementById("sharePermResultBtn");
-        if(mode === 'copy') { btn.textContent = "📋 คัดลอกรูปภาพ"; btn.style.backgroundColor = "#ff9800"; }
-        else { btn.textContent = "📤 แชร์ไปยังแอป"; btn.style.backgroundColor = "#28a745"; }
-    }
-    async function copyImageToClipboard(blob) {
-        try { await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); alert("✅ คัดลอกรูปภาพสำเร็จ! ไปวางในแชทได้เลย"); }
-        catch(e) { alert("ไม่รองรับการคัดลอกรูปภาพ"); }
-    }
-    async function capturePermContainer() {
-        const container = document.getElementById("permResultContainer");
-        const controls = container.querySelector('.perm-controls');
-        if(!container || container.style.display === 'none') { alert("ไม่มีผลลัพธ์ให้บันทึก"); return null; }
-        const originalDisplay = controls ? controls.style.display : null;
-        if(controls) controls.style.display = 'none';
-        const canvas = await html2canvas(container, { scale: 2.5, backgroundColor: '#ffffcc', useCORS: true });
-        if(controls) controls.style.display = originalDisplay;
+    async function copyImageToClipboard(blob) { try { await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); alert("✅ คัดลอกรูปภาพสำเร็จ!"); } catch(e) { alert("ไม่รองรับการคัดลอกรูปภาพ"); } }
+    // จับภาพเฉพาะกรอบสีเขียว
+    async function captureGreenFrameOnly() {
+        const frame = document.getElementById("popupGreenFrame");
+        if(!frame) return null;
+        const canvas = await html2canvas(frame, { scale: 2.5, backgroundColor: '#ffffcc', useCORS: true });
         return canvas;
     }
-    async function savePermAsImage() {
-        const canvas = await capturePermContainer();
-        if(canvas) { const link = document.createElement('a'); link.download = `perm-${Date.now()}.png`; link.href = canvas.toDataURL(); link.click(); }
+    async function saveAsImageFromPopup() { const canvas = await captureGreenFrameOnly(); if(canvas) { const link = document.createElement('a'); link.download = `perm-result-${Date.now()}.png`; link.href = canvas.toDataURL(); link.click(); } else alert("ไม่มีผลลัพธ์"); }
+    async function shareFromPopup() { const canvas = await captureGreenFrameOnly(); if(!canvas) return alert("ไม่มีผลลัพธ์"); const blob = await new Promise(r => canvas.toBlob(r)); const mode = loadPermSharePref(); if(mode === 'copy') await copyImageToClipboard(blob); else { if(navigator.share) await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})] }); else alert("เบราว์เซอร์ไม่รองรับแชร์"); } }
+    
+    // ปรับขนาดตัวอักษรและความสูงบรรทัด ให้กรอบขยายอัตโนมัติตามเนื้อหา
+    function applyPopupTextScaling() {
+        const contentDiv = document.getElementById("popupResultContent");
+        const fsSlider = document.getElementById("popupFontSizeSlider");
+        const lhSlider = document.getElementById("popupLineHeightSlider");
+        const scaleVal = parseFloat(fsSlider.value);
+        const lineHeightVal = parseFloat(lhSlider.value);
+        // ใช้ scale transform เพื่อขยายเนื้อหาทั้งหมด แต่กรอบจะขยายตามอัตโนมัติเพราะ overflow:visible
+        contentDiv.style.transform = `scale(${scaleVal})`;
+        contentDiv.style.transformOrigin = "center top";
+        contentDiv.style.lineHeight = lineHeightVal;
+        // อัปเดตค่าแสดงผล
+        document.getElementById("popupFontSizeValue").innerHTML = `ขนาด: ${Math.round(scaleVal*100)}%`;
+        document.getElementById("popupLineHeightValue").innerHTML = `ความสูงบรรทัด: ${lineHeightVal.toFixed(1)}`;
     }
-    async function sharePermResult() {
-        const canvas = await capturePermContainer();
-        if(!canvas) return;
-        const blob = await new Promise(r => canvas.toBlob(r));
-        const mode = loadPermSharePref();
-        if(mode === 'copy') await copyImageToClipboard(blob);
-        else { if(navigator.share) await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})] }); else alert("ไม่รองรับแชร์"); }
+    
+    function showResultPopup(numbersInput, provider, typeName, timeText, fullDateStr, comment, nowDateTimeStr, sortedNumbers) {
+        const popup = document.getElementById("resultPopup");
+        document.getElementById("popupResultTypeDisplay").innerHTML = typeName;
+        document.getElementById("popupResultTimeHtml").innerHTML = timeText || '';
+        document.getElementById("popupResultDate").innerHTML = `📅 ${fullDateStr}`;
+        const infoDiv = document.getElementById("popupInputNumbersAndProvider");
+        infoDiv.innerHTML = `<span>🔢 ตัวเลข <strong style="color:#1e3a8a; background:#FFF0C0; padding:2px 10px; border-radius:30px;">${numbersInput}</strong></span> <span>| 👤 ผู้บอก: ${provider}</span>`;
+        document.getElementById("popupCommentText").innerHTML = comment;
+        document.getElementById("popupCurrentDateTime").innerHTML = `📆 จัดเรียงเมื่อ: ${nowDateTimeStr}`;
+        const container = document.getElementById("popupResultNumbers");
+        container.innerHTML = "";
+        sortedNumbers.forEach(num => { let span = document.createElement("span"); span.textContent = num; container.appendChild(span); });
+        popup.style.display = "flex";
+        
+        // รีเซ็ตการปรับขนาดให้เป็นค่าปัจจุบันจากสไลด์ และปรับให้กรอบขยายได้
+        applyPopupTextScaling();
     }
-
-    function processPermutation() {
+    
+    function processAndShowPopup() {
         const numbersInput = document.getElementById("permNumbers").value.trim();
         if(!/^\d{4}$/.test(numbersInput)) { alert("กรุณากรอกตัวเลข 4 หลักให้ถูกต้อง (เฉพาะตัวเลข 4 หลัก)"); return; }
         const provider = getSelectedPermProvider();
-        const { typeName, timeText, fullText } = getSelectedPermType();
+        const { typeName, timeText } = getSelectedPermType();
         let comment = document.getElementById("permComment").value.trim() || "ไม่มีหมายเหตุ";
         let dateStr = document.getElementById("permDateInput").value;
         let displayDate = new Date();
@@ -825,36 +711,15 @@
         const now = new Date();
         const nowThai = now.toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
         const nowTime = now.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
-        
+        const nowDateTimeStr = `${nowThai} เวลา ${nowTime} น.`;
         const unique = new Set();
-        function permute(str, prefix="") {
-            if(str.length===0) unique.add(prefix);
-            else for(let i=0;i<str.length;i++) permute(str.slice(0,i)+str.slice(i+1), prefix+str[i]);
-        }
+        function permute(str, prefix="") { if(str.length===0) unique.add(prefix); else for(let i=0;i<str.length;i++) permute(str.slice(0,i)+str.slice(i+1), prefix+str[i]); }
         permute(numbersInput);
         const sorted = [...unique].sort((a,b)=>a.localeCompare(b));
-        const container = document.getElementById("permResultNumbers");
-        container.innerHTML = "";
-        sorted.forEach(num => { let span = document.createElement("span"); span.textContent=num; container.appendChild(span); });
-        
-        document.getElementById("permResultDate").innerHTML = `📅 ${thaiFullDate}`;
-        document.getElementById("permResultTypeDisplay").innerHTML = typeName;
-        document.getElementById("permResultTimeHtml").innerHTML = timeText ? timeText : '';
-        
-        // บรรทัดตัวเลขและผู้บอกแบบ inline กระชับ
-        const infoDiv = document.getElementById("permInputNumbersAndProvider");
-        infoDiv.innerHTML = `<span>🔢 ตัวเลข <strong style="color:#1e3a8a; background:#FFF0C0; padding:2px 10px; border-radius:30px;">${numbersInput}</strong></span> <span>| 👤 ผู้บอก: ${provider}</span>`;
-        
-        document.getElementById("permCommentText").innerHTML = comment;
-        // บรรทัดจัดเรียงเมื่อ แบบ inline
-        const dateTimeDiv = document.getElementById("permCurrentDateTime");
-        dateTimeDiv.innerHTML = `📆 จัดเรียงเมื่อ: ${nowThai} เวลา ${nowTime} น.`;
-        
-        document.getElementById("permResultContainer").style.display = "block";
-        window.scrollTo({ top: document.getElementById("permResultContainer").offsetTop-20, behavior: 'smooth' });
+        showResultPopup(numbersInput, provider, typeName, timeText, thaiFullDate, comment, nowDateTimeStr, sorted);
     }
-
-    function initPermManagement() {
+    
+    function initManagementUI() {
         loadPermSelectOptions('permTypeSelect', PERM_TYPE_STORAGE, PERM_HIDDEN_TYPES, true);
         loadPermSelectOptions('permProviderSelect', PERM_PROVIDER_STORAGE, PERM_HIDDEN_PROVIDERS, false);
         document.getElementById('togglePermTypeControls').onclick = () => { const a=document.getElementById('permTypeActions'); a.style.display = a.style.display==='flex'?'none':'flex'; };
@@ -865,14 +730,12 @@
         document.getElementById('resetPermTypeBtn').onclick = () => resetPermSelect('permTypeSelect', PERM_TYPE_STORAGE, PERM_HIDDEN_TYPES, true);
         document.getElementById('savePermTypeBtn').onclick = () => { let name=document.getElementById('permModalTypeName').value.trim(); let time=document.getElementById('permModalTypeTime').value.trim(); if(!name) return alert('กรุณากรอกชื่อ'); let newVal = time ? `${name} เวลา ${time} น.` : name; let old=document.getElementById('permTypeEditIndex').value; if(savePermCustom('permTypeSelect', PERM_TYPE_STORAGE, newVal, old||null, true)) document.getElementById('permTypeModal').style.display='none'; else alert('มีรายการนี้อยู่แล้ว'); };
         document.getElementById('cancelPermTypeBtn').onclick = () => document.getElementById('permTypeModal').style.display='none';
-
         document.getElementById('addPermProviderBtn').onclick = () => { document.getElementById('permProviderModalTitle').innerHTML='➕ เพิ่มผู้บอก'; document.getElementById('permProviderEditValue').value=''; document.getElementById('permModalProviderName').value=''; document.getElementById('permProviderModal').style.display='flex'; };
         document.getElementById('editPermProviderBtn').onclick = () => { let s=document.getElementById('permProviderSelect'); let opt=s.options[s.selectedIndex]; if(opt.value==='custom'||opt.hidden) return alert('ไม่สามารถแก้ไข'); document.getElementById('permModalProviderName').value=opt.value; document.getElementById('permProviderEditValue').value=opt.value; document.getElementById('permProviderModalTitle').innerHTML='✏️ แก้ไขผู้บอก'; document.getElementById('permProviderModal').style.display='flex'; };
         document.getElementById('deletePermProviderBtn').onclick = () => deletePermItem('permProviderSelect', PERM_PROVIDER_STORAGE, PERM_HIDDEN_PROVIDERS, false);
         document.getElementById('resetPermProviderBtn').onclick = () => resetPermSelect('permProviderSelect', PERM_PROVIDER_STORAGE, PERM_HIDDEN_PROVIDERS, false);
         document.getElementById('savePermProviderBtn').onclick = () => { let name=document.getElementById('permModalProviderName').value.trim(); if(!name) return alert('กรุณากรอกชื่อ'); let old=document.getElementById('permProviderEditValue').value; if(savePermCustom('permProviderSelect', PERM_PROVIDER_STORAGE, name, old||null, false)) document.getElementById('permProviderModal').style.display='none'; else alert('มีชื่อนี้แล้ว'); };
         document.getElementById('cancelPermProviderBtn').onclick = () => document.getElementById('permProviderModal').style.display='none';
-
         const typeSelect = document.getElementById('permTypeSelect');
         typeSelect.addEventListener('change', (e) => { document.getElementById('permCustomTypeInputs').style.display = e.target.value === 'custom' ? 'block' : 'none'; });
         const provSelect = document.getElementById('permProviderSelect');
@@ -880,41 +743,26 @@
         document.getElementById('permCustomTypeInputs').style.display = 'none';
         document.getElementById('permCustomProviderInput').style.display = 'none';
     }
-
-    function initPermDatePicker() {
-        const input = document.getElementById('permDateInput');
-        const btn = document.getElementById('permCalendarButton');
-        const hidden = document.getElementById('permHiddenDate');
-        const today = new Date();
-        input.value = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()+543}`;
-        btn.addEventListener('click', () => { hidden.showPicker(); });
-        hidden.addEventListener('change', (e) => {
-            if(e.target.value) { let [y,m,d] = e.target.value.split('-'); input.value = `${d}/${m}/${parseInt(y)+543}`; }
-        });
-    }
-
-    function initPermControls() {
-        document.getElementById("permutationConvertBtn").addEventListener("click", processPermutation);
-        document.getElementById("savePermAsImageBtn").addEventListener("click", savePermAsImage);
-        document.getElementById("sharePermResultBtn").addEventListener("click", sharePermResult);
-        document.getElementById("sharePermSettingsBtn").addEventListener("click", () => { document.getElementById("shareSettingsModal").style.display = "flex"; });
-        document.getElementById("savePermShareSettingsBtn").addEventListener("click", () => { let val=document.querySelector('input[name="shareModePerm"]:checked').value; localStorage.setItem(SHARE_PREF_KEY, val); updatePermShareButtonUI(); document.getElementById("shareSettingsModal").style.display="none"; });
+    function initDatePicker() { const input=document.getElementById('permDateInput'); const btn=document.getElementById('permCalendarButton'); const hidden=document.getElementById('permHiddenDate'); const today=new Date(); input.value=`${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()+543}`; btn.addEventListener('click',()=>hidden.showPicker()); hidden.addEventListener('change',(e)=>{ if(e.target.value){ let [y,m,d]=e.target.value.split('-'); input.value=`${d}/${m}/${parseInt(y)+543}`; } }); }
+    function initPopupControls() {
+        const fsSlider = document.getElementById("popupFontSizeSlider");
+        const lhSlider = document.getElementById("popupLineHeightSlider");
+        fsSlider.addEventListener("input", () => { applyPopupTextScaling(); });
+        lhSlider.addEventListener("input", () => { applyPopupTextScaling(); });
+        document.getElementById("popupSaveAsImageBtn").addEventListener("click", saveAsImageFromPopup);
+        document.getElementById("popupShareResultBtn").addEventListener("click", shareFromPopup);
+        document.getElementById("popupShareSettingsBtn").addEventListener("click", () => { document.getElementById("shareSettingsModal").style.display = "flex"; });
+        document.getElementById("savePermShareSettingsBtn").addEventListener("click", () => { let val=document.querySelector('input[name="shareModePerm"]:checked').value; localStorage.setItem(SHARE_PREF_KEY, val); document.getElementById("shareSettingsModal").style.display="none"; });
         document.getElementById("closePermShareSettingsBtn").addEventListener("click", () => document.getElementById("shareSettingsModal").style.display="none");
-        updatePermShareButtonUI();
-        const fsSlider = document.getElementById("permFontSizeSlider");
-        const lhSlider = document.getElementById("permLineHeightSlider");
-        const content = document.getElementById("permResultContent");
-        fsSlider.addEventListener("input", () => { let val=fsSlider.value; content.style.transform=`scale(${val})`; content.style.transformOrigin="top center"; document.getElementById("permFontSizeValue").innerHTML=`ขนาด: ${Math.round(val*100)}%`; });
-        lhSlider.addEventListener("input", () => { let val=lhSlider.value; content.style.lineHeight=val; document.getElementById("permLineHeightValue").innerHTML=`ความสูงบรรทัด: ${val}`; });
-        fsSlider.dispatchEvent(new Event('input')); lhSlider.dispatchEvent(new Event('input'));
+        document.getElementById("closePopupMainBtn").addEventListener("click", () => { document.getElementById("resultPopup").style.display = "none"; });
+        document.getElementById("resultPopup").addEventListener("click", (e) => { if(e.target === document.getElementById("resultPopup")) document.getElementById("resultPopup").style.display = "none"; });
     }
-
+    
     window.onload = () => {
-        initPermManagement();
-        initPermDatePicker();
-        initPermControls();
-        document.getElementById('permCustomTypeInputs').style.display = 'none';
-        document.getElementById('permCustomProviderInput').style.display = 'none';
+        initManagementUI();
+        initDatePicker();
+        initPopupControls();
+        document.getElementById("permutationConvertBtn").addEventListener("click", processAndShowPopup);
     };
 </script>
 </body>
