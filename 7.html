@@ -381,7 +381,23 @@
             width: 100%;
             box-sizing: border-box;
         }
+
+        /* ===== ปรับการแสดงผลบนมือถือให้เต็มจอ ===== */
         @media only screen and (max-width: 480px) {
+            .result-popup-overlay {
+                padding: 20px 0; /* ลดช่องว่างด้านข้างให้แสดงเต็มจอ */
+                align-items: flex-start; /* ดันเนื้อหาขึ้นบนเหมือนไฟล์ 1 */
+            }
+            .result-popup-container {
+                width: 98%; /* กว้าง 98% เพื่อให้เต็มพื้นที่ซ้ายขวา */
+                margin: 0 auto;
+            }
+            #popupResultContent {
+                padding: 15px 4px 20px; /* ลด padding ด้านข้างในกรอบเนื้อหา */
+            }
+            .popup-controls-panel {
+                padding: 12px 8px;
+            }
             #popupResultNumbers {
                 gap: 6px;
             }
@@ -402,6 +418,7 @@
                 font-size: 12px;
             }
         }
+
         .info-row-inline {
             display: flex;
             flex-wrap: wrap;
@@ -508,14 +525,12 @@
 <div class="app-wrapper">
     <h1>🔄 จัดเรียงตัวเลข 4 หลัก (แนวทางลาวและรัฐบาล)</h1>
     
-    <!-- ส่วนกรอกข้อมูล (กรอบสีส้ม) -->
     <div class="form-container">
         <div id="permutationModeContent">
             <div class="permutation-container" style="width:100%; margin:0 auto;">
                 <label for="permNumbers">🔢 ตัวเลข 4 หลัก:</label>
                 <input type="text" id="permNumbers" maxlength="4" placeholder="เช่น 1234" pattern="\d*" inputmode="numeric">
                 
-                <!-- ประเภท -->
                 <div class="select-wrapper">
                     <select id="permTypeSelect">
                         <option value="ลาวพัฒนา เวลา 20.30 น." data-default="true">ลาวพัฒนา เวลา 20.30 น.</option>
@@ -543,7 +558,6 @@
                     </div>
                 </div>
 
-                <!-- ผู้บอก -->
                 <div class="select-wrapper">
                     <select id="permProviderSelect">
                         <option value="Team" data-default="true">Team</option>
@@ -582,10 +596,8 @@
     <footer>© 2024-2025 Juckphai. All Rights Reserved.</footer>
 </div>
 
-<!-- POPUP สำหรับแสดงผลลัพธ์ (ภายในมีกรอบสีเขียว + แผงควบคุมด้านล่าง) -->
 <div id="resultPopup" class="result-popup-overlay">
     <div class="result-popup-container">
-        <!-- กรอบสีเขียวส่วนผลลัพธ์ - ปล่อยให้ขยายตามเนื้อหา -->
         <div class="green-frame" id="popupGreenFrame">
             <div id="popupResultContent">
                 <div class="result-header">
@@ -604,7 +616,6 @@
             </div>
         </div>
         
-        <!-- แผงควบคุมทั้งหมด (อยู่นอกกรอบสีเขียว แต่ภายใน popup) -->
         <div class="popup-controls-panel">
             <div class="control-buttons-row">
                 <button id="popupSaveAsImageBtn" style="background-color:#007bff; color:white;">📸 บันทึกเป็นรูปภาพ (คมชัดสูง)</button>
@@ -628,7 +639,6 @@
     </div>
 </div>
 
-<!-- Modal สำหรับจัดการประเภท/ผู้บอก (คงเดิม) -->
 <div id="permTypeModal" class="popup-overlay"><div class="popup-content"><h3 id="permTypeModalTitle"></h3><input type="hidden" id="permTypeEditIndex"><input type="text" id="permModalTypeName" placeholder="ชื่อประเภท" style="width:100%"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)" style="width:100%; margin-top:10px"><div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
 <div id="permProviderModal" class="popup-overlay"><div class="popup-content"><h3 id="permProviderModalTitle"></h3><input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก" style="width:100%"><div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
 <div id="shareSettingsModal" class="popup-overlay"><div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์ (คุณภาพสูง)</h3><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share) - คุณภาพสูง</label><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท) - คุณภาพสูง</label><div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div></div></div>
