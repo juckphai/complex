@@ -744,21 +744,29 @@
         } 
     }
     
-    async function shareFromPopup() { 
-        const canvas = await captureGreenFrameOnly(); 
-        if(!canvas) return alert("ไม่มีผลลัพธ์"); 
-        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-        const mode = loadPermSharePref(); 
-        if(mode === 'copy') {
-            await copyImageToClipboard(blob);
+async function shareFromPopup() { 
+    const canvas = await captureGreenFrameOnly(); 
+    if(!canvas) return alert("ไม่มีผลลัพธ์"); 
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    const mode = loadPermSharePref(); 
+
+    if(mode === 'copy') {
+        await copyImageToClipboard(blob);
+    } else { 
+        if(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "perm.png", {type:"image/png"})] })) {
+            try {
+                await navigator.share({ 
+                    files: [new File([blob], "perm.png", {type:"image/png"})]
+                });
+            } catch(e) { 
+                if(e.name !== 'AbortError') alert("แชร์ไม่สำเร็จ ลองใช้โหมดคัดลอกแทน"); 
+            }
         } else { 
-            if(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "perm.png", {type:"image/png"})] })) {
-                try {
-                    await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})], title: "แนวทางตัวเลข 4 หลัก" });
-                } catch(e) { if(e.name !== 'AbortError') alert("แชร์ไม่สำเร็จ ลองใช้โหมดคัดลอกแทน"); }
-            } else { alert("เบราว์เซอร์ไม่รองรับการแชร์ไฟล์ เปลี่ยนเป็นโหมดคัดลอกแทน"); await copyImageToClipboard(blob); }
-        } 
-    }
+            alert("เบราว์เซอร์ไม่รองรับการแชร์ไฟล์ เปลี่ยนเป็นโหมดคัดลอกแทน"); 
+            await copyImageToClipboard(blob); 
+        }
+    } 
+}
     
     function applyPopupTextScaling() {
         const contentDiv = document.getElementById("popupResultContent");
