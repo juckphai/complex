@@ -46,7 +46,7 @@
             background-color: #FEFEF0;
             margin: 0 0 20px 0;
             padding: 15px 12px;
-            border-radius: 16px;
+            border-radius: 10px;
             width: 100%;
             box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15);
             box-sizing: border-box;
@@ -189,7 +189,7 @@
             background-color: orange;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
             text-align: center;
@@ -228,7 +228,7 @@
             max-height: 90vh;
             overflow-y: auto;
             background: transparent;
-            border-radius: 32px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
         }
@@ -236,7 +236,7 @@
         .green-frame {
             background-color: #ffffcc;
             border: 3px solid #4CAF50;
-            border-radius: 28px;
+            border-radius: 10px;
             box-shadow: 0 12px 28px rgba(0, 128, 0, 0.4);
             overflow: visible;
             transition: all 0.2s ease;
@@ -246,7 +246,7 @@
             text-align: center;
             padding: 20px 16px 24px;
             background-color: #ffffcc;
-            border-radius: 28px;
+            border-radius: 10px;
             transform-origin: center top;
             display: inline-block;
             width: 100%;
@@ -255,7 +255,7 @@
         /* ส่วนควบคุมด้านล่างกรอบสีเขียว (อยู่ภายนอกกรอบ แต่ภายใน popup) */
         .popup-controls-panel {
             background: #fff9e8;
-            border-radius: 28px;
+            border-radius: 10px;
             margin-top: 12px;
             padding: 16px 14px;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
@@ -290,7 +290,7 @@
             gap: 8px;
             background: #fff3cf;
             padding: 10px 12px;
-            border-radius: 40px;
+            border-radius: 30px;
         }
         .slider-item label {
             margin: 0;
@@ -314,7 +314,7 @@
             background-color: #f44336;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
@@ -345,7 +345,7 @@
             background-color: #FF75FF;
             border: 1px solid #0070C0;
             color: white;
-            border-radius: 50px;
+            border-radius: 30px;
             padding: 8px 20px;
             font-size: 20px;
             font-weight: bold;
@@ -375,7 +375,7 @@
             font-size: 18px;
             font-weight: 700;
             border: 1px solid #9bb6d0;
-            border-radius: 28px;
+            border-radius: 5px;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
             text-align: center;
             width: 100%;
@@ -411,7 +411,7 @@
             margin: 10px 0;
             padding: 6px 8px;
             background: #fff3cf;
-            border-radius: 40px;
+            border-radius: 10px;
             font-size: 15px;
             font-weight: 500;
             color: #2c3e50;
@@ -464,7 +464,7 @@
         }
         .popup-content {
             background: #fef7e0;
-            border-radius: 28px;
+            border-radius: 10px;
             padding: 24px;
             max-width: 380px;
             width: 90%;
@@ -498,7 +498,7 @@
             color: #ffd700;
             font-size: 10px;
             padding: 4px 8px;
-            border-radius: 20px;
+            border-radius: 10px;
             z-index: 999;
             pointer-events: none;
         }
@@ -768,7 +768,7 @@
         document.getElementById("popupResultTimeHtml").innerHTML = timeText || '';
         document.getElementById("popupResultDate").innerHTML = `📅 ${fullDateStr}`;
         const infoDiv = document.getElementById("popupInputNumbersAndProvider");
-        infoDiv.innerHTML = `<span>🔢 ตัวเลข <strong style="color:#1e3a8a; background:#FFF0C0; padding:2px 10px; border-radius:30px;">${numbersInput}</strong></span> <span>| 👤 ผู้บอก: ${provider}</span>`;
+        infoDiv.innerHTML = `<span>🔢 ตัวเลข <strong style="color:#1e3a8a; background:#FFF0C0; padding:2px 10px; border-radius:15px;">${numbersInput}</strong></span> <span>| 👤 ผู้บอก: ${provider}</span>`;
         document.getElementById("popupCommentText").innerHTML = comment;
         document.getElementById("popupCurrentDateTime").innerHTML = `📆 จัดเรียงเมื่อ: ${nowDateTimeStr}`;
         const container = document.getElementById("popupResultNumbers");
