@@ -238,7 +238,7 @@
             border: 3px solid #4CAF50;
             border-radius: 28px;
             box-shadow: 0 12px 28px rgba(0, 128, 0, 0.4);
-            overflow: visible; /* เปลี่ยนจาก hidden เป็น visible ให้เนื้อหาขยายได้เต็มที่ */
+            overflow: visible;
             transition: all 0.2s ease;
         }
         #popupResultContent {
@@ -247,7 +247,6 @@
             padding: 20px 16px 24px;
             background-color: #ffffcc;
             border-radius: 28px;
-            /* ไม่กำหนด transform origin ที่นี่ เพื่อให้ scale ทำงานได้ดี และกรอบขยายตาม */
             transform-origin: center top;
             display: inline-block;
             width: 100%;
@@ -489,6 +488,20 @@
             max-width: 100%;
             word-break: break-word;
         }
+        
+        /* ข้อความแจ้งเตือนคุณภาพสูง */
+        .quality-badge {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: #ffd700;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            z-index: 999;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -594,8 +607,8 @@
         <!-- แผงควบคุมทั้งหมด (อยู่นอกกรอบสีเขียว แต่ภายใน popup) -->
         <div class="popup-controls-panel">
             <div class="control-buttons-row">
-                <button id="popupSaveAsImageBtn" style="background-color:#007bff; color:white;">📸 บันทึกเป็นรูปภาพ</button>
-                <button id="popupShareResultBtn" style="background-color:#28a745; color:white;">📤 แชร์ไปยังแอป</button>
+                <button id="popupSaveAsImageBtn" style="background-color:#007bff; color:white;">📸 บันทึกเป็นรูปภาพ (คมชัดสูง)</button>
+                <button id="popupShareResultBtn" style="background-color:#28a745; color:white;">📤 แชร์ไปยังแอป (คมชัดสูง)</button>
                 <button id="popupShareSettingsBtn" style="background-color:#1e7e34; color:white;" title="ตั้งค่าการแชร์">⚙️</button>
             </div>
             <div class="sliders-container">
@@ -618,7 +631,9 @@
 <!-- Modal สำหรับจัดการประเภท/ผู้บอก (คงเดิม) -->
 <div id="permTypeModal" class="popup-overlay"><div class="popup-content"><h3 id="permTypeModalTitle"></h3><input type="hidden" id="permTypeEditIndex"><input type="text" id="permModalTypeName" placeholder="ชื่อประเภท" style="width:100%"><input type="text" id="permModalTypeTime" placeholder="เวลา (เช่น 20.30)" style="width:100%; margin-top:10px"><div class="modal-button-group"><button id="savePermTypeBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermTypeBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
 <div id="permProviderModal" class="popup-overlay"><div class="popup-content"><h3 id="permProviderModalTitle"></h3><input type="hidden" id="permProviderEditValue"><input type="text" id="permModalProviderName" placeholder="ชื่อผู้บอก" style="width:100%"><div class="modal-button-group"><button id="savePermProviderBtn" style="background:#28a745;">บันทึก</button><button id="cancelPermProviderBtn" class="close-popup-btn">ยกเลิก</button></div></div></div>
-<div id="shareSettingsModal" class="popup-overlay"><div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์</h3><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share)</label><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท)</label><div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div></div></div>
+<div id="shareSettingsModal" class="popup-overlay"><div class="popup-content"><h3 style="text-align:center">⚙️ ตั้งค่าปุ่มแชร์ (คุณภาพสูง)</h3><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="system" checked> 📱 แชร์ปกติ (System Share) - คุณภาพสูง</label><label style="display:flex; margin:8px 0;"><input type="radio" name="shareModePerm" value="copy"> 📋 คัดลอกรูปภาพ (วางในแชท) - คุณภาพสูง</label><div class="modal-button-group"><button id="savePermShareSettingsBtn" style="background:#28a745;">บันทึก</button><button id="closePermShareSettingsBtn" class="close-popup-btn">ปิด</button></div></div></div>
+
+<div class="quality-badge">✨ คุณภาพรูปภาพสูงสุด (4K Ready)</div>
 
 <script>
     // ==================== ระบบจัดการประเภท/ผู้บอก ====================
@@ -649,16 +664,87 @@
     function getSelectedPermProvider() { const select = document.getElementById('permProviderSelect'); if(select.value === 'custom') { const custom = document.getElementById('permCustomProviderInput').value.trim(); return custom || '@'; } return select.value; }
     
     function loadPermSharePref() { return localStorage.getItem(SHARE_PREF_KEY) || 'system'; }
-    async function copyImageToClipboard(blob) { try { await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]); alert("✅ คัดลอกรูปภาพสำเร็จ!"); } catch(e) { alert("ไม่รองรับการคัดลอกรูปภาพ"); } }
-    // จับภาพเฉพาะกรอบสีเขียว
+    
+    // ============ ปรับปรุงคุณภาพรูปภาพสูงสุด ============
+    // ฟังก์ชันจับภาพเฉพาะกรอบสีเขียวด้วยคุณภาพสูงสุด
     async function captureGreenFrameOnly() {
         const frame = document.getElementById("popupGreenFrame");
         if(!frame) return null;
-        const canvas = await html2canvas(frame, { scale: 4, backgroundColor: '#ffffcc', useCORS: true });
+        
+        // เพิ่ม scale สูงขึ้นเพื่อความคมชัด (5 เท่าสำหรับความละเอียดสูงสุด)
+        const canvas = await html2canvas(frame, { 
+            scale: 5,                    // เพิ่มเป็น 5 เท่า ให้คมชัดระดับ 4K
+            backgroundColor: '#ffffcc',
+            useCORS: true,
+            logging: false,
+            windowWidth: frame.scrollWidth,
+            windowHeight: frame.scrollHeight,
+            onclone: (clonedDoc, element) => {
+                // ปรับแต่งใน cloned document ให้ได้คุณภาพสูงสุด
+                const clonedFrame = clonedDoc.getElementById("popupGreenFrame");
+                if(clonedFrame) {
+                    clonedFrame.style.transform = 'none';
+                }
+            }
+        });
         return canvas;
     }
-    async function saveAsImageFromPopup() { const canvas = await captureGreenFrameOnly(); if(canvas) { const link = document.createElement('a'); link.download = `perm-result-${Date.now()}.png`; link.href = canvas.toDataURL(); link.click(); } else alert("ไม่มีผลลัพธ์"); }
-    async function shareFromPopup() { const canvas = await captureGreenFrameOnly(); if(!canvas) return alert("ไม่มีผลลัพธ์"); const blob = await new Promise(r => canvas.toBlob(r)); const mode = loadPermSharePref(); if(mode === 'copy') await copyImageToClipboard(blob); else { if(navigator.share) await navigator.share({ files: [new File([blob], "perm.png", {type:"image/png"})] }); else alert("เบราว์เซอร์ไม่รองรับแชร์"); } }
+    
+    // ฟังก์ชันบันทึกเป็นรูปภาพคุณภาพสูง
+    async function saveAsImageFromPopup() { 
+        const canvas = await captureGreenFrameOnly(); 
+        if(canvas) { 
+            const link = document.createElement('a'); 
+            link.download = `perm-result-${Date.now()}.png`; 
+            // ใช้ PNG คุณภาพสูงสุด (PNG เป็น lossless อยู่แล้ว)
+            link.href = canvas.toDataURL('image/png'); 
+            link.click(); 
+        } else alert("ไม่มีผลลัพธ์"); 
+    }
+    
+    // ฟังก์ชันคัดลอกรูปภาพไปคลิปบอร์ด
+    async function copyImageToClipboard(blob) { 
+        try { 
+            await navigator.clipboard.write([new ClipboardItem({
+                [blob.type]: blob
+            })]); 
+            alert("✅ คัดลอกรูปภาพคุณภาพสูงสำเร็จ! (วางในแชทได้เลย)");
+        } catch(e) { 
+            alert("เบราว์เซอร์นี้ไม่รองรับการคัดลอกรูปภาพ"); 
+        } 
+    }
+    
+    // ฟังก์ชันแชร์รูปภาพคุณภาพสูง
+    async function shareFromPopup() { 
+        const canvas = await captureGreenFrameOnly(); 
+        if(!canvas) return alert("ไม่มีผลลัพธ์"); 
+        
+        // สร้าง blob ด้วยคุณภาพสูงสุด
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        const mode = loadPermSharePref(); 
+        
+        if(mode === 'copy') {
+            await copyImageToClipboard(blob);
+        } else { 
+            if(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "perm.png", {type:"image/png"})] })) {
+                try {
+                    await navigator.share({ 
+                        files: [new File([blob], "perm.png", {type:"image/png"})],
+                        title: "แนวทางตัวเลข 4 หลัก",
+                        text: "ผลการจัดเรียงตัวเลข"
+                    });
+                } catch(e) {
+                    if(e.name !== 'AbortError') {
+                        alert("แชร์ไม่สำเร็จ ลองใช้โหมดคัดลอกแทน");
+                    }
+                }
+            } else {
+                // Fallback: คัดลอกรูปภาพแทน
+                alert("เบราว์เซอร์ไม่รองรับการแชร์ไฟล์ เปลี่ยนเป็นโหมดคัดลอกแทน");
+                await copyImageToClipboard(blob);
+            }
+        } 
+    }
     
     // ปรับขนาดตัวอักษรและความสูงบรรทัด ให้กรอบขยายอัตโนมัติตามเนื้อหา
     function applyPopupTextScaling() {
