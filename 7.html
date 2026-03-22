@@ -731,7 +731,6 @@
                     await navigator.share({ 
                         files: [new File([blob], "perm.png", {type:"image/png"})],
                         title: "แนวทางตัวเลข 4 หลัก",
-                        text: "ผลการจัดเรียงตัวเลข"
                     });
                 } catch(e) {
                     if(e.name !== 'AbortError') {
