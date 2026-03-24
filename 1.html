@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ผลรางวัลกลุ่มลาวและรัฐบาล</title>
     
-    <link rel="manifest" href="manifest-main.json">
+    <link rel="manifest" href="manifest-all-lao.json">
     <meta name="theme-color" content="#FF9800"/>
     <link rel="apple-touch-icon" href="192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,6 +19,7 @@
 <div class="form-container">
     <input type="text" id="numberInput" placeholder="กรอกตัวเลข 2, 3 หรือ 4 หลัก" pattern="\d*" maxlength="4" inputmode="numeric" />
 
+    <!-- Unified Topic Section -->
     <div class="select-wrapper">
         <select id="topicSelect" onchange="checkCustomTopicOption(this)">
             <option value="ลาวประตูชัย เวลา 05.45 น." data-default="true">ลาวประตูชัย เวลา 05.45 น.</option>
@@ -57,6 +58,7 @@
         </div>
     </div>
 
+    <!-- Unified Person Section -->
     <div class="select-wrapper">
         <select id="personSelect" onchange="checkCustomOption(this)">
            <option value="@" data-default="true">@</option> 
@@ -86,6 +88,7 @@
 
 <button id="homeButton" class="homeButton" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
 
+<!-- Result Popup -->
 <div id="resultPopupOverlay" class="popup-overlay">
 <div class="popup-content">
 <div id="resultContainerDiv" class="result-container-popup">
@@ -118,6 +121,7 @@
 </div>
 </div>
 
+<!-- Share Settings Modal -->
 <div id="shareSettingsModal" class="popup-overlay" style="z-index: 2000;">
     <div class="popup-content" style="max-width: 350px; background-color: #f0f8ff;">
         <h2 style="color: #0056b3; text-align: center;">ตั้งค่าปุ่มแชร์ด่วน</h2>
@@ -148,6 +152,7 @@
     </div>
 </div>
 
+<!-- Management Modals -->
 <div id="topicModal" class="popup-overlay">
 <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
 <h2 id="topicModalTitle" style="color: #0056b3; text-align: center;"></h2>
@@ -178,30 +183,6 @@
 &copy; 2025 Juckphai. All Rights Reserved.
 </div>
 </footer>    
-
     <script src="script1.js"></script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw-main.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully for 1.html:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
-
-            // อัปเดตหน้าเว็บอัตโนมัติเมื่อ Service Worker มีการเปลี่ยนแปลง
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    window.location.reload();
-                    refreshing = true;
-                }
-            });
-        }
-    </script>
 </body>
 </html>

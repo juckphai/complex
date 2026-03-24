@@ -102,30 +102,6 @@
     </footer>
 
 </footer>  
-
     <script src="script13.js"></script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw-main.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully for 2.html:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
-
-            // อัปเดตหน้าเว็บอัตโนมัติเมื่อ Service Worker มีการเปลี่ยนแปลง
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    window.location.reload();
-                    refreshing = true;
-                }
-            });
-        }
-    </script>
 </body>
 </html>

@@ -11,10 +11,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="เมนู Juckphai">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -31,7 +31,7 @@
 
         body {
             font-family: 'Kanit', 'Arial', sans-serif;
-            background-color: #f0f4f8; 
+            background-color: #f0f4f8; /* Light blue-gray background */
             color: #1e40af;
             line-height: 1.6;
             padding: 20px;
@@ -53,15 +53,15 @@
             padding: 15px;
         }
 
-        /* --- Install Guide Styles --- */
+        /* --- Install Guide Styles (New) --- */
         .install-prompt {
             background-color: #ffffff;
-            border: 2px solid #ff9800; 
+            border: 2px solid #ff9800; /* สีส้มให้ดูเด่น */
             border-radius: 12px;
             padding: 15px;
             position: relative;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            display: none; 
+            display: none; /* ซ่อนไว้ก่อน จะโชว์ด้วย JS */
             margin-bottom: 5px;
         }
 
@@ -121,7 +121,7 @@
             border-radius: 15px;
             border: 1.5px solid #0070C0;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-            overflow: hidden; 
+            overflow: hidden; /* Important for border-radius */
             transition: transform 0.3s ease;
         }
         
@@ -173,6 +173,53 @@
             animation: fadeIn 0.3s ease;
         }
 
+        /* --- Sub-Section Styles --- */
+        .sub-section-header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 3px solid #667eea;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .sub-section-header:hover {
+            background: linear-gradient(135deg, #fed6e3 0%, #a8edea 100%);
+            transform: translateX(3px);
+        }
+
+        .sub-section-header.active {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .sub-section-header.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .sub-section-content { 
+            display: none;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin: 3px 0 10px 0;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .sub-section-content.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
         .arrow {
             transition: transform 0.3s ease;
             display: inline-block;
@@ -180,25 +227,53 @@
         }
 
         /* --- Section Header Variants --- */
-        .header-translate { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .header-translate:hover { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
-        .header-translate.active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        /* 1. Purple/Blue Theme */
+        .header-translate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .header-translate:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        .header-translate.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
 
-        .header-fill-form { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .header-fill-form:hover { background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); }
-        .header-fill-form.active { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        /* 2. Blue/Cyan Theme */
+        .header-fill-form {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .header-fill-form:hover {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        }
+        .header-fill-form.active {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
 
-        .header-check-result { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
-        .header-check-result:hover { background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%); }
-        .header-check-result.active { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); }
+        /* 3. Green/Teal Theme (New) */
+        .header-check-result {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .header-check-result:hover {
+            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+        }
+        .header-check-result.active {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        }
         
-        .header-web-links { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); }
-        .header-web-links:hover { background: linear-gradient(135deg, #f2c94c 0%, #f2994a 100%); }
-        .header-web-links.active { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        /* 4. Orange/Yellow Theme for Web Links */
+        .header-web-links {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        }
+        .header-web-links:hover {
+            background: linear-gradient(135deg, #f2c94c 0%, #f2994a 100%);
+        }
+        .header-web-links.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
 
         .section-subtitle {
             font-size: 0.9rem;
-            color: #4b5563; 
+            color: #4b5563; /* Gray text */
             margin-bottom: 15px;
             text-align: center;
         }
@@ -206,15 +281,16 @@
         /* --- Button Grid Layout --- */
         .button-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; 
+            grid-template-columns: 1fr 1fr; /* 2 columns always */
             gap: 10px;
             width: 100%;
         }
 
+        /* สำหรับแถวที่มีปุ่มจำนวนคี่ - ปุ่มสุดท้ายจะอยู่กึ่งกลาง */
         .button-grid.odd-items .btn:last-child {
             grid-column: 1 / span 2;
             justify-self: center;
-            max-width: 50%; 
+            max-width: 50%; /* จำกัดความกว้างสูงสุด */
         }
 
         /* --- Base Button Styling --- */
@@ -247,16 +323,16 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        /* --- สีปุ่มเมนูย่อย --- */
+        /* --- สีปุ่มเมนูย่อยให้แตกต่างกันในแต่ละปุ่ม --- */
         .button-grid .btn.color-1 { background-image: linear-gradient(45deg, #3b82f6, #60a5fa); }
         .button-grid .btn.color-2 { background-image: linear-gradient(45deg, #22c55e, #4ade80); }
         .button-grid .btn.color-3 { background-image: linear-gradient(45deg, #f97316, #fb923c); }
         .button-grid .btn.color-4 { background-image: linear-gradient(45deg, #a855f7, #c084fc); }
         .button-grid .btn.color-5 { background-image: linear-gradient(45deg, #ef4444, #f87171); }
-        .button-grid .btn.color-6 { background-image: linear-gradient(45deg, #6366f1, #818cf8); } 
-        .button-grid .btn.color-7 { background-image: linear-gradient(45deg, #84cc16, #a3e635); } 
-        .button-grid .btn.color-8 { background-image: linear-gradient(45deg, #d946ef, #e879f9); } 
-        .button-grid .btn.color-9 { background-image: linear-gradient(45deg, #f59e0b, #facc15); } 
+        .button-grid .btn.color-6 { background-image: linear-gradient(45deg, #6366f1, #818cf8); } /* Indigo */
+        .button-grid .btn.color-7 { background-image: linear-gradient(45deg, #84cc16, #a3e635); } /* Lime */
+        .button-grid .btn.color-8 { background-image: linear-gradient(45deg, #d946ef, #e879f9); } /* Fuchsia */
+        .button-grid .btn.color-9 { background-image: linear-gradient(45deg, #f59e0b, #facc15); } /* Amber */
         
         /* --- Footer --- */
         footer {
@@ -268,21 +344,146 @@
 
         /* --- Animations --- */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(-5px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* --- Responsive Styles for Mobile --- */
         @media (max-width: 600px) {
-            body { padding: 10px 5px; }
-            .container { gap: 10px; padding: 10px; }
-            .main-section-header { font-size: 15px; padding: 8px 12px; }
-            .btn { font-size: 0.8rem; padding: 8px 6px; min-height: 40px; gap: 6px; }
-            .button-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .section-subtitle { font-size: 0.85rem; margin-bottom: 12px; }
-            .button-grid.odd-items .btn:last-child { max-width: 80%; }
+            body { 
+                padding: 10px 5px; 
+            }
+            
+            .container { 
+                gap: 10px; 
+                padding: 10px;
+            }
+            
+            .main-section-header { 
+                font-size: 15px; 
+                padding: 8px 12px;
+            }
+            
+            .btn { 
+                font-size: 0.8rem; 
+                padding: 8px 6px;
+                min-height: 40px;
+                gap: 6px;
+            }
+            
+            /* ปรับให้ปุ่มแสดงใน 2 คอลัมน์เหมือนเดิม */
+            .button-grid { 
+                grid-template-columns: 1fr 1fr; /* 2 columns on mobile too */
+                gap: 8px;
+            }
+            
+            .section-subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 12px;
+            }
         }
     </style>
+    <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+
+        function toggleMainSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            const isActive = header.classList.contains('active');
+
+            // ปิด section อื่นๆ ทั้งหมดก่อน
+            document.querySelectorAll('.main-section-header.active').forEach(activeHeader => {
+                if (activeHeader !== header) {
+                    activeHeader.classList.remove('active');
+                    activeHeader.nextElementSibling.classList.remove('active');
+                }
+            });
+
+            // เปิด/ปิด section ที่เลือก
+            header.classList.toggle('active', !isActive);
+            content.classList.toggle('active', !isActive);
+        }
+
+        function toggleSubSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        // ฟังก์ชันตรวจสอบจำนวนปุ่มและจัดกึ่งกลางเมื่อเป็นเลขคี่
+        function centerOddButtons() {
+            document.querySelectorAll('.button-grid').forEach(grid => {
+                const buttons = grid.querySelectorAll('.btn');
+                const buttonCount = buttons.length;
+                
+                // ถ้าจำนวนปุ่มเป็นเลขคี่ ให้เพิ่มคลาส odd-items
+                if (buttonCount % 2 !== 0) {
+                    grid.classList.add('odd-items');
+                } else {
+                    grid.classList.remove('odd-items');
+                }
+            });
+        }
+        
+        // --- ฟังก์ชันสำหรับจัดการ Install Guide (PWA) ---
+        function hideInstallPromptPermanently() {
+            const prompt = document.getElementById('install-guide');
+            if(prompt) {
+                prompt.style.display = 'none';
+                // บันทึกลง localStorage ว่าผู้ใช้กดปิดไปแล้ว
+                localStorage.setItem('installPromptDismissed', 'true');
+            }
+        }
+
+        function checkInstallPrompt() {
+            // ถ้ายังไม่เคยถูกปิด ให้แสดงขึ้นมา
+            if (!localStorage.getItem('installPromptDismissed')) {
+                const prompt = document.getElementById('install-guide');
+                if(prompt) prompt.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ทำให้ส่วนของ Section แรกเปิดอยู่เสมอเมื่อโหลดหน้า
+            const firstHeader = document.querySelector('.main-section-header');
+            if (firstHeader) {
+                firstHeader.classList.add('active');
+                firstHeader.nextElementSibling.classList.add('active');
+            }
+            
+            // ตรวจสอบและจัดกึ่งกลางปุ่มเมื่อเป็นเลขคี่
+            centerOddButtons();
+            
+            // ตรวจสอบสถานะกล่องแนะนำติดตั้งแอป
+            checkInstallPrompt();
+        });
+        
+    </script>
 </head>
 <body>
 
@@ -327,9 +528,9 @@
                     </button>
                     <button class="btn color-4" onclick="navigateTo('4.html')">
                         <i class="fas fa-ban"></i> ไม่แปล 2 และ 3 ตัว
-                    </button>
                     <button class="btn color-6" onclick="navigateTo('7.html')">
                         <i class="fas fa-ban"></i> จัดเรียงตัวเลข 4 ตัว
+                    </button>
                     </button>
                 </div>
             </div>
@@ -371,6 +572,7 @@
             </div>
         </div>
 
+        <!-- เมนูที่ 4: เวปลิงค์ -->
         <div class="card">
             <div class="main-section-header header-web-links" onclick="toggleMainSection('web-links-section')">
                 <span><i class="fas fa-link"></i> เวปลิงค์</span>
@@ -396,95 +598,18 @@
     </footer>
     
     <script>
-        // ป้องกันการคลิกขวา
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
+    // --- PWA Service Worker Registration for Main Menu ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw-main.js')
+                .then(registration => {
+                    console.log('Main Menu Service Worker registered successfully:', registration);
+                })
+                .catch(error => {
+                    console.log('Main Menu Service Worker registration failed:', error);
+                });
         });
-
-        // นำทางไปยังหน้าย่อย
-        function navigateTo(url) {
-            window.location.href = url;
-        }
-
-        // จัดการเปิด/ปิดเมนูหลัก
-        function toggleMainSection(sectionId) {
-            const content = document.getElementById(sectionId);
-            const header = content.previousElementSibling;
-            const isActive = header.classList.contains('active');
-
-            // ปิด section อื่นๆ ทั้งหมดก่อน
-            document.querySelectorAll('.main-section-header.active').forEach(activeHeader => {
-                if (activeHeader !== header) {
-                    activeHeader.classList.remove('active');
-                    activeHeader.nextElementSibling.classList.remove('active');
-                }
-            });
-
-            // เปิด/ปิด section ที่เลือก
-            header.classList.toggle('active', !isActive);
-            content.classList.toggle('active', !isActive);
-        }
-
-        // ฟังก์ชันตรวจสอบจำนวนปุ่มและจัดกึ่งกลางเมื่อเป็นเลขคี่
-        function centerOddButtons() {
-            document.querySelectorAll('.button-grid').forEach(grid => {
-                const buttons = grid.querySelectorAll('.btn');
-                const buttonCount = buttons.length;
-                if (buttonCount % 2 !== 0) {
-                    grid.classList.add('odd-items');
-                } else {
-                    grid.classList.remove('odd-items');
-                }
-            });
-        }
-        
-        // จัดการ Install Guide (PWA)
-        function hideInstallPromptPermanently() {
-            const prompt = document.getElementById('install-guide');
-            if(prompt) {
-                prompt.style.display = 'none';
-                localStorage.setItem('installPromptDismissed', 'true');
-            }
-        }
-
-        function checkInstallPrompt() {
-            if (!localStorage.getItem('installPromptDismissed')) {
-                const prompt = document.getElementById('install-guide');
-                if(prompt) prompt.style.display = 'block';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const firstHeader = document.querySelector('.main-section-header');
-            if (firstHeader) {
-                firstHeader.classList.add('active');
-                firstHeader.nextElementSibling.classList.add('active');
-            }
-            centerOddButtons();
-            checkInstallPrompt();
-        });
-
-        // --- PWA Service Worker Registration แบบอัปเดตอัตโนมัติ ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw-main.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
-
-            // สคริปต์เสริม: หากมีการอัปเดตไฟล์ sw-main.js ให้รีเฟรชหน้าเว็บทันที
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    window.location.reload();
-                    refreshing = true;
-                }
-            });
-        }
+    }
     </script>
 </body>
 </html>
