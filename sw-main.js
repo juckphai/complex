@@ -12,6 +12,7 @@ const assets = [
   './4.html',
   './5.html',
   './8.html',
+    './7.html',
   './9.html',
   './11.html',
   './12.html',
