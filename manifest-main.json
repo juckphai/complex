@@ -3,7 +3,7 @@
   "short_name": "juck",
   "description": "รวมเครื่องมือแปลตัวเลข ทำนายฝัน และตรวจผลรางวัลลาว-ไทย",
   "start_url": "./index.html",
-  "id": "lottery-unified-app",
+  "id": "juck-app-v2", 
   "display": "standalone",
   "background_color": "#fffde7",
   "theme_color": "#FF9800",
@@ -14,13 +14,25 @@
       "src": "./192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -29,24 +41,14 @@
       "short_name": "แปลเลข",
       "description": "เข้าสู่หน้าแปลและวิเคราะห์ตัวเลข",
       "url": "./2.html",
-      "icons": [{ "src": "./192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "./192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "ตรวจผลรางวัล",
       "short_name": "ตรวจหวย",
       "description": "เช็คผลลาวและรัฐบาลไทย",
       "url": "./1.html",
-      "icons": [{ "src": "./192.png", "sizes": "192x192" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "./screenshot2.jpg",
-      "sizes": "720x1280",
-      "type": "image/jpeg",
-      "form_factor": "narrow",
-      "label": "หน้าจอแปลตัวเลข"
+      "icons": [{ "src": "./192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
-
 }
