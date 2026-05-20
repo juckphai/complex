@@ -81,7 +81,30 @@
     </div>
     <input type="date" id="hiddenDateInput" style="display: none; visibility: hidden;">
 
-    <input type="text" id="noteInput" placeholder="หมายเหตุ (ถ้ามี)" />
+    <!-- ส่วนของหมายเหตุ (แบบเลือก + จัดการเองได้) -->
+    <div class="select-wrapper">
+        <select id="noteSelect" onchange="checkCustomNoteOption(this)">
+            <option value="">ไม่มีหมายเหตุ</option>
+            <option value="custom">อื่นๆ (พิมพ์เอง)</option>
+        </select>
+
+        <button class="manage-btn-inline" id="toggleNoteControls" title="จัดการหมายเหตุ">
+            ⚙️
+        </button>
+    </div>
+
+    <div class="management-actions" id="noteActions">
+        <button id="addNoteBtn" class="add-btn">เพิ่ม</button>
+        <button id="editNoteBtn" class="edit-btn">แก้ไข</button>
+        <button id="deleteNoteBtn" class="delete-btn">ลบ</button>
+        <button id="resetNoteBtn" class="reset-btn">คืนค่า</button>
+    </div>
+
+    <input type="text"
+           id="customNoteInput"
+           placeholder="กรุณากรอกหมายเหตุเอง"
+           style="display:none; width:80%; margin:10px auto;" />
+
     <button id="convertButton">แปลตัวเลข</button>
 </div>
 
@@ -174,35 +197,47 @@
 </div>
 </div>
 
+<!-- Modal สำหรับจัดการหมายเหตุ -->
+<div id="noteModal" class="popup-overlay">
+    <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
+        <h2 id="noteModalTitle" style="color:#0056b3; text-align:center;"></h2>
+        <input type="hidden" id="noteEditValue">
+        <input type="text" id="modalNoteText" placeholder="ข้อความหมายเหตุ">
+        <div class="modal-button-group">
+            <button id="saveNoteBtn" style="background-color:#28a745;">บันทึก</button>
+            <button id="cancelNoteBtn" class="close-popup-btn">ยกเลิก</button>
+        </div>
+    </div>
+</div>
+
 <footer>
 <div style="text-align: center; margin-bottom: 20px;">
 &copy; 2025 Juckphai. All Rights Reserved.
 </div>
 </footer>    
 
-    <script src="script1.js"></script>
+<script src="script1.js"></script>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw-main.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully for 1.html:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw-main.js')
+                .then(registration => {
+                    console.log('Service Worker registered successfully for 1.html:', registration);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        });
 
-            // อัปเดตหน้าเว็บอัตโนมัติเมื่อ Service Worker มีการเปลี่ยนแปลง
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    window.location.reload();
-                    refreshing = true;
-                }
-            });
-        }
-    </script>
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                window.location.reload();
+                refreshing = true;
+            }
+        });
+    }
+</script>
 </body>
 </html>

@@ -2571,10 +2571,10 @@ function updateShareButtonUI() {
     const btn = document.getElementById("shareResultBtn");
     if (mode === 'copy') {
         btn.textContent = "📋 คัดลอกรูปภาพ (วางในแชท)";
-        btn.style.backgroundColor = "#ff9800"; // สีส้มเพื่อให้รู้ว่าเปลี่ยนโหมด
+        btn.style.backgroundColor = "#ff9800";
     } else {
         btn.textContent = "แชร์ไปยังแอป";
-        btn.style.backgroundColor = "#28a745"; // สีเขียวเดิม
+        btn.style.backgroundColor = "#28a745";
     }
 }
 
@@ -2590,10 +2590,8 @@ async function copyImageToClipboard(blob) {
 }
 
 function initShareSettings() {
-    // โหลดค่าเริ่มต้น
     updateShareButtonUI();
 
-    // ปุ่มเปิดหน้าตั้งค่า
     document.getElementById("shareSettingsBtn").addEventListener("click", () => {
         const currentMode = loadSharePreference();
         const radios = document.getElementsByName("shareMode");
@@ -2603,12 +2601,10 @@ function initShareSettings() {
         document.getElementById("shareSettingsModal").style.display = "flex";
     });
 
-    // ปุ่มปิดหน้าตั้งค่า
     document.getElementById("closeShareSettingsBtn").addEventListener("click", () => {
         document.getElementById("shareSettingsModal").style.display = "none";
     });
 
-    // ปุ่มบันทึกค่า
     document.getElementById("saveShareSettingsBtn").addEventListener("click", () => {
         const radios = document.getElementsByName("shareMode");
         let selected = 'system';
@@ -2626,15 +2622,16 @@ function showResultPopup() { document.getElementById("resultPopupOverlay").style
 function closeResultPopup() { document.getElementById("resultPopupOverlay").style.display = "none"; }
 function checkCustomOption(select) { document.getElementById('customPersonInput').style.display = select.value === 'custom' ? 'block' : 'none'; }
 function checkCustomTopicOption(select) { document.getElementById('customTopicInputs').style.display = select.value === 'custom' ? 'block' : 'none'; }
+function checkCustomNoteOption(select) { document.getElementById('customNoteInput').style.display = select.value === 'custom' ? 'block' : 'none'; }
 function getSelectedPerson() { const select = document.getElementById('personSelect'); return select.value === 'custom' ? (document.getElementById('customPersonInput').value.trim() || '@') : select.value; }
 function getTopicName() { const select = document.getElementById('topicSelect'); if (select.value === 'custom') { return document.getElementById('customTopicName').value.trim() || 'ไม่ระบุหัวข้อ'; } return select.options[select.selectedIndex].text.split(' เวลา ')[0]; }
 function getTopicTime() { const select = document.getElementById('topicSelect'); if (select.value === 'custom') { const time = document.getElementById('customTopicTime').value.trim(); return time ? `เวลา ${time} น.` : ''; } const parts = select.options[select.selectedIndex].text.split(' เวลา '); return parts.length > 1 ? `เวลา ${parts[1]}` : ''; }
+function getSelectedNote() { const select = document.getElementById('noteSelect'); if (select.value === 'custom') { return document.getElementById('customNoteInput').value.trim(); } return select.value; }
 function getThaiDate(date = new Date()) {
   const months = [
     "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
     "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
   ];
-
   return `วันที่ ${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} พ.ศ. ${date.getFullYear() + 543}`;
 }
 function getLunarDate(date = new Date()) { const key = `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth()+1).padStart(2,'0')}/${date.getFullYear()+543}`; return lunarData[key] || ""; }
@@ -2663,19 +2660,16 @@ return `
   </div>
   ${commonData.topicTimeHtml}
 
-  <!-- วันที่ -->
   <p style="font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale)); ${commonData.textShadow}">
     ${getThaiDate(commonData.date)}
   </p>
 
   ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
 
-  <!-- หัวข้อหลัก -->
   <h2 style="font-size: calc(clamp(1.5rem, 5.5vw, 2rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">
     4 ตัว <span style="color: red;">${num}</span> By : <span style="color: green;">${commonData.selectedPerson}</span>
   </h2>
 
-  <!-- 2 ตัว -->
   <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">
     จัดชุด 2 ตัว
   </h3>
@@ -2683,7 +2677,6 @@ return `
     ${twoDigitPairs.join(' - ')}
   </p>
 
-  <!-- 3 ตัว -->
   <h3 style="font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale)); font-weight: normal; ${commonData.textShadow}">
     จัดชุด 3 ตัว
   </h3>
@@ -2691,7 +2684,6 @@ return `
     ${threeDigitCombinations.join(' - ')}
   </p>
 
-  <!-- หมายเหตุ -->
   <h2 style="font-size: calc(clamp(1.25rem, 5vw, 1.75rem) * var(--font-scale)); font-weight: bold; color: red; ${commonData.textShadow}">
     แนวทางเท่านั้น
   </h2>
@@ -2744,7 +2736,6 @@ return `
   </div>
   ${commonData.topicTimeHtml}
 
-  <!-- วันที่ -->
   <p style="
     font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale));
     text-shadow: 
@@ -2759,7 +2750,6 @@ return `
 
   ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
 
-  <!-- หัวข้อหลัก 3 ตัว -->
   <h2 style="
     font-weight: bold;
     font-size: calc(clamp(1.5rem, 5.5vw, 2rem) * var(--font-scale));
@@ -2773,7 +2763,6 @@ return `
     3 ตัว ${redSpan(num)} By : ${greenSpan(commonData.selectedPerson)}
   </h2>
 
-  <!-- จัดชุดเด่น 2 ตัว -->
   <h3 style="
     font-weight: bold;
     font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
@@ -2800,7 +2789,6 @@ return `
     ${firstSet.join(' - ')}
   </p>
 
-  <!-- จัดชุดรอง 2 ตัว -->
   <h3 style="
     font-weight: bold;
     font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
@@ -2827,7 +2815,6 @@ return `
     ${secondSet.length > 0 ? secondSet.join(' - ') : noDataSpan}
   </p>
 
-  <!-- จัดชุด 2 ตัว (แปลเพิ่ม) -->
   <h3 style="
     font-weight: bold;
     font-size: calc(clamp(1.25rem, 4.5vw, 1.75rem) * var(--font-scale));
@@ -2854,7 +2841,6 @@ return `
     ${transformedPairs.length > 0 ? transformedPairs.join(' - ') : noDataSpan}
   </p>
 
-  <!-- จัดชุด 3 ตัว (ปกติ) -->
   <h3 style="
     font-weight: bold;
     font-size: calc(clamp(1.1rem, 4.5vw, 1.5rem) * var(--font-scale));
@@ -2881,7 +2867,6 @@ return `
     ${thirdSet.join(' - ')}
   </p>
 
-  <!-- จัดชุด 3 ตัว (แปลเพิ่ม) -->
   <h3 style="
     font-weight: bold;
     font-size: calc(clamp(1.1rem, 4.5vw, 1.5rem) * var(--font-scale));
@@ -2908,7 +2893,6 @@ return `
     ${additional3d.length > 0 ? additional3d.join(' - ') : noDataSpan}
   </p>
 
-  <!-- คำเตือน -->
   <h2 style="
     font-weight: bold;
     color: red; 
@@ -2923,7 +2907,6 @@ return `
     แนวทางเท่านั้น
   </h2>
 
-  <!-- Disclosure -->
   <p style="
     font-size: calc(clamp(0.875rem, 3vw, 1.125rem) * var(--font-scale));
     text-shadow: 
@@ -2936,7 +2919,6 @@ return `
     Disclose : ${getFormattedDate(new Date())} ${getThaiTime()}
   </p>
 
-  <!-- หมายเหตุ -->
   <p style="
     font-size: calc(clamp(1rem, 3.5vw, 1.25rem) * var(--font-scale));
     text-shadow: 
@@ -2996,29 +2978,24 @@ return `
   </div>
   ${commonData.topicTimeHtml}
   
-  <!-- วันที่ -->
   <p style="font-size: calc(clamp(0.9rem, 3vw, 1.125rem) * var(--font-scale)); ${commonData.textShadow}">
     ${getThaiDate(commonData.date)}
   </p>
   
   ${commonData.lunarHtml ? `<div style="margin: 2px 0;">${commonData.lunarHtml}</div>` : ''}
   
-  <!-- หัวข้อหลัก -->
   <h2 style="font-weight: bold; font-size: calc(clamp(1.4rem, 6vw, 2rem) * var(--font-scale)); ${commonData.textShadow}">
     2 ตัว <span style="color: red;">${num}</span> By : <span style="color: green;">${commonData.selectedPerson}</span>
   </h2>
   
-  <!-- หัวข้อย่อย -->
   <h3 style="font-weight: bold; font-size: calc(clamp(1.2rem, 5.5vw, 1.75rem) * var(--font-scale)); ${commonData.textShadow}">
     จัดชุด 2 ตัว
   </h3>
   
-  <!-- เลขชุด -->
   <p style="font-weight: bold; white-space: nowrap; font-size: calc(clamp(1.1rem, 7vw, 1.75rem) * var(--font-scale)); ${commonData.textShadow}">
     ${sortedPairs.join(' - ')}
   </p>
   
-  <!-- หมายเหตุ -->
   <h2 style="font-weight: bold; color: red; font-size: calc(clamp(1.2rem, 5.5vw, 1.75rem) * var(--font-scale)); ${commonData.textShadow}">
     แนวทางเท่านั้น
   </h2>
@@ -3050,10 +3027,9 @@ function generateResultHTML() {
   }
 
   const lunarDate = getLunarDate(date);
-  let noteValue = document.getElementById("noteInput").value.trim();
+  let noteValue = getSelectedNote().trim();
   const engravedShadowStyle = "text-shadow: 1px 1px 1px rgba(0,0,0,0.3), -1px -1px 1px rgba(255,255,255,0.9);";
 
-  // ปรับปรุงส่วน lunarHtml ให้ใช้คลาสใหม่และปรับขนาดฟอนต์
   const lunarHtml = lunarDate ? 
     `<p class="lunar-date" style="color: ${lunarDate.includes('วันพระ') ? 'red' : 'green'};">( ${lunarDate} )</p>` : '';
 
@@ -3065,7 +3041,7 @@ function generateResultHTML() {
       return t ? `<p class="topic-time">${t}</p>` : ''; 
     })(),
     selectedPerson: getSelectedPerson(),
-    lunarHtml: lunarHtml, // ใช้ lunarHtml ที่ปรับปรุงแล้ว
+    lunarHtml: lunarHtml,
     noteHtml: `หมายเหตุ : ${noteValue ? `<span style="color: red;">${noteValue}</span>` : '<span style="color: red;">No remarks</span>'}`,
     textShadow: engravedShadowStyle
   };
@@ -3082,7 +3058,6 @@ if (resultHtml) {
 const wrapper = document.getElementById("resultContentWrapper");
 wrapper.innerHTML = resultHtml;
 
-// Reset the slider and the CSS variable
 document.getElementById("popupFontSizeSlider").value = 1.0;
 const resultDiv = wrapper.querySelector('div');
 if (resultDiv) {
@@ -3094,7 +3069,6 @@ showResultPopup();
 }
 }
 
-// Called when the popup is generated to set initial states
 function initializePopupControls() {
   const lhSlider = document.getElementById("popupLineHeightSlider");
   const fsSlider = document.getElementById("popupFontSizeSlider");
@@ -3102,31 +3076,27 @@ function initializePopupControls() {
   const numLength = document.getElementById("numberInput").value.length;
   const resultDiv = document.querySelector("#resultContentWrapper > div");
 
-  // ตั้งค่าเริ่มต้นของ font scale ตามจำนวนตัวเลข
   let defaultFontScale;
   if (numLength === 2) {
-    defaultFontScale = 1.4;    // 140% สำหรับ 2 ตัว
+    defaultFontScale = 1.4;
     lhSlider.min = "0.8"; lhSlider.max = "2.5"; lhSlider.value = "1.3";
   } else if (numLength === 3) {
-    defaultFontScale = 1.0;   // 100% สำหรับ 3 ตัว
+    defaultFontScale = 1.0;
     lhSlider.min = "0.5"; lhSlider.max = "2.5"; lhSlider.value = "0.7";
-  } else { // 4 digits
-    defaultFontScale = 1.4;    // 140% สำหรับ 4 ตัว
+  } else {
+    defaultFontScale = 1.4;
     lhSlider.min = "0.5"; lhSlider.max = "2.5"; lhSlider.value = "1.0";
   }
 
-  // ตั้งค่า slider และค่าเริ่มต้น
   fsSlider.value = defaultFontScale;
   if (resultDiv) {
     resultDiv.style.setProperty('--font-scale', defaultFontScale);
   }
   fsValueSpan.textContent = `ขนาด: ${Math.round(defaultFontScale * 100)}%`;
 
-  // ตั้งค่า line height
   updateLineHeight();
 }
 
-// Global scope functions for slider controls
 function updateFontSize() {
 const fsSlider = document.getElementById("popupFontSizeSlider");
 const fsValueSpan = document.getElementById("popupFontSizeValue");
@@ -3152,7 +3122,6 @@ lhValueSpan.textContent = `ความสูงบรรทัด: ${lineHeight
 
 // === PAGE INITIALIZATION & MANAGEMENT LOGIC ===
 document.addEventListener("DOMContentLoaded", function() {
-// Attach event listeners ONCE
 document.getElementById("popupFontSizeSlider").addEventListener("input", updateFontSize);
 document.getElementById("popupLineHeightSlider").addEventListener("input", updateLineHeight);
 document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
@@ -3180,11 +3149,10 @@ captureElement.style.padding = originalPadding;
 });
 });
 
-// แทนที่ Logic ปุ่มแชร์เดิม ด้วยอันนี้
 document.getElementById("shareResultBtn").addEventListener("click", async function () {
     const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
     const controlsElement = captureElement.querySelector('.controls');
-    const mode = loadSharePreference(); // ตรวจสอบการตั้งค่า
+    const mode = loadSharePreference();
 
     controlsElement.style.display = 'none';
     const originalPadding = captureElement.style.padding;
@@ -3199,11 +3167,9 @@ document.getElementById("shareResultBtn").addEventListener("click", async functi
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
 
-        // แยกการทำงานตามโหมดที่ตั้งค่าไว้
         if (mode === 'copy') {
             await copyImageToClipboard(blob);
         } else {
-            // โหมด System Share (โค้ดเดิม)
             if (!navigator.share) {
                 alert("อุปกรณ์นี้ไม่รองรับการแชร์โดยตรง");
                 return;
@@ -3222,14 +3188,14 @@ document.getElementById("shareResultBtn").addEventListener("click", async functi
     }
 });
 
-// เรียกใช้ฟังก์ชันตั้งค่าเริ่มต้นการแชร์
 initShareSettings();
 
-// Management Logic
 const TOPIC_STORAGE_KEY = 'customTopics_unified';
 const PERSON_STORAGE_KEY = 'customPersons_unified';
+const NOTE_STORAGE_KEY = 'customNotes_unified';
 const HIDDEN_TOPICS_KEY = 'hiddenDefaultTopics_unified';
 const HIDDEN_PERSONS_KEY = 'hiddenDefaultPersons_unified';
+const HIDDEN_NOTES_KEY = 'hiddenDefaultNotes_unified';
 
 const getStored = (key) => JSON.parse(localStorage.getItem(key)) || [];
 const setStored = (key, data) => localStorage.setItem(key, JSON.stringify(data));
@@ -3258,14 +3224,19 @@ select.insertBefore(opt, otherOption);
 
 applyHiddenDefaults('topicSelect', HIDDEN_TOPICS_KEY);
 applyHiddenDefaults('personSelect', HIDDEN_PERSONS_KEY);
+applyHiddenDefaults('noteSelect', HIDDEN_NOTES_KEY);
 loadOptions('topicSelect', TOPIC_STORAGE_KEY);
 loadOptions('personSelect', PERSON_STORAGE_KEY);
+loadOptions('noteSelect', NOTE_STORAGE_KEY);
 
 document.getElementById('toggleTopicControls').addEventListener('click', () => {
 document.getElementById('topicActions').style.display = document.getElementById('topicActions').style.display === 'flex' ? 'none' : 'flex';
 });
 document.getElementById('togglePersonControls').addEventListener('click', () => {
 document.getElementById('personActions').style.display = document.getElementById('personActions').style.display === 'flex' ? 'none' : 'flex';
+});
+document.getElementById('toggleNoteControls').addEventListener('click', () => {
+document.getElementById('noteActions').style.display = document.getElementById('noteActions').style.display === 'flex' ? 'none' : 'flex';
 });
 
 const setupManagement = (type) => {
@@ -3275,11 +3246,14 @@ const HIDDEN_STORAGE_KEY = `hiddenDefault${type.charAt(0).toUpperCase() + type.s
 const MODAL_ID = `${type}Modal`;
 
 document.getElementById(`add${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-document.getElementById(`${type}ModalTitle`).textContent = `เพิ่ม${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}ใหม่`;
+document.getElementById(`${type}ModalTitle`).textContent = 
+    `เพิ่ม${type === 'topic' ? 'หัวข้อ' : type === 'person' ? 'ผู้บอก' : 'หมายเหตุ'}ใหม่`;
 if(type === 'topic') {
 document.getElementById('modalTopicName').value = ''; document.getElementById('modalTopicTime').value = ''; document.getElementById('topicEditIndex').value = '';
-} else {
+} else if(type === 'person') {
 document.getElementById('modalPersonName').value = ''; document.getElementById('personEditValue').value = '';
+} else {
+document.getElementById('modalNoteText').value = ''; document.getElementById('noteEditValue').value = '';
 }
 document.getElementById(MODAL_ID).style.display = 'flex';
 });
@@ -3287,17 +3261,20 @@ document.getElementById(MODAL_ID).style.display = 'flex';
 document.getElementById(`edit${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
 const select = document.getElementById(SELECT_ID);
 const selectedOption = select.options[select.selectedIndex];
-if (selectedOption.value === 'custom' || selectedOption.hidden) return alert('ไม่สามารถแก้ไขรายการนี้ได้');
+if (selectedOption.value === 'custom' || selectedOption.hidden) return alert(`ไม่สามารถแก้ไขรายการ${type === 'topic' ? 'หัวข้อ' : type === 'person' ? 'ผู้บอก' : 'หมายเหตุ'}นี้ได้`);
 
-document.getElementById(`${type}ModalTitle`).textContent = `แก้ไข${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}`;
+document.getElementById(`${type}ModalTitle`).textContent = `แก้ไข${type === 'topic' ? 'หัวข้อ' : type === 'person' ? 'ผู้บอก' : 'หมายเหตุ'}`;
 if (type === 'topic') {
 const [name, timePart] = selectedOption.value.split(' เวลา ');
 document.getElementById('modalTopicName').value = name;
 document.getElementById('modalTopicTime').value = timePart ? timePart.replace(' น.', '') : '';
 document.getElementById('topicEditIndex').value = selectedOption.value;
-} else {
+} else if (type === 'person') {
 document.getElementById('modalPersonName').value = selectedOption.value;
 document.getElementById('personEditValue').value = selectedOption.value;
+} else {
+document.getElementById('modalNoteText').value = selectedOption.value;
+document.getElementById('noteEditValue').value = selectedOption.value;
 }
 document.getElementById(MODAL_ID).style.display = 'flex';
 });
@@ -3305,7 +3282,7 @@ document.getElementById(MODAL_ID).style.display = 'flex';
 document.getElementById(`delete${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
 const select = document.getElementById(SELECT_ID);
 const selectedOption = select.options[select.selectedIndex];
-if (selectedOption.value === 'custom' || selectedOption.hidden) return alert('ไม่สามารถลบรายการนี้ได้');
+if (selectedOption.value === 'custom' || selectedOption.hidden) return alert(`ไม่สามารถลบรายการ${type === 'topic' ? 'หัวข้อ' : type === 'person' ? 'ผู้บอก' : 'หมายเหตุ'}นี้ได้`);
 if (confirm(`คุณต้องการลบ "${selectedOption.textContent}" ใช่หรือไม่?`)) {
 if (selectedOption.hasAttribute('data-default')) {
 let hidden = getStored(HIDDEN_STORAGE_KEY);
@@ -3329,17 +3306,22 @@ time = document.getElementById('modalTopicTime').value.trim();
 oldValue = document.getElementById('topicEditIndex').value;
 if (!name) return alert('กรุณากรอกชื่อหัวข้อ');
 newValue = time ? `${name} เวลา ${time} น.` : name;
-} else {
+} else if (type === 'person') {
 name = document.getElementById('modalPersonName').value.trim();
 oldValue = document.getElementById('personEditValue').value;
 if (!name) return alert('กรุณากรอกชื่อผู้บอก');
+newValue = name;
+} else {
+name = document.getElementById('modalNoteText').value.trim();
+oldValue = document.getElementById('noteEditValue').value;
+if (!name) return alert('กรุณากรอกหมายเหตุ');
 newValue = name;
 }
 
 let options = getStored(STORAGE_KEY);
 const select = document.getElementById(SELECT_ID);
 
-if (oldValue) { // Edit Mode
+if (oldValue) {
 const oldOptionEl = select.querySelector(`option[value="${oldValue}"]`);
 if (oldOptionEl && oldOptionEl.hasAttribute('data-default')) {
 let hidden = getStored(HIDDEN_STORAGE_KEY);
@@ -3351,7 +3333,7 @@ const index = options.findIndex(opt => opt.value === oldValue);
 if (index > -1) options[index] = { value: newValue, text: newValue };
 else options.push({ value: newValue, text: newValue });
 }
-} else { // Add Mode
+} else {
 if (options.some(opt => opt.value === newValue) || [...select.options].some(o => o.value === newValue && !o.hidden)) { return alert('มีรายการนี้อยู่แล้ว'); }
 options.push({ value: newValue, text: newValue });
 }
@@ -3362,7 +3344,7 @@ document.getElementById(MODAL_ID).style.display = 'none';
 });
 
 document.getElementById(`reset${type.charAt(0).toUpperCase() + type.slice(1)}Btn`).addEventListener('click', () => {
-if (confirm(`คุณต้องการคืนค่ารายการ${type === 'topic' ? 'หัวข้อ' : 'ผู้บอก'}ทั้งหมดใช่หรือไม่?\n(รายการที่สร้างเองและซ่อนไว้จะถูกลบทั้งหมด)`)) {
+if (confirm(`คุณต้องการคืนค่ารายการ${type === 'topic' ? 'หัวข้อ' : type === 'person' ? 'ผู้บอก' : 'หมายเหตุ'}ทั้งหมดใช่หรือไม่?\n(รายการที่สร้างเองและซ่อนไว้จะถูกลบทั้งหมด)`)) {
 localStorage.removeItem(STORAGE_KEY);
 localStorage.removeItem(HIDDEN_STORAGE_KEY);
 location.reload();
@@ -3376,6 +3358,7 @@ document.getElementById(MODAL_ID).style.display = 'none';
 
 setupManagement('topic');
 setupManagement('person');
+setupManagement('note');
 
 const dateInput = document.getElementById('dateInput');
 const calendarButton = document.getElementById('calendarButton');
@@ -3391,14 +3374,12 @@ hiddenDateInput.addEventListener('change', (e) => {
         const parts = selectedDate.split('-');
         dateInput.value = `${parts[2]}/${parts[1]}/${parseInt(parts[0], 10) + 543}`;
     } else {
-        // เมื่อผู้ใช้ล้างค่า ให้ตั้งเป็นวันปัจจุบัน
         const today = new Date();
         dateInput.value = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
     }
 });
 });
 
-// --- PWA Service Worker Registration ---
 if ('serviceWorker' in navigator) {
 window.addEventListener('load', () => {
 navigator.serviceWorker.register('./sw-unified.js')
