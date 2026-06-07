@@ -457,3 +457,24 @@ button#convertButton:hover {
         padding: 0 3px;
     }
 }
+/* ปุ่ม Telegram */
+.telegram-share-btn {
+    background: linear-gradient(135deg, #0088cc, #0077b5) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.telegram-share-btn i {
+    font-size: 1.2rem;
+}
+
+.telegram-share-btn:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+.telegram-share-btn:active {
+    transform: scale(0.98);
+}

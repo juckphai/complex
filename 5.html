@@ -121,6 +121,12 @@
                     <button id="popupCircleTopButton" class="popup-button" onclick="toggleSquareTopPopup()">สี่เหลี่ยมสองตัวบน</button>
                 </div>
                 <button id="saveLaoAsImageButton" class="popup-button" style="background-color: #007bff; max-width: 200px; width: 100%;">บันทึกเป็นรูปภาพ</button>
+                
+                <!-- ปุ่ม Telegram -->
+                <button id="telegramShareLaoBtn" class="popup-button" style="background: linear-gradient(135deg, #0088cc, #0077b5); max-width: 200px; width: 100%; margin-top: 5px;">
+                    📨 ส่งไป Telegram
+                </button>
+                
                 <div style="display: flex; gap: 5px; max-width: 200px; width: 100%;">
                     <button id="shareLaoImageButton" class="popup-button" style="background-color:#28a745; flex-grow: 1; margin: 0;">
                         📤 ส่งต่อไปแอป
@@ -180,6 +186,12 @@
             </div>
             <div class="popup-controls">
                 <button id="saveThaiAsImageButton" class="popup-button">บันทึกเป็นรูปภาพ</button>
+                
+                <!-- ปุ่ม Telegram สำหรับผลรัฐบาล -->
+                <button id="telegramShareThaiBtn" class="popup-button" style="background: linear-gradient(135deg, #0088cc, #0077b5); margin-top: 5px;">
+                    📨 ส่งไป Telegram
+                </button>
+                
                 <div style="display: flex; gap: 5px; width: 100%; justify-content: center;">
                     <button id="shareThaiImageButton" class="popup-button" style="background-color:#28a745; flex-grow: 1; margin: 0;">
                         📤 ส่งต่อ
@@ -193,9 +205,9 @@
         </div>
     </div>
 
-    <!-- Share Settings Modal -->
+    <!-- Share Settings Modal (รวมการตั้งค่า Telegram) -->
     <div id="shareSettingsModal" class="popup-overlay" style="z-index: 2000; display: none;">
-        <div class="popup-content" style="max-width: 350px; background-color: #f0f8ff;">
+        <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
             <h2 style="color: #0056b3; text-align: center;">ตั้งค่าปุ่มแชร์ด่วน</h2>
             <p style="text-align: center; font-size: 14px; margin-bottom: 15px;">เลือกการทำงานเมื่อกดปุ่มสีเขียว</p>
             
@@ -217,6 +229,27 @@
                 </label>
             </div>
 
+            <!-- ส่วนตั้งค่า Telegram Token แบบปลอดภัย -->
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #ccc;">
+                <h4 style="color: #0056b3; text-align: center; margin-bottom: 10px;">🤖 ตั้งค่า Telegram Bot</h4>
+                <p style="font-size: 12px; color: #666; text-align: center; margin-bottom: 10px;">
+                    ใส่ Bot Token ที่ได้จาก @BotFather (Token จะถูกเก็บเฉพาะเครื่องคุณเท่านั้น)
+                </p>
+                <input type="text" id="tgTokenInput" 
+                       placeholder="วาง Bot Token ที่นี่ เช่น 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" 
+                       style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 12px; box-sizing: border-box;">
+                <button id="saveTokenBtn" 
+                        style="background: linear-gradient(135deg, #0088cc, #0077b5); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold;">
+                    💾 บันทึก Token ลงเครื่องนี้
+                </button>
+                <p style="font-size: 11px; color: #999; text-align: center; margin-top: 10px;">
+                    🔐 Token จะถูกเก็บในเบราว์เซอร์ของคุณเท่านั้น ปลอดภัย ไม่รั่วไหล
+                </p>
+                <p style="font-size: 11px; color: #f0ad4e; text-align: center; margin-top: 5px;">
+                    ⚠️ หากยังไม่มี Token ให้ไปสร้างที่ @BotFather ใน Telegram
+                </p>
+            </div>
+
             <div class="modal-button-group" style="margin-top: 20px; text-align: center;">
                 <button id="saveShareSettingsBtn" class="popup-button" style="background-color: #28a745; width: 100px;">บันทึก</button>
                 <button id="closeShareSettingsBtn" class="popup-button" style="background-color: #6c757d; width: 100px;">ปิด</button>
@@ -226,8 +259,6 @@
 
     <button class="back-button" onclick="window.location.href='index.html'">กลับสู่หน้าหลัก</button>
     <footer>&copy; 2025 Juckphai. All Rights Reserved.</footer>
-    
-</footer>  
 
     <script src="script5.js"></script>
 
@@ -236,14 +267,13 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw-main.js')
                     .then(registration => {
-                        console.log('Service Worker registered successfully for 2.html:', registration);
+                        console.log('Service Worker registered successfully for 5.html:', registration);
                     })
                     .catch(error => {
                         console.error('Service Worker registration failed:', error);
                     });
             });
 
-            // อัปเดตหน้าเว็บอัตโนมัติเมื่อ Service Worker มีการเปลี่ยนแปลง
             let refreshing = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!refreshing) {

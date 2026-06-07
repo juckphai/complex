@@ -2559,8 +2559,72 @@ const lunarData = {
   "31/12/2575": "วันศุกร์ (วันพระ) วันแรม ๑๔ ค่ำ เดือนอ้าย (๑) ปีชวด",
 };
 
+
 // === SHARE SETTINGS & LOGIC ===
 const SHARE_PREF_KEY = 'sharePreference_v1';
+
+// === TELEGRAM CONFIGURATION ===
+// ❌ ลบ Token แบบ hard-coded แล้ว (ย้ายไปเก็บใน localStorage แทน)
+
+// รายชื่อผู้รับ Telegram (ID บุคคล + กลุ่ม)
+const TELEGRAM_RECIPIENTS = [
+    { type: 'group', id: '-1003960364296', name: 'กลุ่ม' },
+    { type: 'personal', id: '5101894762', name: 'บุคคล 1' },
+    { type: 'personal', id: '5137261095', name: 'บุคคล 2' }
+];
+
+// === ระบบโหลดและเซฟ Telegram Token (localStorage ปลอดภัย) ===
+function getTelegramToken() {
+    return localStorage.getItem('my_telegram_token') || '';
+}
+
+function saveTelegramToken(token) {
+    if (token && token.trim().length > 20) {
+        localStorage.setItem('my_telegram_token', token.trim());
+        return true;
+    }
+    return false;
+}
+
+function clearTelegramToken() {
+    localStorage.removeItem('my_telegram_token');
+}
+
+// ฟังก์ชันสำหรับตั้งค่า Telegram Token UI
+function setupTelegramTokenUI() {
+    const tokenInput = document.getElementById("tgTokenInput");
+    const saveBtn = document.getElementById("saveTokenBtn");
+    
+    if (!tokenInput || !saveBtn) return;
+    
+    // โหลด Token ที่เคยบันทึกมาแสดง
+    const savedToken = getTelegramToken();
+    if (savedToken) {
+        tokenInput.value = savedToken;
+        // แสดงเฉพาะ 20 ตัวแรกเพื่อความปลอดภัย (แต่เก็บเต็มๆไว้)
+        const maskedToken = savedToken.substring(0, 15) + '...' + savedToken.substring(savedToken.length - 5);
+        console.log('✅ โหลด Token แล้ว (บางส่วน):', maskedToken);
+    }
+    
+    // บันทึก Token เมื่อกดปุ่ม
+    saveBtn.addEventListener("click", function() {
+        const tokenValue = tokenInput.value.trim();
+        if (tokenValue && tokenValue.length > 20) {
+            if (saveTelegramToken(tokenValue)) {
+                alert("✅ บันทึก Token ลงในเครื่องเรียบร้อยแล้ว!\nระบบจะใช้ Token นี้ในการส่งข้อความไปยัง Telegram");
+                // ซ่อน Token บางส่วนเพื่อความปลอดภัยใน UI
+                const maskedDisplay = tokenValue.substring(0, 10) + '...' + tokenValue.substring(tokenValue.length - 5);
+                console.log('🔐 บันทึก Token แล้ว:', maskedDisplay);
+            } else {
+                alert("❌ ไม่สามารถบันทึก Token ได้");
+            }
+        } else if (tokenValue) {
+            alert("⚠️ Token ไม่ถูกต้อง (ควรยาวประมาณ 40-50 ตัวอักษร)");
+        } else {
+            alert("⚠️ กรุณากรอก Token ก่อนบันทึก");
+        }
+    });
+}
 
 function loadSharePreference() {
     return localStorage.getItem(SHARE_PREF_KEY) || 'system';
@@ -2589,6 +2653,61 @@ async function copyImageToClipboard(blob) {
     }
 }
 
+// === TELEGRAM SHARE FUNCTION (ส่งได้หลายที่ + ดึง Token จาก localStorage) ===
+async function shareToTelegram(blob, caption = '') {
+    // ดึง Token จาก localStorage
+    const TELEGRAM_BOT_TOKEN = getTelegramToken();
+    
+    // ตรวจสอบว่ามี Token หรือยัง
+    if (!TELEGRAM_BOT_TOKEN) {
+        alert('⚠️ กรุณาตั้งค่า Telegram Bot Token ก่อน!\n\nไปที่ปุ่ม ⚙️ > ตั้งค่า Telegram Bot');
+        return false;
+    }
+    
+    let successCount = 0;
+    let failCount = 0;
+    const totalRecipients = TELEGRAM_RECIPIENTS.length;
+    
+    // แจ้งเตือนว่ากำลังส่ง
+    alert(`📤 กำลังส่งไปยัง ${totalRecipients} ที่...\n(กลุ่ม + บุคคล 2 ท่าน)`);
+    
+    for (const recipient of TELEGRAM_RECIPIENTS) {
+        const formData = new FormData();
+        const fileName = `lottery_result_${Date.now()}_${recipient.id}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+        formData.append('chat_id', recipient.id);
+        formData.append('photo', file);
+        if (caption) formData.append('caption', caption);
+        
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.ok) {
+                successCount++;
+                console.log(`✅ ส่งไปยัง ${recipient.name} (${recipient.id}) สำเร็จ`);
+            } else {
+                failCount++;
+                console.error(`❌ ส่งไปยัง ${recipient.name} ล้มเหลว:`, result.description);
+            }
+        } catch (error) {
+            failCount++;
+            console.error(`❌ ส่งไปยัง ${recipient.name} เกิดข้อผิดพลาด:`, error.message);
+        }
+    }
+    
+    // สรุปผล
+    if (failCount === 0) {
+        alert(`✅ ส่งสำเร็จทั้งหมด ${successCount}/${totalRecipients} ที่!\n(กลุ่ม + บุคคล 2 ท่าน)`);
+    } else {
+        alert(`⚠️ ส่งสำเร็จ ${successCount}/${totalRecipients} ที่\n❌ ล้มเหลว ${failCount} ที่ (ดู Console)`);
+    }
+    
+    return successCount > 0;
+}
+
 function initShareSettings() {
     updateShareButtonUI();
 
@@ -2599,6 +2718,11 @@ function initShareSettings() {
             if (r.value === currentMode) r.checked = true;
         });
         document.getElementById("shareSettingsModal").style.display = "flex";
+        // โหลด Token ปัจจุบันมาแสดงเมื่อเปิด Modal
+        const tokenInput = document.getElementById("tgTokenInput");
+        if (tokenInput) {
+            tokenInput.value = getTelegramToken();
+        }
     });
 
     document.getElementById("closeShareSettingsBtn").addEventListener("click", () => {
@@ -2618,7 +2742,10 @@ function initShareSettings() {
 
 // === SHARED UTILITY FUNCTIONS ===
 document.addEventListener('contextmenu', e => e.preventDefault());
-function showResultPopup() { document.getElementById("resultPopupOverlay").style.display = "flex"; }
+function showResultPopup() { 
+    document.getElementById("resultPopupOverlay").style.display = "flex";
+    setTimeout(addTelegramShareButton, 100);
+}
 function closeResultPopup() { document.getElementById("resultPopupOverlay").style.display = "none"; }
 function checkCustomOption(select) { document.getElementById('customPersonInput').style.display = select.value === 'custom' ? 'block' : 'none'; }
 function checkCustomTopicOption(select) { document.getElementById('customTopicInputs').style.display = select.value === 'custom' ? 'block' : 'none'; }
@@ -3120,11 +3247,78 @@ resultContentWrapper.style.lineHeight = lineHeight;
 lhValueSpan.textContent = `ความสูงบรรทัด: ${lineHeight}`;
 }
 
+// === TELEGRAM SHARE BUTTON FUNCTIONS ===
+function addTelegramShareButton() {
+    const shareContainer = document.querySelector('#resultPopupOverlay .controls');
+    if (!shareContainer) return;
+    
+    if (document.getElementById('telegramShareBtn')) return;
+    
+    const tgBtn = document.createElement('button');
+    tgBtn.id = 'telegramShareBtn';
+    tgBtn.innerHTML = '📨 ส่งไป Telegram';
+    tgBtn.style.cssText = `
+        background: linear-gradient(135deg, #0088cc, #0077b5);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 15px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    `;
+    
+    tgBtn.addEventListener('click', async () => {
+        const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
+        const controls = captureElement.querySelector('.controls');
+        
+        if (controls) controls.style.display = 'none';
+        
+        try {
+            const canvas = await html2canvas(captureElement, {
+                scale: 2,
+                backgroundColor: '#FFFFD1',
+                useCORS: true
+            });
+            
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+            
+            const num = document.getElementById("numberInput")?.value || "";
+            const topic = getTopicName();
+            const caption = "";
+            
+            await shareToTelegram(blob, caption);
+            
+        } catch (err) {
+            console.error(err);
+            alert('เกิดข้อผิดพลาดในการส่งไป Telegram');
+        } finally {
+            if (controls) controls.style.display = 'flex';
+        }
+    });
+    
+    const shareBtn = document.getElementById('shareResultBtn');
+    if (shareBtn && shareBtn.parentNode) {
+        shareBtn.parentNode.insertBefore(tgBtn, shareBtn);
+    } else {
+        shareContainer.insertBefore(tgBtn, shareContainer.firstChild);
+    }
+}
+
 // === PAGE INITIALIZATION & MANAGEMENT LOGIC ===
 document.addEventListener("DOMContentLoaded", function() {
 document.getElementById("popupFontSizeSlider").addEventListener("input", updateFontSize);
 document.getElementById("popupLineHeightSlider").addEventListener("input", updateLineHeight);
 document.getElementById("convertButton").addEventListener("click", displayResultInPopup);
+
+// ตั้งค่าระบบ Telegram Token UI
+setupTelegramTokenUI();
 
 document.getElementById("saveResultAsImageBtn").addEventListener("click", function() {
 const captureElement = document.querySelector("#resultPopupOverlay .popup-content");
