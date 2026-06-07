@@ -2568,11 +2568,10 @@ const SHARE_PREF_KEY = 'sharePreference_v1';
 
 // รายชื่อผู้รับ Telegram (ID บุคคล + กลุ่ม)
 const TELEGRAM_RECIPIENTS = [
-    { type: 'group', id: '-1003960364296', name: 'กลุ่ม' },
+    // { type: 'group', id: '-1003960364296', name: 'กลุ่ม' }, // ปิดบรรทัดนี้ไว้
     { type: 'personal', id: '5101894762', name: 'บุคคล 1' },
     { type: 'personal', id: '5137261095', name: 'บุคคล 2' }
 ];
-
 // === ระบบโหลดและเซฟ Telegram Token (localStorage ปลอดภัย) ===
 function getTelegramToken() {
     return localStorage.getItem('my_telegram_token') || '';
