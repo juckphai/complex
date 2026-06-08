@@ -2667,8 +2667,8 @@ async function shareToTelegram(blob, caption = '') {
     let failCount = 0;
     const totalRecipients = TELEGRAM_RECIPIENTS.length;
     
-    // แจ้งเตือนว่ากำลังส่ง
-    alert(`📤 กำลังส่งไปยัง ${totalRecipients} ที่...\n(กลุ่ม + บุคคล 2 ท่าน)`);
+    // ❌ นำแจ้งเตือน "กำลังส่ง..." ออก เพื่อให้ระบบส่งทันที
+    // alert(`📤 กำลังส่งไปยัง ${totalRecipients} ที่...\n(กลุ่ม + บุคคล 2 ท่าน)`);
     
     for (const recipient of TELEGRAM_RECIPIENTS) {
         const formData = new FormData();
@@ -2697,7 +2697,7 @@ async function shareToTelegram(blob, caption = '') {
         }
     }
     
-    // สรุปผล
+    // สรุปผล (จะแสดงหลังจากประมวลผลการส่งครบทุกที่แล้วเท่านั้น)
     if (failCount === 0) {
         alert(`✅ ส่งสำเร็จทั้งหมด ${successCount}/${totalRecipients} ที่!\n(กลุ่ม + บุคคล 2 ท่าน)`);
     } else {
