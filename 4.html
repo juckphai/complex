@@ -158,27 +158,18 @@
 
     <script src="script4.js"></script>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw-main.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully for 2.html:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
-            });
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            // ลงทะเบียนโดยใช้ไฟล์ sw-main.js ไฟล์เดียวสำหรับทุกหน้า
+            navigator.serviceWorker.register('./sw-main.js')
+                .then(reg => console.log('Service Worker Registered'))
+                .catch(err => console.log('Service Worker Failed', err));
+        });
+    }
 
-            // อัปเดตหน้าเว็บอัตโนมัติเมื่อ Service Worker มีการเปลี่ยนแปลง
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    window.location.reload();
-                    refreshing = true;
-                }
-            });
-        }
-    </script>
+    // ป้องกันการกดค้าง/คลิกขวา (ถ้าต้องการ)
+    document.addEventListener('contextmenu', e => e.preventDefault());
+</script>
 </body>
 </html>
