@@ -2902,15 +2902,13 @@ function getSelectedPerson() { const select = document.getElementById('personSel
 function getTopicName() { const select = document.getElementById('topicSelect'); if (select.value === 'custom') { return document.getElementById('customTopicName').value.trim() || 'ไม่ระบุหัวข้อ'; } return select.options[select.selectedIndex].text.split(' เวลา ')[0]; }
 function getTopicTime() { const select = document.getElementById('topicSelect'); if (select.value === 'custom') { const time = document.getElementById('customTopicTime').value.trim(); return time ? `เวลา ${time} น.` : ''; } const parts = select.options[select.selectedIndex].text.split(' เวลา '); return parts.length > 1 ? `เวลา ${parts[1]}` : ''; }
 function getSelectedNote() {
-    const customText =
-        document.getElementById('customNoteInput').value.trim();
-
-    // ถ้าพิมพ์เอง ให้ใช้ข้อความที่พิมพ์ก่อน
-    if (customText) {
-        return customText;
+    const select = document.getElementById('noteSelect');
+    
+    // ถ้าเลือกแบบ custom ให้คืนค่าข้อความในกล่อง input (ถ้าไม่ได้พิมพ์จะเป็นค่าว่าง "")
+    if (select.value === 'custom') {
+        return document.getElementById('customNoteInput').value.trim();
     }
 
-    const select = document.getElementById('noteSelect');
     return select.value;
 }
 function getThaiDate(date = new Date()) {
@@ -3214,7 +3212,7 @@ return `
        1px  1px 0 white,
        ${commonData.textShadow};
   ">
-    ${commonData.noteHtml.replace('No remarks', '<span style="color: red;">No remarks</span>')}
+    ${commonData.noteHtml.replace('No remark', '<span style="color: red;">No remark</span>')}
   </p>
 </div>`;
 }
@@ -3328,7 +3326,7 @@ function generateResultHTML() {
     })(),
     selectedPerson: getSelectedPerson(),
     lunarHtml: lunarHtml,
-    noteHtml: `หมายเหตุ : ${noteValue ? `<span style="color: red;">${noteValue}</span>` : '<span style="color: red;">No remarks</span>'}`,
+    noteHtml: `หมายเหตุ : ${noteValue ? `<span style="color: red;">${noteValue}</span>` : '<span style="color: red;">No remark</span>'}`,
     textShadow: engravedShadowStyle
   };
 
