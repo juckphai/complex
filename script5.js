@@ -17,12 +17,120 @@ const lotteryTypes = {
     'thai-government': { name: 'รัฐบาลไทย', type: 'thai' }
 };
 
-// === TELEGRAM CONFIGURATION ===
-const TELEGRAM_RECIPIENTS = [
-    { type: 'group', id: '-1001556229520', name: 'กลุ่ม' },
-    { type: 'group', id: '-1003960364296', name: 'กลุ่ม' },
+// === ระบบจัดการผู้รับ Telegram (เพิ่ม/ลบ/แก้ไข) ===
+const TG_RECIPIENTS_KEY = 'my_telegram_recipients';
+let editingRecipIndex = -1;
+
+// ค่าเริ่มต้นหากเปิดใช้งานครั้งแรก
+const defaultRecipients = [
+    { type: 'group', id: '-1001556229520', name: 'กลุ่ม 1' },
+    { type: 'group', id: '-1003960364296', name: 'กลุ่ม 2' },
     { type: 'personal', id: '5101894762', name: 'บุคคล 1' },
 ];
+
+function getTelegramRecipients() {
+    const data = localStorage.getItem(TG_RECIPIENTS_KEY);
+    if (data) {
+        try { return JSON.parse(data); } catch(e) { return defaultRecipients; }
+    }
+    return defaultRecipients;
+}
+
+function saveTelegramRecipients(list) {
+    localStorage.setItem(TG_RECIPIENTS_KEY, JSON.stringify(list));
+}
+
+function renderTgRecipients() {
+    const list = getTelegramRecipients();
+    const ul = document.getElementById('tgRecipList');
+    if (!ul) return;
+    ul.innerHTML = '';
+    list.forEach((r, index) => {
+        const li = document.createElement('li');
+        li.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: white; padding: 8px; margin-bottom: 5px; border-radius: 4px; border: 1px solid #ddd;";
+        
+        const infoSpan = document.createElement('span');
+        infoSpan.style.cssText = "font-size: 12px; color: #333; line-height: 1.4;";
+        infoSpan.innerHTML = `<b>${r.type === 'group' ? '👥' : '👤'} ${r.name}</b><br><span style="color:#666; font-size:10px;">ID: ${r.id}</span>`;
+        
+        const btnDiv = document.createElement('div');
+        
+        const editBtn = document.createElement('button');
+        editBtn.innerHTML = '✏️';
+        editBtn.style.cssText = "background: #ffc107; border: none; padding: 4px 8px; margin-right: 5px; border-radius: 4px; cursor: pointer;";
+        editBtn.onclick = () => editTgRecip(index);
+        
+        const delBtn = document.createElement('button');
+        delBtn.innerHTML = '🗑️';
+        delBtn.style.cssText = "background: #dc3545; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; color: white;";
+        delBtn.onclick = () => deleteTgRecip(index);
+
+        btnDiv.appendChild(editBtn);
+        btnDiv.appendChild(delBtn);
+        
+        li.appendChild(infoSpan);
+        li.appendChild(btnDiv);
+        ul.appendChild(li);
+    });
+}
+
+window.editTgRecip = function(index) {
+    const list = getTelegramRecipients();
+    const r = list[index];
+    document.getElementById('tgRecipType').value = r.type;
+    document.getElementById('tgRecipName').value = r.name;
+    document.getElementById('tgRecipId').value = r.id;
+    
+    editingRecipIndex = index;
+    const addBtn = document.getElementById('addTgRecipBtn');
+    addBtn.innerHTML = '💾 บันทึกการแก้ไข';
+    addBtn.style.background = '#007bff';
+};
+
+window.deleteTgRecip = function(index) {
+    if(confirm('ต้องการลบผู้รับนี้ใช่หรือไม่?')) {
+        const list = getTelegramRecipients();
+        list.splice(index, 1);
+        saveTelegramRecipients(list);
+        renderTgRecipients();
+    }
+};
+
+function setupTelegramRecipientsUI() {
+    const addBtn = document.getElementById('addTgRecipBtn');
+    if(!addBtn) return;
+    
+    renderTgRecipients();
+
+    addBtn.onclick = () => {
+        const type = document.getElementById('tgRecipType').value;
+        const name = document.getElementById('tgRecipName').value.trim();
+        const id = document.getElementById('tgRecipId').value.trim();
+        
+        if(!name || !id) {
+            alert('⚠️ กรุณากรอกชื่อและ Chat ID ให้ครบถ้วน');
+            return;
+        }
+
+        const list = getTelegramRecipients();
+        
+        if(editingRecipIndex > -1) {
+            list[editingRecipIndex] = { type, name, id };
+            editingRecipIndex = -1;
+            addBtn.innerHTML = '➕ เพิ่มผู้รับ';
+            addBtn.style.background = '#28a745';
+        } else {
+            list.push({ type, name, id });
+        }
+        
+        saveTelegramRecipients(list);
+        renderTgRecipients();
+        
+        // ล้างค่าฟอร์ม
+        document.getElementById('tgRecipName').value = '';
+        document.getElementById('tgRecipId').value = '';
+    };
+}
 
 // === ระบบโหลดและเซฟ Telegram Token ===
 function getTelegramToken() {
@@ -37,10 +145,6 @@ function saveTelegramToken(token) {
     return false;
 }
 
-function clearTelegramToken() {
-    localStorage.removeItem('my_telegram_token');
-}
-
 function setupTelegramTokenUI() {
     const tokenInput = document.getElementById("tgTokenInput");
     const saveBtn = document.getElementById("saveTokenBtn");
@@ -50,8 +154,6 @@ function setupTelegramTokenUI() {
     const savedToken = getTelegramToken();
     if (savedToken) {
         tokenInput.value = savedToken;
-        const maskedToken = savedToken.substring(0, 15) + '...' + savedToken.substring(savedToken.length - 5);
-        console.log('✅ โหลด Token แล้ว (บางส่วน):', maskedToken);
     }
     
     saveBtn.addEventListener("click", function() {
@@ -59,8 +161,6 @@ function setupTelegramTokenUI() {
         if (tokenValue && tokenValue.length > 20) {
             if (saveTelegramToken(tokenValue)) {
                 alert("✅ บันทึก Token ลงในเครื่องเรียบร้อยแล้ว!\nระบบจะใช้ Token นี้ในการส่งข้อความไปยัง Telegram");
-                const maskedDisplay = tokenValue.substring(0, 10) + '...' + tokenValue.substring(tokenValue.length - 5);
-                console.log('🔐 บันทึก Token แล้ว:', maskedDisplay);
             } else {
                 alert("❌ ไม่สามารถบันทึก Token ได้");
             }
@@ -80,14 +180,20 @@ async function shareToTelegram(blob, caption = '') {
         alert('⚠️ กรุณาตั้งค่า Telegram Bot Token ก่อน!\n\nไปที่ปุ่ม ⚙️ > ตั้งค่า Telegram Bot');
         return false;
     }
+
+    const recipients = getTelegramRecipients();
+    if (recipients.length === 0) {
+        alert('⚠️ ไม่พบรายชื่อผู้รับ กรุณาเพิ่มผู้รับ Telegram ในเมนูตั้งค่าก่อน');
+        return false;
+    }
     
     let successCount = 0;
     let failCount = 0;
-    const totalRecipients = TELEGRAM_RECIPIENTS.length;
+    const totalRecipients = recipients.length;
     
-    alert(`📤 กำลังส่งไปยัง ${totalRecipients} ที่...\n(กลุ่ม + บุคคล 2 ท่าน)`);
+    alert(`📤 กำลังส่งไปยัง ${totalRecipients} ที่...`);
     
-    for (const recipient of TELEGRAM_RECIPIENTS) {
+    for (const recipient of recipients) {
         const formData = new FormData();
         const fileName = `lottery_result_${Date.now()}_${recipient.id}.png`;
         const file = new File([blob], fileName, { type: 'image/png' });
@@ -115,7 +221,7 @@ async function shareToTelegram(blob, caption = '') {
     }
     
     if (failCount === 0) {
-        alert(`✅ ส่งสำเร็จทั้งหมด ${successCount}/${totalRecipients} ที่!\n(กลุ่ม + บุคคล 2 ท่าน)`);
+        alert(`✅ ส่งสำเร็จทั้งหมด ${successCount}/${totalRecipients} ที่!`);
     } else {
         alert(`⚠️ ส่งสำเร็จ ${successCount}/${totalRecipients} ที่\n❌ ล้มเหลว ${failCount} ที่ (ดู Console)`);
     }
@@ -162,6 +268,7 @@ async function copyImageToClipboard(blob) {
 function initShareSettings() {
     updateShareButtonsUI();
     setupTelegramTokenUI();
+    setupTelegramRecipientsUI(); // เริ่มต้น UI จัดการผู้รับ
 
     const openModal = () => {
         const currentMode = loadSharePreference();
@@ -185,6 +292,15 @@ function initShareSettings() {
     if(closeBtn) {
         closeBtn.addEventListener("click", () => {
             document.getElementById("shareSettingsModal").style.display = "none";
+            // ล้างค่าฟอร์มเผื่อกดแก้ไขค้างไว้แล้วกดปิด
+            editingRecipIndex = -1;
+            const addBtn = document.getElementById('addTgRecipBtn');
+            if(addBtn) {
+                addBtn.innerHTML = '➕ เพิ่มผู้รับ';
+                addBtn.style.background = '#28a745';
+                document.getElementById('tgRecipName').value = '';
+                document.getElementById('tgRecipId').value = '';
+            }
         });
     }
 
@@ -547,10 +663,6 @@ function setupTelegramLaoShareButton() {
             });
             
             const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-            
-            const selectedKey = document.getElementById("topicSelect").value;
-            const config = lotteryTypes[selectedKey];
-            const num = document.getElementById("numberInput").value || "";
             const caption = "";
             
             await shareToTelegram(blob, caption);
@@ -722,9 +834,6 @@ function setupTelegramThaiShareButton() {
             });
             
             const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-            
-            const firstPrize = document.getElementById("first-prize").value || "XXXXXX";
-            const drawDate = document.getElementById("display-draw-date").innerText || "";
             const caption = "";
             
             await shareToTelegram(blob, caption);

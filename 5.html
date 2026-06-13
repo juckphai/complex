@@ -122,7 +122,6 @@
                 </div>
                 <button id="saveLaoAsImageButton" class="popup-button" style="background-color: #007bff; max-width: 200px; width: 100%;">บันทึกเป็นรูปภาพ</button>
                 
-                <!-- ปุ่ม Telegram -->
                 <button id="telegramShareLaoBtn" class="popup-button" style="background: linear-gradient(135deg, #0088cc, #0077b5); max-width: 200px; width: 100%; margin-top: 5px;">
                     📨 ส่งไป Telegram
                 </button>
@@ -187,7 +186,6 @@
             <div class="popup-controls">
                 <button id="saveThaiAsImageButton" class="popup-button">บันทึกเป็นรูปภาพ</button>
                 
-                <!-- ปุ่ม Telegram สำหรับผลรัฐบาล -->
                 <button id="telegramShareThaiBtn" class="popup-button" style="background: linear-gradient(135deg, #0088cc, #0077b5); margin-top: 5px;">
                     📨 ส่งไป Telegram
                 </button>
@@ -205,9 +203,8 @@
         </div>
     </div>
 
-    <!-- Share Settings Modal (รวมการตั้งค่า Telegram) -->
     <div id="shareSettingsModal" class="popup-overlay" style="z-index: 2000; display: none;">
-        <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff;">
+        <div class="popup-content" style="max-width: 400px; background-color: #f0f8ff; max-height: 90vh; overflow-y: auto;">
             <h2 style="color: #0056b3; text-align: center;">ตั้งค่าปุ่มแชร์ด่วน</h2>
             <p style="text-align: center; font-size: 14px; margin-bottom: 15px;">เลือกการทำงานเมื่อกดปุ่มสีเขียว</p>
             
@@ -229,7 +226,6 @@
                 </label>
             </div>
 
-            <!-- ส่วนตั้งค่า Telegram Token แบบปลอดภัย -->
             <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #ccc;">
                 <h4 style="color: #0056b3; text-align: center; margin-bottom: 10px;">🤖 ตั้งค่า Telegram Bot</h4>
                 <p style="font-size: 12px; color: #666; text-align: center; margin-bottom: 10px;">
@@ -242,12 +238,28 @@
                         style="background: linear-gradient(135deg, #0088cc, #0077b5); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold;">
                     💾 บันทึก Token ลงเครื่องนี้
                 </button>
-                <p style="font-size: 11px; color: #999; text-align: center; margin-top: 10px;">
-                    🔐 Token จะถูกเก็บในเบราว์เซอร์ของคุณเท่านั้น ปลอดภัย ไม่รั่วไหล
-                </p>
                 <p style="font-size: 11px; color: #f0ad4e; text-align: center; margin-top: 5px;">
                     ⚠️ หากยังไม่มี Token ให้ไปสร้างที่ @BotFather ใน Telegram
                 </p>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #ccc;">
+                <h4 style="color: #0056b3; text-align: center; margin-bottom: 10px;">👥 จัดการผู้รับ (Telegram)</h4>
+                
+                <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                    <select id="tgRecipType" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px;">
+                        <option value="group">กลุ่ม</option>
+                        <option value="personal">บุคคล</option>
+                    </select>
+                    <input type="text" id="tgRecipName" placeholder="ชื่อเรียก" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; box-sizing: border-box;">
+                    <input type="text" id="tgRecipId" placeholder="Chat ID (-100...)" style="flex: 1.5; padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; box-sizing: border-box;">
+                </div>
+                <button id="addTgRecipBtn" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 10px;">
+                    ➕ เพิ่มผู้รับ
+                </button>
+                
+                <ul id="tgRecipList" style="list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; font-size: 12px;">
+                    </ul>
             </div>
 
             <div class="modal-button-group" style="margin-top: 20px; text-align: center;">
@@ -265,14 +277,11 @@
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            // ลงทะเบียนโดยใช้ไฟล์ sw-main.js ไฟล์เดียวสำหรับทุกหน้า
             navigator.serviceWorker.register('./sw-main.js')
                 .then(reg => console.log('Service Worker Registered'))
                 .catch(err => console.log('Service Worker Failed', err));
         });
     }
-
-    // ป้องกันการกดค้าง/คลิกขวา (ถ้าต้องการ)
     document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 </body>
