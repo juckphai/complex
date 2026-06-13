@@ -1,5 +1,5 @@
-const staticCacheName = 'juckphai-static-v110';
-const dynamicCacheName = 'juckphai-dynamic-v110';
+const staticCacheName = 'juckphai-static-v1110';
+const dynamicCacheName = 'juckphai-dynamic-v1110';
 
 // รายการไฟล์ทั้งหมดที่ต้องการให้ใช้งาน Offline ได้
 const assets = [
