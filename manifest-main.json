@@ -1,6 +1,6 @@
 {
-  "name": "Juckmanphai Lottery Tools",
-  "short_name": "Juckmanphai",
+  "name": "Juckphai",
+  "short_name": "Juck",
   "description": "รวมเครื่องมือแปลตัวเลขและตรวจผลรางวัล",
   "start_url": "./index.html",
   "display": "standalone",
