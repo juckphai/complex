@@ -191,7 +191,7 @@ async function shareToTelegram(blob, caption = '') {
     let failCount = 0;
     const totalRecipients = recipients.length;
     
-    alert(`📤 กำลังส่งไปยัง ${totalRecipients} ที่...`);
+    // ❌ นำเอาบรรทัด alert("กำลังส่ง...") ออกจากตรงนี้ เพื่อให้ระบบทำงานทันทีโดยไม่ต้องรอผู้ใช้กดยืนยัน
     
     for (const recipient of recipients) {
         const formData = new FormData();
@@ -220,6 +220,7 @@ async function shareToTelegram(blob, caption = '') {
         }
     }
     
+    // ✅ แจ้งเตือนเฉพาะเมื่อกระบวนการส่งทั้งหมดเสร็จสิ้นแล้ว
     if (failCount === 0) {
         alert(`✅ ส่งสำเร็จทั้งหมด ${successCount}/${totalRecipients} ที่!`);
     } else {
